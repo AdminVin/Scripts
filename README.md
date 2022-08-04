@@ -1,2 +1,2 @@
 # Scripts
- Windows PowerShell and BAT Scripts
+ Windows BAT,VBS, and PowerShell scripts library.
