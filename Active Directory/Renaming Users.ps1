@@ -4,18 +4,22 @@ Import-Module ActiveDirectory
 
 #region Varibles
 # Pull from AD
-#$UsernameOLD = Read-Host "Please enter in the existing username"
-cls
+# Set-PSDebug -On
+CLS
+Write-Host "Please cooridnate with the user prior to running this script" -ForegroundColor RED
+#$UsernameOLD = Read-Host "Please enter in the existing username for the user you wish to rename"
 $UsernameOLD = "test.acccount"
 $NameOLD = Get-ADUser $UsernameOLD -Properties UserPrincipalName | Select-Object GivenName, Surname
 $FirstNameOLD = Get-ADUser $UsernameOLD -Properties UserPrincipalName | Select-Object GivenName
 $LastNameOLD = Get-ADUser $UsernameOLD -Properties UserPrincipalName | Select-Object Surname
-$EmailOLD = Get-ADUser $UsernameOLD -Properties UserPrincipalName | Select-Object EmailAddress
-Write-Output "Username (Existing): " $UsernameOLD
-Write-Output " "
-Write-Output "Name (Existing): " $NameOLD
-Write-Output " "
-Write-Output "Email (Existing): " $EmailOLD
+$EmailOLD = Get-ADUser $UsernameOLD -Properties EmailAddress | Select-Object EmailAddress
+Write-Host "Existing Account Information | Username: "$UsernameOLD " | First Name: "$FirstNameOLD "Last Name: "$LastNameOLD " | Email: "$EmailOLD -ForegroundColor Gray -BackgroundColor Red
+Write-Host "Username: " $UsernameOLD -ForegroundColor Yellow
+Write-Host "First Name: " $FirstNameOLD "Last Name: " $LastNameOLD -ForegroundColor Yellow
+Write-Host $FirstNameOLD -ForegroundColor Yellow -NoNewline
+Write-Host " Last Name (Existing): " -NoNewLine
+Write-Host "Email (Existing): " -NoNewline
+Write-Host $EmailOLD -ForegroundColor Yellow
 
 
 $FirstNameNEW = Read-Host "Please enter in the NEW first name"
