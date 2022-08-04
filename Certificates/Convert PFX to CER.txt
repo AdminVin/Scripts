@@ -1,0 +1,4 @@
+1. Install Win64 OpenSSL v3.0.1.exe (Files / Tools)
+2. Run OpenSSL from Start Menu
+3. openssl pkcs12 -in INS-PYXIS-P.pfx -out INS-PYXIS_P.cer -nodes
+4. Enter in Import Password (if any)

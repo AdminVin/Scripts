@@ -1,0 +1,6 @@
+Create System Service - Windows
+
+
+Syntax:
+
+sc.exe create AirPrint binPath= C:\Program Files\AirPrint\airprint.exe -s depend= Bonjour Service start= auto

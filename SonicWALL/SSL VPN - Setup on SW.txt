@@ -1,0 +1,11 @@
+SSL VPN Setup
+SSL VPN > Server Settings > Click on WAN
+SSL VPN > Client Settings
+- Set Range of IPs NetExtender Clients will get
+-- Check DHCP Server, and set out of range
+-- .240-.250 is usually good
+- Set DNS to local server
+- Set DNS domain to local domain
+- Allow Saving of username & password
+SSL VPN > Client Routes
+- Set to Primary LAN

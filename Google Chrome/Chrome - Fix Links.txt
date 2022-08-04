@@ -1,0 +1,1 @@
+Repairing .htm, .html, .shtml file extensions after removing Chrome

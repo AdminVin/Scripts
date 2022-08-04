@@ -1,0 +1,1 @@
+Get-Printer | Select PortName,Name,DriverName,Location,PrinterStatus | Export-CSV PrinterExport.CSV

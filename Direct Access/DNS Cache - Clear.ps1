@@ -1,0 +1,1 @@
+Get-Item -Path “HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient\DnsPolicyConfig” | Remove-Item -Confirm:$false

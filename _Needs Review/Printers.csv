@@ -1,0 +1,5 @@
+Make,Model,Location,mac,NewIP,PrinterDriverOverRide,PRNumber
+Brother,HL-L6200DW,Administrator,3C-2A-F4-85-9C-23,10.65.51.54,Brother HL-L6200DW series,04PR
+Brother,HL-L6200DW,Admissons,3C-2A-F4-85-9C-B6,10.65.51.55,Brother HL-L6200DW series,05PR
+Brother,HL-L6200DW,Business Office,3C-2A-F4-85-9E-55,10.65.51.56,Brother HL-L6200DW series,06PR
+Brother,HL-L6200DW,Medical Records,3C-2A-F4-7E-85-C3,10.65.51.57,Brother HL-L6200DW series,07PR

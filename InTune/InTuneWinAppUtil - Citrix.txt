@@ -1,0 +1,69 @@
+### Setup / Configuration
+## Download the latest version of Citrix Workspace and place in a new folder called Citrix
+## Download "InTuneWinAppUtil.exe" (attached on right) and place in Citrix Folder
+## Create new CMD file called "InTune.CMD" with the following code
+cd "%~dp0"
+
+CitrixWorkspaceApp.exe /forceinstall /silent
+
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Citrix\Dazzle" /v AllowAddStore /t REG_SZ /d A /f /reg:64
+
+:: add any other commands here (optional)
+## Open CMD and navigate to the Citrix Folder with InTuneWinAppUtil.exe in it
+#Run the following Command: 
+IntuneWinAppUtil.exe -c C:\Citrix -s CitrixWorkspaceApp.exe -o C:\Citrix
+#In the Citrix Directory, there will be a new file with .Intune as the extension
+Source: http://eddiejackson.net/wp/?p=29416
+
+## InTune Appdeployment
+# Navigate to https://endpoint.microsoft.com/ > Apps > All Apps > Add
+# App Type: Windows App (Win32) > Select
+# Select App package file > Navigate to the .InTune file generated > Ok
+- App Information
+Fill out required fields
+Name: Citrix Workstation 
+Description: Citrix Workstation 
+Publisher: Citrix Workstation 
+Next
+
+- Program
+Install Command: This should be the name of the .CMD file you created earlier, in this case it should be "InTune.CMD"
+Uninstall Command: “C:\ProgramData\Citrix\Citrix Workspace 2022\TrolleyExpress.exe” /uninstall /cleanup
+This uninstall path will change if the version is different.
+Return Type
+Review and if any state "Hard Reboot", change it to "Soft Reboot"
+Next
+
+- Requirements
+Operating System Architecture: 64 Bit
+Minimum Operating System: Windows 10 1607
+Next
+
+- Detection Rules
+Add > Rule Type > File
+Path: C:\Program Files (x86)\Citrix\Citrix WorkSpace 2202
+File or Folder: TrolleyExpress.exe
+Detection Method: File or folder exists
+Ok 
+Next
+
+- Dependencies
+Next
+
+- Supersedence (preview)
+Next
+
+- Assignments
+Create a group in Azure, with dynamic membership of the target scope.
+Add Group > Select the new group created
+Next
+
+- Review and Create
+Create
+The ".intune" file you created will upload to the Intune Portal.  Once it is finished, it will start deploying the the program to all targeted users/computers.
+Disable user notifications of install
+Navigate to https://endpoint.microsoft.com/ > Apps > All Apps > Citrix Workspace > Properties > Assignments and "edit" > Change End User Notifications to "Hide all toast notifications"
+
+Testing
+At this point, all that has to be done is for a user or computer that is in the scope for this policy to be applied, is to be rebooted and to check the start menu for Citrix Workspace.
+You can also check the status by going to https://endpoint.microsoft.com/ > Apps > All Apps > Citrix Workspace > Device Install Status

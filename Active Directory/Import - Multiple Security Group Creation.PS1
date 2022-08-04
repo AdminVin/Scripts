@@ -1,0 +1,9 @@
+New-ADGroup Administrator_SEC -Path ou=Groups,ou=CompanyName,ou=ParentCompany,dc=DOMAIN,dc=local -GroupScope Global -GroupCategory Security
+New-ADGroup Admissions_SEC -Path ou=Groups,ou=CompanyName,ou=ParentCompany,dc=DOMAIN,dc=local -GroupScope Global -GroupCategory Security
+New-ADGroup Dietary_SEC -Path ou=Groups,ou=CompanyName,ou=ParentCompany,dc=DOMAIN,dc=local -GroupScope Global -GroupCategory Security
+New-ADGroup MDS_SEC -Path ou=Groups,ou=CompanyName,ou=ParentCompany,dc=DOMAIN,dc=local -GroupScope Global -GroupCategory Security
+New-ADGroup Nursing-Clinical_SEC -Path ou=Groups,ou=CompanyName,ou=ParentCompany,dc=DOMAIN,dc=local -GroupScope Global -GroupCategory Security
+New-ADGroup OT_SEC -Path ou=Groups,ou=CompanyName,ou=ParentCompany,dc=DOMAIN,dc=local -GroupScope Global -GroupCategory Security
+New-ADGroup PT_SEC -Path ou=Groups,ou=CompanyName,ou=ParentCompany,dc=DOMAIN,dc=local -GroupScope Global -GroupCategory Security
+New-ADGroup SocialServices_SEC -Path ou=Groups,ou=CompanyName,ou=ParentCompany,dc=DOMAIN,dc=local -GroupScope Global -GroupCategory Security
+New-ADGroup Speech_SEC -Path ou=Groups,ou=CompanyName,ou=ParentCompany,dc=DOMAIN,dc=local -GroupScope Global -GroupCategory Security

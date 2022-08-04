@@ -1,0 +1,6 @@
+## Part 1 - Identify all DC's on a network
+# Run CMD as Administrator
+NETDOM QUERY DC
+
+## Part 2 - FSMO Roles
+NETDOM QUERY FSMO

@@ -1,0 +1,1 @@
+powershell.exe -executionpolicy bypass -file "D:\Files\Scripts\Google Domains\Update - A Record.ps1"
