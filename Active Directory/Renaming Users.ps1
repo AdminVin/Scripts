@@ -4,13 +4,24 @@ Import-Module ActiveDirectory
 
 #region Varibles
 # Pull from AD
-$UsernameOLD = Read-Host "Please enter in the existing username"
-$FirstNameOLD = Get-ADUser -Filter * -Properties GivenName | Where-Object { $UsernameOLD -contains $_.SamAccountName } | Select-Object GivenName
-Write-Output "First Name:"
-Write-Output $FirstNameOLD
-$LastNameOLD = Get-ADUser -Filter * | Where-Object { $UsernameOLD -contains $_.SamAccountName } | Select-Object sn
-Write-Output "Last Name:"
-Write-Output $LastNameOLD
+#$UsernameOLD = Read-Host "Please enter in the existing username"
+cls
+$UsernameOLD = "vincent.briffa"
+$NameOLD = Get-ADUser -Identity $UsernameOLD -Properties EmailAddress | Select-Object GivenName, Surname
+$FirstNameOLD = Get-ADUser -Identity $UsernameOLD -Properties EmailAddress | Select-Object GivenName
+$LastNameOLD = Get-ADUser -Identity $UsernameOLD -Properties EmailAddress | Select-Object Surname
+$EmailOLD = Get-ADUser $UsernameOLD -Properties EmailAddress | Select-Object EmailAddress
+Write-Output "Username (Existing): " $UsernameOLD
+Write-Output " "
+Write-Output "Name (Existing): " $NameOLD
+Write-Output " "
+Write-Output "Email (Existing): " $EmailOLD
+Write-Output "First Name: " $FirstNameOLD
+Write-Output "Last Name: " $LastNameOLD
+
+$FirstNameNEW = Read-Host "Please enter in the NEW first name"
+$LastNameNEW = Read-Host "Please enter in the NEW last name"
+
 $EmailOLD = Get-ADUser -Filter * | Where-Object { $UsernameOLD -contains $_.SamAccountName } | Select-Object Email
 Write-Output "Email:"
 Write-Output $EmailOLD
