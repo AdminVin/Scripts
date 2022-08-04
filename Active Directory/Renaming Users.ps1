@@ -6,18 +6,17 @@ Import-Module ActiveDirectory
 # Pull from AD
 #$UsernameOLD = Read-Host "Please enter in the existing username"
 cls
-$UsernameOLD = "vincent.briffa"
-$NameOLD = Get-ADUser -Identity $UsernameOLD -Properties EmailAddress | Select-Object GivenName, Surname
-$FirstNameOLD = Get-ADUser -Identity $UsernameOLD -Properties EmailAddress | Select-Object GivenName
-$LastNameOLD = Get-ADUser -Identity $UsernameOLD -Properties EmailAddress | Select-Object Surname
-$EmailOLD = Get-ADUser $UsernameOLD -Properties EmailAddress | Select-Object EmailAddress
+$UsernameOLD = "test.acccount"
+$NameOLD = Get-ADUser $UsernameOLD -Properties UserPrincipalName | Select-Object GivenName, Surname
+$FirstNameOLD = Get-ADUser $UsernameOLD -Properties UserPrincipalName | Select-Object GivenName
+$LastNameOLD = Get-ADUser $UsernameOLD -Properties UserPrincipalName | Select-Object Surname
+$EmailOLD = Get-ADUser $UsernameOLD -Properties UserPrincipalName | Select-Object EmailAddress
 Write-Output "Username (Existing): " $UsernameOLD
 Write-Output " "
 Write-Output "Name (Existing): " $NameOLD
 Write-Output " "
 Write-Output "Email (Existing): " $EmailOLD
-Write-Output "First Name: " $FirstNameOLD
-Write-Output "Last Name: " $LastNameOLD
+
 
 $FirstNameNEW = Read-Host "Please enter in the NEW first name"
 $LastNameNEW = Read-Host "Please enter in the NEW last name"
