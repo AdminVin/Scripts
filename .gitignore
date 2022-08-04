@@ -1,5 +1,2 @@
 git rm -r --cached _EBPS/
-_EBPS/EBAzureSync.ps1
-_EBPS/ADIMPORT_version2_1.ps1
-_EBPS/ADIMPORT_Staff_v2.ps1
-_EBPS/AD - Export Students.ps1
+_EBPS/
