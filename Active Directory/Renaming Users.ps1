@@ -4,9 +4,8 @@ Import-Module ActiveDirectory
 
 #region Varibles
 # Pull from AD
-# Set-PSDebug -On
+Set-PSDebug -Off
 CLS
-Write-Host "Please cooridnate with the user prior to running this script" -ForegroundColor RED
 #$UsernameOLD = Read-Host "Please enter in the existing username for the user you wish to rename"
 $UsernameOLD = "test.acccount"
 $NameOLD = Get-ADUser $UsernameOLD -Properties UserPrincipalName | Select-Object GivenName, Surname
@@ -14,29 +13,17 @@ $FirstNameOLD = Get-ADUser $UsernameOLD -Properties UserPrincipalName | Select-O
 $LastNameOLD = Get-ADUser $UsernameOLD -Properties UserPrincipalName | Select-Object Surname
 $EmailOLD = Get-ADUser $UsernameOLD -Properties EmailAddress | Select-Object EmailAddress
 Write-Host "Existing Account Information | Username: "$UsernameOLD " | First Name: "$FirstNameOLD "Last Name: "$LastNameOLD " | Email: "$EmailOLD -ForegroundColor Gray -BackgroundColor Red
-Write-Host "Username: " $UsernameOLD -ForegroundColor Yellow
-Write-Host "First Name: " $FirstNameOLD "Last Name: " $LastNameOLD -ForegroundColor Yellow
-Write-Host $FirstNameOLD -ForegroundColor Yellow -NoNewline
-Write-Host " Last Name (Existing): " -NoNewLine
-Write-Host "Email (Existing): " -NoNewline
-Write-Host $EmailOLD -ForegroundColor Yellow
 
 
 $FirstNameNEW = Read-Host "Please enter in the NEW first name"
 $LastNameNEW = Read-Host "Please enter in the NEW last name"
 
-$EmailOLD = Get-ADUser -Filter * | Where-Object { $UsernameOLD -contains $_.SamAccountName } | Select-Object Email
-Write-Output "Email:"
-Write-Output $EmailOLD
+
 $ProxyAddressOLD = Get-ADUser -Filter * -Properties ProxyAddresses | Where-Object { $UsernameOLD -contains $_.SamAccountName } | Select-Object proxyAddress
 Write-OutPut "ProxyAddress:"
 Write-Output $ProxyAddressOLD
 
-# Pull from CSV
-$FirstNameNEW
-$LastNameNEW
-$UsernameNEW
-$ProxyAddressNEW
+
 
 #endregion
 
