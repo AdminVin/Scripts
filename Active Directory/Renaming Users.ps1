@@ -3,10 +3,9 @@ Import-Module ActiveDirectory
 #endregion
 
 #region Varibles
-# Pull from AD
 Set-PSDebug -Off
 CLS
-#$UsernameOLD = Read-Host "Please enter in the existing username for the user you wish to rename"
+#$UsernameOLD = Read-Host "Please enter in the EXISTING username for the user you wish to rename"
 $UsernameOLD = "test.acccount"
 $NameOLD = Get-ADUser $UsernameOLD -Properties UserPrincipalName | Select-Object GivenName, Surname
 $FirstNameOLD = Get-ADUser $UsernameOLD -Properties UserPrincipalName | Select-Object GivenName
