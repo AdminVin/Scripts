@@ -1,0 +1,1 @@
+Invoke-Command -ComputerName EBAZURE16 -ScriptBlock {Start-ADSyncSyncCycle -PolicyType delta}
