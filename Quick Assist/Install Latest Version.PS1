@@ -1,7 +1,7 @@
 #region Notes
 # 2022-08-10 - Remove the existing version and install the latest of Quick Assist
-#
 #endregion
+
 
 #region Remove Old Version
 <# Fallback Unistall
@@ -19,11 +19,15 @@ if($checkQuickAssist.state -eq 'Installed'){
 }
 #>
 Remove-WindowsCapability -Online -Name 'App.Support.QuickAssist~~~~0.0.1.0' -ErrorAction 'SilentlyContinue'
+#endregion
 
+
+#region Verification
 # Verify old version was removed
 Get-WindowsCapability -Name *QuickAssist* -Online
 
 #endregion
+
 
 #region Install New Version
 Add-AppxProvisionedPackage -online -SkipLicense -PackagePath '.\MicrosoftCorporationII.QuickAssist.AppxBundle'
