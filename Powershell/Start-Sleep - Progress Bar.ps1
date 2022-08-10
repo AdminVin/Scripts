@@ -18,11 +18,13 @@ do {
     $i--
 } while ($i -gt 0)
 
-$Seconds = 30
+$Seconds = 10
 $EndTime = [datetime]::UtcNow.AddSeconds($Seconds)
 
 while (($TimeRemaining = ($EndTime - [datetime]::UtcNow)) -gt 0) {
   Write-Progress -Activity 'Watiting for...' -Status Godot -SecondsRemaining $TimeRemaining.TotalSeconds
   Start-Sleep 0
-  cls
 }
+
+
+Get-ADUser vincent.briffa

@@ -2,7 +2,7 @@
 # Prerequisities
 Set-ExecutionPolicy Unrestricted
 Install-Module MSOnline
-Install-Module AzureADPreview
+Install-Module AzureAD
 Install-Module ExchangeOnlineManagement
 
 # Connect
