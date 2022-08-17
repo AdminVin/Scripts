@@ -4,6 +4,6 @@ Error
 You can't preview search results because you're not assigned the Preview role. If you're a member of the Organization Management role group, you can go to the Permissions page and add yourself as a member of the eDiscovery Manager role group. Otherwise, contact your admin.
 
 # Resolution
-1. Navigate to Admin Center > Roles > Role Assignments > Select "Exchange" (at the top) > Search "Discovery Management" > Select "Discovery Management" > Select "Assigned" Tab > Add User Account
-2. Navigate to https://portal.azure.com > Azure AD > Search User > Select "Assigned Roles"> Select "Add Assignments" > Search "Compliance" > Check off "Compliance administrator" and "Add"
+1. Navigate to https://compliance.microsoft.com/ > Permissions > Microsoft Purview Solutions, select "Roles" > select "eDiscovery Manager" > Add User
+
 # After commiting the changes, it may take some time for Azure/Office 365 to propagate the changes.
