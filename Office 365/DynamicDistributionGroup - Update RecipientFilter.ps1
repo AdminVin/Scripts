@@ -6,7 +6,7 @@ Connect-ExchangeOnline
 Get-DynamicDistributionGroup *
 
 # Get Current Filter for Dynamic Group
-Get-DynamicDistributionGroup -Name “Group Name” | fl Name,RecipientFilter
+Get-DynamicDistributionGroup “Group Name” | fl Name,RecipientFilter
 
 
 ### Examples
