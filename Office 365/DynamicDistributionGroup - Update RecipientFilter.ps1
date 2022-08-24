@@ -10,10 +10,10 @@ Get-DynamicDistributionGroup “Group Name” | fl Name,RecipientFilter
 
 
 ### Examples
-## Example Modifer to add with Custom Attribute
+## Example Modifer to ADD with Custom Attribute
 -and (CustomAttribute15 -like 'IncludeFacilityAllEmails')
 
-## Example Modifer to remove with Custom Attribute
+## Example Modifer to REMOVE with Custom Attribute
 -and (-not(CustomAttribute15 -like 'ExcludeALL'))
 
 # Original Scope
