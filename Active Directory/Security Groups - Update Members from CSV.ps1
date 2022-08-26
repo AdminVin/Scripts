@@ -1,4 +1,11 @@
+#region Notes
 # Update a Security Group from CSV
-#
+#end region
+
+#region Modules
 Import-Module ActiveDirectory 
-Import-Csv -Path “Security Group - Update from CSV.csv” | ForEach-Object {Add-ADGroupMember -Identity “SecurityGroupName” -Members $_.’User-Name’}
+#endregion
+
+#region Process Users/Groups
+Import-Csv -Path “Security Groups - Update Members from CSV.csv” | ForEach-Object {Add-ADGroupMember -Identity “SecurityGroupName” -Members $_.’User-Name’}
+#endregion
