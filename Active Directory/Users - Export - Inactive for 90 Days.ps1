@@ -17,9 +17,9 @@ $NumberDays=90
 $OU='OU=ParentCompany,DC=DOMAIN,DC=local'  
 #  
 Import-Module ActiveDirectory
-GET-ADUSER -filter * -SearchBase $OU -properties LastLogonDate | where { $_.LastLogonDate.AddDays($NumberDays) -lt $CurrentDate } | Export-Csv InActiveUsers.csv
+GET-ADUSER -filter * -SearchBase $OU -properties LastLogonDate | where { $_.LastLogonDate.AddDays($NumberDays) -lt $CurrentDate } | Export-Csv "Users-Export-Inactivefor90Days.csv"
 #  
 # Add in a | DISABLE-ADAccount to AUTOMATICALLY Disable those accounts.  
-# Line should read like this if you want to do that  
-#  
+# 
+# Example  
 # GET-ADUSER -filter * -SearchBase $OU -properties LastLogonDate | where { $_.LastLogonDate.AddDays($NumberDays) -lt $CurrentDate } | Disable-ADAccount 

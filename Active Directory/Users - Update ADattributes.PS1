@@ -1,14 +1,3 @@
-#-----------------------------------------------------------------------------------------------
-# Script created by Chris Steding 
-#
-# This script will update AD attributes for users imported from csv file
-#
-# csv file format:
-# SamAccountName,Title,MobilePhone,OfficePhone,city,EmailAddress,Department,Office
-#
-# Remember to edit the -SearchBase to the correct domain name. 
-#-----------------------------------------------------------------------------------------------
-
 # Import AD Module             
 Import-Module ActiveDirectory            
 

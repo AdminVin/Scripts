@@ -6,4 +6,4 @@
 
 Import-Module ActiveDirectory
 $OUpath = 'OU=Staff,OU=Company,OU=ParentCompany,DC=DOMAIN,DC=local'
-Get-ADUser -Filter * -Properties * -SearchBase $OUpath | Select-object Name,UserPrincipalName,Enabled,LastLogonDate | Export-Csv Export.csv
+Get-ADUser -Filter * -Properties * -SearchBase $OUpath | Select-object Name,UserPrincipalName,Enabled,LastLogonDate | Export-Csv "Users-Export-EnabledUsers(OUScoped).csv"
