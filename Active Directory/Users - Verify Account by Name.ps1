@@ -6,7 +6,7 @@ Import-Module ActiveDirectory
 
 #region Process Verification
 # Import CSV
-$CSV = Import-CSV "Verify - Users Enabled (by name).csv"
+$CSV = Import-CSV "Users - Verify Account by Name.csv"
 
 # Loop through accounts in CSV and verify all accounts
 foreach ($Users in $CSV)

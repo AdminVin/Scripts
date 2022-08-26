@@ -9,6 +9,7 @@ $LastLogonDate= (Get-Date).AddDays(-365)
 Get-ADComputer -Properties LastLogonTimeStamp -Filter {LastLogonTimeStamp -lt $LastLogonDate } -SearchBase $SearchOU | Sort LastLogonTimeStamp| FT Name, @{N='lastlogontimestamp'; E={[DateTime]::FromFileTime($_.lastlogontimestamp)}} -AutoSize
 
 # Search & Export AD Computer List
+# Work in progress
 Get-ADComputer -Properties LastLogonTimeStamp -Filter {LastLogonTimeStamp -lt $LastLogonDate } -SearchBase $SearchOU | Sort LastLogonTimeStamp| FT Name, @{N='lastlogontimestamp'; E={[DateTime]::FromFileTime($_.lastlogontimestamp)}} -AutoSize | Export-CSV "InactiveADComputerList.csv"
 
 # Search & Disable AD Computer List

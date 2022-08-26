@@ -8,7 +8,7 @@ Move-ADDirectoryServerOperationMasterRole -Identity SERVERNAME -OperationMasterR
 ## Step 1
 # Active Directory Sites & Services > Navigate to the old DC’s NTDS Settings, and Properties > Verify that Global Catalog is checked off.
 
-## Step 2 - FSMO (RID, PDC, and InfraParentCompany)
+## Step 2 - FSMO (RID, PDC, and Infrastructure)
 # Login to new DC > Active Directory Users and Computers > Right Click Domain > Operation Masters
 # Navigate to each tab, and change over the server to the new DC
 
@@ -30,5 +30,5 @@ seize schema master
 seize naming master
 seize RID master
 seize pdc
-seize infraParentCompany master
+seize infrastructure master
 quit

@@ -2,7 +2,7 @@
 Import-Module ActiveDirectory
   
 # Import CSV with all AD users in the $CSV variable
-$CSV = Import-csv "Remove - Single Proxy Address.csv"
+$CSV = Import-csv "Users - ProxyAddress - Remove Specific.csv"
 
 # Loop through each row containing user details in the CSV file 
 foreach ($LineItem in $CSV)
