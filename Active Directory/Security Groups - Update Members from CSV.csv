@@ -1,5 +1,3 @@
-﻿User-Name
-FirstName.LastName
-FLastName
-Vin
-TestAccount
+﻿SAMAccountName
+FirstName.LastName@domain.local
+FLastName@adminvin.com
