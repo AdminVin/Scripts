@@ -8,5 +8,5 @@ Import-Module ActiveDirectory
 #endregion
 
 #region Process Accounts
-Get-ADUser -Filter * -Properties DisplayName, Enabled, SamAccountName, EmailAddress, Title, LastLogonDate | Select-Object DisplayName, Enabled, SamAccountName, EmailAddress, Title, LastLogonDate | Export-CSV "Users-Export-AllUsers.csv"
+Get-ADUser -Filter * -Properties DisplayName, Enabled, SamAccountName, EmailAddress, Company, Title, LastLogonDate | Select-Object DisplayName, Enabled, SamAccountName, EmailAddress, Company, Title, LastLogonDate | Export-CSV "Users-Export-AllUsers.csv"
 #endregion
