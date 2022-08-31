@@ -20,6 +20,7 @@ Write-Host "***************************************" -ForegroundColor Red
 Write-Host " "
 
 Get-ADUser $UsernameOLD -Properties UserPrincipalName,DisplayName,employeeNumber,ProxyAddresses,HomeDirectory | Select-Object Enabled,Samaccountname,DisplayName,GivenName,Surname,employeeNumber,@{Name='PrimarySMTPAddress';Expression={$_.ProxyAddresses -cmatch '^SMTP:' -creplace 'SMTP:'}},HomeDirectory
+
 $EmailOLD = Get-ADUser $UsernameOLD -Properties ProxyAddresses | Select-Object @{Name='PrimarySMTPAddress';Expression={$_.ProxyAddresses -cmatch '^SMTP:' -creplace 'SMTP:'}} 
 Write-Host "Please verify the correct is listed above." -ForegroundColor Yellow
 
@@ -89,7 +90,7 @@ Set-ADUser -Identity $UsernameNEW -Add @{ProxyAddresses="SMTP:"+$ProxyAddressNEW
 Set-ADUser -Identity $UsernameNEW -Add @{ProxyAddresses="smtp:"+$ProxyAddressNEW2}
 
 # Home Directory [Attribute Editor Tab > homeDirectory]
-$NewHomeDir = "C:\users\"+$UsernameNEW.ToUpper()+"\OneDrive - East Brunswick Public Schools"
+$NewHomeDir = "C:\users\"+$UsernameNEW.ToUpper()+"\OneDrive - Company Name"
 Set-ADUser $UsernameNew -HomeDirectory $NewHomeDir
 # Write-Host "New homeDirectory:"$NewHomeDir -ForegroundColor Yellow
 
