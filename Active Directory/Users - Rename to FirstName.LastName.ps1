@@ -19,7 +19,7 @@ Write-Host "* EXISTING USER INFORMATION *" -ForegroundColor Red
 Write-Host "*****************************" -ForegroundColor Red
 Write-Host " "
 
-Get-ADUser $UsernameOLD -Properties UserPrincipalName,employeeNumber,ProxyAddresses | Select-Object Enabled,Samaccountname,GivenName,Surname,employeeNumber,@{Name='PrimarySMTPAddress';Expression={$_.ProxyAddresses -cmatch '^SMTP:' -creplace 'SMTP:'}} 
+Get-ADUser $UsernameOLD -Properties UserPrincipalName,DisplayName,employeeNumber,ProxyAddresses,HomeDirectory | Select-Object Enabled,Samaccountname,DisplayName,GivenName,Surname,employeeNumber,@{Name='PrimarySMTPAddress';Expression={$_.ProxyAddresses -cmatch '^SMTP:' -creplace 'SMTP:'}},HomeDirectory
 $EmailOLD = Get-ADUser $UsernameOLD -Properties ProxyAddresses | Select-Object @{Name='PrimarySMTPAddress';Expression={$_.ProxyAddresses -cmatch '^SMTP:' -creplace 'SMTP:'}} 
 Write-Host "Please verify the correct is listed above." -ForegroundColor Yellow
 
@@ -93,7 +93,12 @@ Write-Host "New homeDirectory:"$NewHomeDir -ForegroundColor Yellow
 $Date = Get-Date -UFormat "%Y-%m-%d %R"
 Set-ADUser $UsernameNEW -Description "Updated: $Date"
 
+# Display NEW account information
+Get-ADUser $UsernameNEW -Properties UserPrincipalName,DisplayName,employeeNumber,ProxyAddresses,HomeDirectory | Select-Object Enabled,Samaccountname,DisplayName,GivenName,Surname,employeeNumber,@{Name='PrimarySMTPAddress';Expression={$_.ProxyAddresses -cmatch '^SMTP:' -creplace 'SMTP:'}},HomeDirectory
+
 #endregion
+
+
 
 Write-Host " " -ForegroundColor Yellow
 Write-Host "If the above looks correct, run a DirSync (Delta Update) to sync the changes Azure/Office 365" -ForegroundColor Yellow
