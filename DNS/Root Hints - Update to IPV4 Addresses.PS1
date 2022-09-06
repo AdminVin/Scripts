@@ -9,6 +9,12 @@ $A_IPv4 = "198.41.0.4"
 # University of Southern California, Information Sciences Institute
 $B_Server = "b.root-servers.net"
 $B_IPv4 = "199.9.14.201"
+# University of Southern California, Information Sciences Institute
+$C_Server = "c.root-servers.net"
+$C_IPv4 = "192.33.4.12"
+# University of Maryland
+$D_Server = "d.root-servers.net"
+$D_IPv4 = "199.7.91.13"
 
 #endregion
 
@@ -21,12 +27,17 @@ Add-DnsServerRootHint -NameServer $A_Server -IPAddress $A_IPv4
 # University of Southern California, Information Sciences Institute
 Remove-DnsServerRootHint -NameServer $B_Server -Force
 Add-DnsServerRootHint -NameServer $B_Server -IPAddress $B_IPv4
-
+# Cogent Communications
+Remove-DnsServerRootHint -NameServer $C_Server -Force
+Add-DnsServerRootHint -NameServer $C_Server -IPAddress $C_IPv4
+# University of Maryland
+Remove-DnsServerRootHint -NameServer $D_Server -Force
+Add-DnsServerRootHint -NameServer $D_Server -IPAddress $D_IPv4
 #endregion
 
 
 
-# Cogent Communications
+
 c.root-servers.net	192.33.4.12, 2001:500:2::c
 # University of Maryland
 d.root-servers.net	199.7.91.13, 2001:500:2d::d	
