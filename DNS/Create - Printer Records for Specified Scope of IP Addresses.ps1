@@ -4,8 +4,8 @@ Get-Module DNSServer
 #endregion
 
 #region Varibles
-$Domain = "DOMAIN.LOCAL"
-$DomainController = "SERVER.DOMAIN.LOCAL"
+$Domain = "AV.LOCAL"
+$DomainController = "VinDC.AV.LOCAL"
 #endregion
 
 #region Connect to Domain Controller
@@ -14,10 +14,10 @@ Enter-PSSession $DomainController
 
 #region Process DNS Records
 
-#Add-DnsServerPrimaryZone -Name "Printers" -ReplicationScope "Forest" –PassThru
+Add-DnsServerSecondaryZone -Name "Printers.$Domain" -PassThru
 
 #endregion
 
 #region Sync changes to all domain controllers
-Sync-DnsServerZone -passthru
+Sync-DnsServerZone -PassThru
 #endregion

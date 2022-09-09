@@ -30,6 +30,6 @@ Get-WindowsCapability -Name *QuickAssist* -Online
 
 
 #region Install New Version
-Add-AppxProvisionedPackage -online -SkipLicense -PackagePath '.\MicrosoftCorporationII.QuickAssist.AppxBundle'
+Add-AppxProvisionedPackage -online -SkipLicense -PackagePath '\MicrosoftCorporationII.QuickAssist.AppxBundle'
 
 #endregion
