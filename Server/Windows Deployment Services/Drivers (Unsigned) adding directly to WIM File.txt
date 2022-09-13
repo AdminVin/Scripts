@@ -1,0 +1,8 @@
+Mount Image (Extract to a directory for modifications)
+DISM /Mount-Image /ImageFile:"D:\RemoteInstall\Boot\x64\Images\boot.wim" /index:1 /MountDir:"D:\RemoteInstall\Boot\x64\Images\Offline"
+
+Inject Driver into WIM
+DISM /image:"D:\RemoteInstall\Boot\x64\Images\Offline" /Add-Driver /Driver:"C:\Drivers\Realtek\rt640x64.inf" /forceunsigned
+
+Commit Changes, and Unmount Image
+DIMS /unmount-image /mountdir:"D:\RemoteInstall\Boot\x64\Images\Offline" /commit
