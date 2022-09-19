@@ -33,12 +33,13 @@ Write-Host "**********************************" -ForegroundColor Red
 Write-Host "* ACCOUNT - NEW USER INFORMATION *" -ForegroundColor Red
 Write-Host "**********************************" -ForegroundColor Red
 Write-Host " "
-Write-Host "Note: Usernames are updated to UPPERCASE even if entered in lowercase." -ForegroundColor Yellow
+Write-Host "Note: Usernames are updated to proper synxtax after script completes." -ForegroundColor Yellow
+Write-Host "Example: If the name 'joseph smith' is entered, it will return as Joseph Smith" -ForegroundColor Yellow
 $FirstNameNEWEntered = Read-Host "Please enter in the NEW first name"
 $LastNameNEWEntered = Read-Host "Please enter in the NEW last name"
 # Convert first and last name to upper case
-$FirstNameNew = $FirstNameNEWEntered.ToUpper()
-$LastNameNew = $LastNameNEWEntered.ToUpper()
+$FirstNameNew = $FirstNameNEWEntered.substring(0,1).ToUpper()+$FirstNameNewEntered.substring(1).ToLower()
+$LastNameNew = $LastNameNEWEntered.substring(0,1).ToUpper()+$LastNameNewEntered.substring(1).ToLower()
 # Convert first name to first initial
 $FirstInitial = $FirstNameNEWEntered.substring(0,1)
 # Combine first and last name to create NEW username
