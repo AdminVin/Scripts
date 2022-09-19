@@ -7,7 +7,7 @@ Set-ExecutionPolicy Unrestricted
 #endregion
 
 #region Diagnostics
-Write-Host "1. Diagnostics" -ForegroundColor YELLOW
+Write-Host "1.0 Diagnostics" -ForegroundColor YELLOW
 #- Verbose Status Messaging
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\System" -Name "VerboseStatus" -Value "1"
 #endregion
@@ -15,13 +15,34 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVers
 #region Applications
 Write-Host "2.0 Metro Apps" -ForegroundColor YELLOW
 Get-AppxPackage -AllUsers | where-object {$_.name -notlike "*Store*" -and $_.name -notlike "*Calculator*" -and $_.name -notlike "*Microsoft.Windows.Photos*" -and $_.name -notlike "*Microsoft.WindowsSoundRecorder*" -and $_.name -notlike "*Microsoft.MSPaint*" -and $_.name -notlike "*Microsoft.ScreenSketch*" -and $_.name -notlike "*Microsoft.WindowsCamera*" -and $_.name -notlike "*microsoft.windowscommunicationsapps*" -and $_.name -notlike "*Microsoft.BingWeather*" -and $_.name -notlike "*Nvidia*" -and $_.name -notlike "*ASUS*" -and $_.name -notlike "*Armoury*" -and $_.name -notlike "*MSI*" -and $_.name -notlike "*EVGA*" -and $_.name -notlike "*Intel*" -and $_.name -notlike "*Microsoft.Office.OneNote*" -and $_.name -notlike "*Microsoft.MicrosoftStickyNotes*"  -and $_.name -notlike "*ASUS*" -and $_.name -notlike "*AMD*" -and $_.name -notlike "*OneDrive*"} | Remove-AppxPackage -erroraction silentlycontinue
+#- Disable SILENT installs of new Apps
+Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "SilentInstalledAppsEnabled" -Value "0"
+Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "ContentDeliveryAllowed" -Value "0"
+Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "SubscribedContentEnabled" -Value "0"
+#- Start Menu Application suggestions
+Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "SystemPaneSuggestionsEnabled" -Value "0"
+#- Disable future installs/re-installs of factory/OEM Metro Apps
+Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "PreInstalledAppsEnabled" -Value "0"
+Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "PreInstalledAppsEverEnabled" -Value "0"
+Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "OEMPreInstalledAppsEnabled" -Value "0"
 
 Write-Host "2.1 Applications" -ForegroundColor YELLOW
 
 Write-Host "2.1.1 Microsoft Edge" -ForegroundColor YELLOW
 # Edge
-net stop edgeupdate
-net stop edgeupdatem
-Get-Scheduledtask "edgeupdate,edgeupdatem" -erroraction silentlycontinue | Disable-ScheduledTask
+## Services
+Get-Service "*edge*" | Stop-Service | Set-Service -StartupType Disabled
+# Scheduled Tasks
+Get-Scheduledtask "*edge*" -erroraction silentlycontinue | Disable-ScheduledTask
 
+#endregion
+
+#region Performance
+Write-Host "3.0 Performance" -ForegroundColor YELLOW
+# Delay time on menu displaying / Animation
+Set-Itemproperty -path 'HKCU:\Control Panel\Desktop' -Name 'MenuShowDelay' -value '100'
+
+# Disable Cortana
+if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search") -ne $true) {  New-Item "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -force -ea SilentlyContinue };
+New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search' -Name 'AllowCortana' -Value 0 -PropertyType DWord -Force -ea SilentlyContinue;
 #endregion
