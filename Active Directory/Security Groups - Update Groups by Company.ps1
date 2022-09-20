@@ -48,30 +48,30 @@ $CompanySecurityGroup14 = "Staff-SubCompany14"
 
 #region Process Accounts/Groups
 # SubCompany1
-Get-ADUser -Filter {(Company -like $Company1) -and (extensionAttribute1 -like 'Staff')} | ForEach-Object { Add-ADGroupMember -Identity "$CompanySecurityGroup1" -Members $_ }
-Get-ADUser -Filter {(Company -like $Company2) -and (extensionAttribute1 -like 'Staff')} | ForEach-Object { Add-ADGroupMember -Identity "$CompanySecurityGroup2" -Members $_ }
+Get-ADUser -Filter {(Company -like $Company1) -and (extensionAttribute1 -like 'Staff') -and (Enabled -eq 'true')} | ForEach-Object { Add-ADGroupMember -Identity "$CompanySecurityGroup1" -Members $_ }
+Get-ADUser -Filter {(Company -like $Company2) -and (extensionAttribute1 -like 'Staff') -and (Enabled -eq 'true')} | ForEach-Object { Add-ADGroupMember -Identity "$CompanySecurityGroup2" -Members $_ }
 # SubCompany2
-Get-ADUser -Filter {(Company -like $Company3) -and (extensionAttribute1 -like 'Staff')} | ForEach-Object { Add-ADGroupMember -Identity "$CompanySecurityGroup3" -Members $_ }
+Get-ADUser -Filter {(Company -like $Company3) -and (extensionAttribute1 -like 'Staff') -and (Enabled -eq 'true')} | ForEach-Object { Add-ADGroupMember -Identity "$CompanySecurityGroup3" -Members $_ }
 # SubCompany4
-Get-ADUser -Filter {(Company -like $Company4) -and (extensionAttribute1 -like 'Staff')} | ForEach-Object { Add-ADGroupMember -Identity "$CompanySecurityGroup4" -Members $_ }
+Get-ADUser -Filter {(Company -like $Company4) -and (extensionAttribute1 -like 'Staff') -and (Enabled -eq 'true')} | ForEach-Object { Add-ADGroupMember -Identity "$CompanySecurityGroup4" -Members $_ }
 # SubCompany5
-Get-ADUser -Filter {(Company -like $Company5) -and (extensionAttribute1 -like 'Staff')} | ForEach-Object { Add-ADGroupMember -Identity "$CompanySecurityGroup5" -Members $_ }
+Get-ADUser -Filter {(Company -like $Company5) -and (extensionAttribute1 -like 'Staff') -and (Enabled -eq 'true')} | ForEach-Object { Add-ADGroupMember -Identity "$CompanySecurityGroup5" -Members $_ }
 # SubCompany6
-Get-ADUser -Filter {(Company -like $Company6) -and (extensionAttribute1 -like 'Staff')} | ForEach-Object { Add-ADGroupMember -Identity "$CompanySecurityGroup6" -Members $_ }
+Get-ADUser -Filter {(Company -like $Company6) -and (extensionAttribute1 -like 'Staff') -and (Enabled -eq 'true')} | ForEach-Object { Add-ADGroupMember -Identity "$CompanySecurityGroup6" -Members $_ }
 # SubCompany7
-Get-ADUser -Filter {(Company -like $Company7) -and (extensionAttribute1 -like 'Staff')} | ForEach-Object { Add-ADGroupMember -Identity "$CompanySecurityGroup7" -Members $_ }
+Get-ADUser -Filter {(Company -like $Company7) -and (extensionAttribute1 -like 'Staff') -and (Enabled -eq 'true')} | ForEach-Object { Add-ADGroupMember -Identity "$CompanySecurityGroup7" -Members $_ }
 # SubCompany8
-Get-ADUser -Filter {(Company -like $Company8) -and (extensionAttribute1 -like 'Staff')} | ForEach-Object { Add-ADGroupMember -Identity "$CompanySecurityGroup8" -Members $_ }
+Get-ADUser -Filter {(Company -like $Company8) -and (extensionAttribute1 -like 'Staff') -and (Enabled -eq 'true')} | ForEach-Object { Add-ADGroupMember -Identity "$CompanySecurityGroup8" -Members $_ }
 # SubCompany9
-Get-ADUser -Filter {(Company -like $Company9) -and (extensionAttribute1 -like 'Staff')} | ForEach-Object { Add-ADGroupMember -Identity "$CompanySecurityGroup9" -Members $_ }
+Get-ADUser -Filter {(Company -like $Company9) -and (extensionAttribute1 -like 'Staff') -and (Enabled -eq 'true')} | ForEach-Object { Add-ADGroupMember -Identity "$CompanySecurityGroup9" -Members $_ }
 # SubCompany10
-Get-ADUser -Filter {(Company -like $Company10) -and (extensionAttribute1 -like 'Staff')} | ForEach-Object { Add-ADGroupMember -Identity "$CompanySecurityGroup10" -Members $_ }
+Get-ADUser -Filter {(Company -like $Company10) -and (extensionAttribute1 -like 'Staff') -and (Enabled -eq 'true')} | ForEach-Object { Add-ADGroupMember -Identity "$CompanySecurityGroup10" -Members $_ }
 # SubCompany11
-Get-ADUser -Filter {(Company -like $Company11) -and (extensionAttribute1 -like 'Staff')} | ForEach-Object { Add-ADGroupMember -Identity "$CompanySecurityGroup11" -Members $_ }
+Get-ADUser -Filter {(Company -like $Company11) -and (extensionAttribute1 -like 'Staff') -and (Enabled -eq 'true')} | ForEach-Object { Add-ADGroupMember -Identity "$CompanySecurityGroup11" -Members $_ }
 # SubCompany12
-Get-ADUser -Filter {(Company -like $Company12) -and (extensionAttribute1 -like 'Staff')} | ForEach-Object { Add-ADGroupMember -Identity "$CompanySecurityGroup12" -Members $_ }
+Get-ADUser -Filter {(Company -like $Company12) -and (extensionAttribute1 -like 'Staff') -and (Enabled -eq 'true')} | ForEach-Object { Add-ADGroupMember -Identity "$CompanySecurityGroup12" -Members $_ }
 # SubCompany13
-Get-ADUser -Filter {(Company -like $Company13) -and (extensionAttribute1 -like 'Staff')} | ForEach-Object { Add-ADGroupMember -Identity "$CompanySecurityGroup13" -Members $_ }
+Get-ADUser -Filter {(Company -like $Company13) -and (extensionAttribute1 -like 'Staff') -and (Enabled -eq 'true')} | ForEach-Object { Add-ADGroupMember -Identity "$CompanySecurityGroup13" -Members $_ }
 # SubCompany14
-Get-ADUser -Filter {(Company -like $Company14) -and (extensionAttribute1 -like 'Staff')} | ForEach-Object { Add-ADGroupMember -Identity "$CompanySecurityGroup14" -Members $_ }
+Get-ADUser -Filter {(Company -like $Company14) -and (extensionAttribute1 -like 'Staff') -and (Enabled -eq 'true')} | ForEach-Object { Add-ADGroupMember -Identity "$CompanySecurityGroup14" -Members $_ }
 #endregion
