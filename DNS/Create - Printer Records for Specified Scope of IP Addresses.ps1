@@ -5,7 +5,7 @@ Get-Module DNSServer
 
 #region Varibles
 $Domain = "AV.LOCAL"
-$DomainController = "VinDC.AV.LOCAL"
+$DomainController = "VinDC01.AV.LOCAL"
 #endregion
 
 #region Connect to Domain Controller
@@ -15,6 +15,9 @@ Enter-PSSession $DomainController
 #region Process DNS Records
 
 Add-DnsServerSecondaryZone -Name "Printers.$Domain" -PassThru
+
+
+
 
 #endregion
 
