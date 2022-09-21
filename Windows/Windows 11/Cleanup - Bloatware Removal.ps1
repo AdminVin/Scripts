@@ -2,7 +2,7 @@
 #- Elevating Powershell Script with Administrative Rights
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) { Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs; exit }
 
-#- Changing Powershell Execution Policy (Temporarily)
+#- Changing Powershell Execution Policy - Unrestricted
 Set-ExecutionPolicy Unrestricted
 #endregion
 
@@ -37,10 +37,9 @@ Write-Host "2.1 Applications" -ForegroundColor YELLOW
 
 # Edge
 Write-Host "2.1.1 Microsoft Edge" -ForegroundColor YELLOW
-# Edge
 ## Services
 Get-Service "*edge*" | Stop-Service | Set-Service -StartupType Disabled
-# Scheduled Tasks
+## Scheduled Tasks
 Get-Scheduledtask "*edge*" -erroraction silentlycontinue | Disable-ScheduledTask
 #endregion
 
@@ -82,4 +81,9 @@ Write-Host "5.0 Performance" -ForegroundColor YELLOW
 Set-Itemproperty -path 'HKCU:\Control Panel\Desktop' -Name 'MenuShowDelay' -value '100'
 
 
+#endregion
+
+#region De-Elevate Session
+#- Changing Powershell Execution Policy - RemoteSigned
+Set-ExecutionPolicy RemoteSigned
 #endregion
