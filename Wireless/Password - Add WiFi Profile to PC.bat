@@ -15,7 +15,7 @@ IF EXIST "C:\ProgramData\Company\Wireless\WirelessInstall-Log.txt" (
 :: This should be a computer startup script to add the wireless SSID to the workstations.
 ::
 :: For the XML file permissions, grant READ for "Domain Computers" and then set a DENY for "Domain Users"
-:: With this setup, "Domain Computers" will be able to read the file when it is starting up, and when the user is logged in, DENY permissions will take effect not allowing them to open the file and reveal the password.
+:: With this setup, "Domain Computers" will be able to read the file when it is starting up.  When the user is logged in, DENY permissions will take effect not allowing them to open the file and reveal the password.
 ::
 :: SSID Password Updates
 :: Updating the password for the SSID will require exporting a fresh XML file, and then re-setting permissions.
