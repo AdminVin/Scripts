@@ -89,7 +89,7 @@ $RegistryPathSub = "AppID\{86F80216-5DD6-4F43-953B-35EF40A35AEE}"
 $ACL = Get-Acl $RegistryPathFull
 
 # Domain Account or Group
-$Identity = [System.Security.Principal.NTAccount]("EBNET\Domain Admins")
+$Identity = [System.Security.Principal.NTAccount]("DOMAIN\Domain Admins")
 
 # New Permissions
 $AccessRights = [System.Security.AccessControl.RegistryRights]::FullControl
