@@ -18,5 +18,5 @@ if (Test-Path -Path $ArchiveCheck) {
 
 #region Process Clean up
 Foreach($File in (Get-ChildItem $FolderPath)) { If($File.LastWriteTime -lt $Date.AddDays(-1)) { Move-Item -Path $File.fullname -Destination $DestinationPath -Force } }
-Write-Host "All files older than $CleanDate were moved to $DestinationPath" -ForegroundColor Green
+Write-Host "All files older than $CleanDate were moved to $DestinationPath" -ForegroundColor DarkGreen
 #endregion
