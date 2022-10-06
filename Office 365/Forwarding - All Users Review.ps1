@@ -1,13 +1,8 @@
 # Specific User
-Get-Mailbox -Identity "user@DOMAIN.com" | Select-Object UserPrincipalName,ForwardingSMTPAddress,DeliverToMailboxAndForwardSelect-Object
+Get-Mailbox -Identity "USER@DOMAIN.COM" | Select-Object UserPrincipalName,ForwardingSMTPAddress,DeliverToMailboxAndForward
 
-# All Users
+# All Users - View
 Get-Mailbox | Select-Object UserPrincipalName,ForwardingSMTPAddress,DeliverToMailboxAndForward
 
-# All Users & Export to CSV (Under 1000 Users)
-Get-Mailbox | Select-Object UserPrincipalName,ForwardingSmtpAddress,DeliverToMailboxAndForward | Export-csv .\users.csv -NoTypeInformation
-
-# All Users & Export to CSV (Forwarding Only Users)
-Get-Mailbox -Filter {ForwardingAddress -ne $null} | Select-Object UserPrincipalName,ForwardingSmtpAddress,DeliverToMailboxAndForward | Export-Csv AllForwardedEmail.csv
-
-Get-Mailbox -Filter {ForwardingAddress -ne $null} -ResultSize Unlimited -RecipientTypeDetails UserMailbox | Select-Object UserPrincipalName,ForwardingSmtpAddress,DeliverToMailboxAndForward | Export-CSV AllForwardedEmail.csv
+# All Users Forwarding Email - Export to CSV
+Get-Mailbox -Filter {(ForwardingAddress -ne $null) -OR (DeliverToMailboxAndForward -ne $null)} -ResultSize Unlimited -RecipientTypeDetails UserMailbox | Select-Object UserPrincipalName,ForwardingSmtpAddress,DeliverToMailboxAndForward | Export-CSV AllForwardedEmail.csv
