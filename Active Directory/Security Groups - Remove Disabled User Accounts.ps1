@@ -3,7 +3,7 @@ Import-Module ActiveDirectory
 #endregion
 
 #region Varibles
-$SecurityGroup = 'GROUP_NAME'
+$SecurityGroup = 'SECURITY_GROUP_NAME'
 $Members = (Get-ADGroup $SecurityGroup -Properties members).members
 #endregion
 
