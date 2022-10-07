@@ -1,5 +1,5 @@
 # View - Specific User
-Get-Mailbox -Identity "USER@DOMAIN.COM" | Select-Object UserPrincipalName,ForwardingSMTPAddress,DeliverToMailboxAndForward
+Get-Mailbox USER@DOMAIN.COM | Select-Object UserPrincipalName,ForwardingSMTPAddress,DeliverToMailboxAndForward
 
 # View - All Users
 Get-Mailbox | Select-Object UserPrincipalName,ForwardingSMTPAddress,DeliverToMailboxAndForward

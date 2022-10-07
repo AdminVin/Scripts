@@ -1,6 +1,7 @@
-* Exported list from Office 365 of all groups
+# Exported list from Office 365 of all groups
+# Work in Progress / NOT FINISHED
 
-$DistroLists = Get-Content Abramson.txt
+$DistroLists = Get-Content DistributionGroupList.txt
 
 Foreach ($DistroList in $DistroLists) {
 

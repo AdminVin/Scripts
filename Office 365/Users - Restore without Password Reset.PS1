@@ -2,7 +2,7 @@
 
 Connect-MsolService
 
-$CSV = Import-Csv RestoreUsersWithoutPasswordReset.csv         
+$CSV = Import-Csv "Users - Restore without Password Reset"         
             
 ForEach ($User in $CSV) {            
     Restore-MsolUser -UserPrincipalName $User.EmailAddress | Set-MSOLUser -ImmutableID "$null"

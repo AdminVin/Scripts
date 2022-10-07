@@ -1,4 +1,4 @@
-$CSV = Import-Csv DisableOwaAccess.csv
+$CSV = Import-Csv "Users - Disable OWA Access.csv"
             
 ForEach ($User in $CSV) {            
     Set-CASMailbox -Identity $User.EmailAddress -OWAEnabled $false

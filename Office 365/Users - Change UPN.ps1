@@ -1,7 +1,9 @@
+# This is for changing the UPN of a user account that is NOT DirSynced.
+
 # Install Modules
-install-module AzureAD
-install-module AzureADPreview
-install-module MSOnline
+Install-Module AzureAD
+Install-Module AzureADPreview
+Install-Module MSOnline
 
 # Connect MSOL
 Connect-MsolService
