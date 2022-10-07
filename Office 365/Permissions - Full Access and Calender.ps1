@@ -1,6 +1,12 @@
-# Pull what mailboxes the user has full access to
+# View - Mailboxes the user has full access
 Get-Mailbox | Get-MailboxPermission -User user@DOMAIN.com
 
-# Pull what calendars the user has access to
+# Set - Full Access to another mailbox
+Add-MailboxPermission "MailboxGrantingAccessTo@DOMAIN.com" -User "UserReceivingAccess@DOMAIN.com" -AccessRights FullAccess
+
+# Set - Full Access to another mailbox WITHOUT automapping in Outlook
+Add-MailboxPermission "MailboxGrantingAccessTo@DOMAIN.com" -User "UserReceivingAccess@DOMAIN.com" -AccessRights FullAccess -AutoMapping:$False -Confirm:$True
+
+# View - Calendars the user has access to
 $user = user@DOMAIN.com
 Get-Mailbox | % { Get-MailboxFolderPermission (($_.PrimarySmtpAddress.ToString())+”:\Calendar”) -User $user -ErrorAction SilentlyContinue} | select Identity,User,AccessRights

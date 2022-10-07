@@ -1,1 +1,0 @@
-Add-MailboxPermission "MailboxGrantingAccessTo@DOMAIN.com" -User "UserReceivingAccess@DOMAIN.com" -AccessRights FullAccess -AutoMapping:$False -Confirm:$True

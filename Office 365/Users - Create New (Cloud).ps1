@@ -1,2 +1,2 @@
-$AllOffice365Users = Import-CSV "Users - Create New (In-Cloud).csv"
+$AllOffice365Users = Import-CSV "Users - Create New (Cloud).csv"
 $AllOffice365Users | ForEach-Object {New-MsolUser -UserPrincipalName $_.UserPrincipalName -DisplayName $_.DisplayName -Password $_.Password}
