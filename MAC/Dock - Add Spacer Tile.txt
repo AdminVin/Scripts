@@ -1,3 +1,4 @@
+## Launch Terminal
 # Add to Spacer Tile
 defaults write com.apple.dock persistent-apps -array-add '{"tile-type"="spacer-tile";}'; killall Dock
 
