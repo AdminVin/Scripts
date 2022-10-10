@@ -19,9 +19,11 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVers
 #region 2.0 Applications
 # 2.1 Metro Apps
 Write-Host "2.1 Metro Apps" -ForegroundColor YELLOW
-Get-AppxPackage -AllUsers | where-object {$_.name -notlike "*Store*" -and $_.name -notlike "*Calculator*" -and $_.name -notlike "*Microsoft.Windows.Photos*" -and $_.name -notlike "*Microsoft.WindowsSoundRecorder*" -and $_.name -notlike "*Microsoft.MSPaint*" -and $_.name -notlike "*Microsoft.ScreenSketch*" -and $_.name -notlike "*Microsoft.WindowsCamera*" -and $_.name -notlike "*microsoft.windowscommunicationsapps*"<# Mail App#> -and $_.name -notlike "*Microsoft.BingWeather*" -and $_.name -notlike "*Microsoft.Office.OneNote*" -and $_.name -notlike "*Microsoft.MicrosoftStickyNotes*" -and $_.name -notlike "*xbox*" -and $_.name -notlike "*OneDrive*" -and $_.name -notlike "*Microsoft.WindowsAlarms*" -and $_.name -notlike "*Terminal*"  -and $_.name -notlike "*Microsoft.Net.*" -and $_.name -notlike "*Notepad*" -and $_.name -notlike "Microsoft.MicrosoftEdge*" -and $_.name -notlike "*Microsoft.UI*" -and $_.name -notlike "*Microsoft.OOBE*" -and $_.name -notlike "*Microsoft.VC*" -and $_.name -notlike "*nVidia*" -and $_.name -notlike "*ASUS*" -and $_.name -notlike "*Armoury*" -and $_.name -notlike "*MSI*" -and $_.name -notlike "*EVGA*" -and $_.name -notlike "*Intel*" -and $_.name -notlike "*ASUS*" -and $_.name -notlike "*AMD*"  -and $_.name -notlike "*Adobe*"} | Remove-AppxPackage -ErrorAction SilentlyContinue
+Get-AppxPackage -AllUsers | where-object {$_.name -notlike "*Store*" -and $_.name -notlike "*Calculator*" -and $_.name -notlike "*Microsoft.Windows.Photos*" -and $_.name -notlike "*Microsoft.WindowsSoundRecorder*" -and $_.name -notlike "*Microsoft.Paint*" -and $_.name -notlike "*Microsoft.MSPaint*" -and $_.name -notlike "*Microsoft.ScreenSketch*" -and $_.name -notlike "*Microsoft.WindowsCamera*" -and $_.name -notlike "*microsoft.windowscommunicationsapps*"<# Mail App#> -and $_.name -notlike "*Microsoft.BingWeather*" -and $_.name -notlike "*Microsoft.Office.OneNote*" -and $_.name -notlike "*Microsoft.MicrosoftStickyNotes*" -and $_.name -notlike "*xbox*" -and $_.name -notlike "*OneDrive*" -and $_.name -notlike "*Microsoft.WindowsAlarms*" -and $_.name -notlike "*Terminal*" -and $_.name -notlike "*Microsoft.Net.*" -and $_.name -notlike "*Notepad*" -and $_.name -notlike "Microsoft.MicrosoftEdge*" -and $_.name -notlike "*Microsoft.UI*" -and $_.name -notlike "*Microsoft.OOBE*" -and $_.name -notlike "*Microsoft.VC*" -and $_.name -notlike "Windows.Print*" -and $_.name -notlike "Microsoft.HEVCVideo*" -and $_.name -notlike "Microsoft.HEIFImage*" -and $_.name -notlike "Microsoft.Windows*" -and $_.name -notlike "Microsoft.*" -and $_.name -notlike "Microsoft*" -and $_.name -notlike "Windows*" -and $_.name -notlike "*nVidia*" -and $_.name -notlike "*ASUS*" -and $_.name -notlike "*Armoury*" -and $_.name -notlike "*MSI*" -and $_.name -notlike "*EVGA*" -and $_.name -notlike "*Intel*" -and $_.name -notlike "*ASUS*" -and $_.name -notlike "*AMD*"  -and $_.name -notlike "*Adobe*"} | Remove-AppxPackage -ErrorAction SilentlyContinue
 
-
+Microsoft.Win32WebViewHost
+Microsoft.LockApp
+Microsoft.Getstarted_10.2206.
 
 #- Disable SILENT installs of new Apps
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "SilentInstalledAppsEnabled" -Value "0"
@@ -161,6 +163,25 @@ Write-Host "6.0 Quality of Life" -ForegroundColor YELLOW
 # Restoring Windows 10 Right Click Menu
 reg.exe add "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" /f /ve
 #endregion
+
+
+#region 7.0 Privacy
+Write-Host "7.0 Privacy" -ForegroundColor YELLOW
+# App Permissions
+Write-Host "7.1 App Permissions" -ForegroundColor YELLOW
+Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location" -Name "Value" -Value "Deny" -ErrorAction SilentlyContinue
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location" -Name "Value" -Value "Deny" -ErrorAction SilentlyContinue
+Set-Location HKLM:
+New-Item -Path ".SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}" -ErrorAction SilentlyContinue
+New-ItemProperty -Path ".SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}" -Name "SensorPermissionState" -Type DWord -Value "1" -ErrorAction SilentlyContinue
+New-Item -Path ".\SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration" -ErrorAction SilentlyContinue
+New-ItemProperty -Path ".\SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration" -Name "EnableStatus" -Type DWord -Value "1" -ErrorAction SilentlyContinue
+# App Diagnostics
+Write-Host "7.2 App Diagnostics" -ForegroundColor YELLOW
+Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\appDiagnostics" -Name "Value" -Value "Deny" -ErrorAction SilentlyContinue
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\appDiagnostics" -Name "Value" -Value "Deny" -ErrorAction SilentlyContinue
+#endregion
+
 
 #region 0.0 De-Elevate Session
 #- Changing Powershell Execution Policy - RemoteSigned
