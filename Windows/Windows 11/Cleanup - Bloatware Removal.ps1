@@ -1,14 +1,14 @@
-#region Elevate Session
+#region 0.0 Elevate Session
 #- Elevating Powershell Script with Administrative Rights
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) { Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs; exit }
 
-#- Changing Powershell Execution Policy - Unrestricted
+#- Changing Powershell Execution Policy - Unrestricted (Temporarily)
 Set-ExecutionPolicy Unrestricted
 #endregion
 
 
 
-#region Diagnostics
+#region 1.0 Diagnostics
 Write-Host "1.0 Diagnostics" -ForegroundColor YELLOW
 #- Verbose Status Messaging
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\System" -Name "VerboseStatus" -Value "1"
@@ -16,11 +16,13 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVers
 
 
 
+#region 2.0 Applications
+# 2.1 Metro Apps
+Write-Host "2.1 Metro Apps" -ForegroundColor YELLOW
+Get-AppxPackage -AllUsers | where-object {$_.name -notlike "*Store*" -and $_.name -notlike "*Calculator*" -and $_.name -notlike "*Microsoft.Windows.Photos*" -and $_.name -notlike "*Microsoft.WindowsSoundRecorder*" -and $_.name -notlike "*Microsoft.MSPaint*" -and $_.name -notlike "*Microsoft.ScreenSketch*" -and $_.name -notlike "*Microsoft.WindowsCamera*" -and $_.name -notlike "*microsoft.windowscommunicationsapps*"<# Mail App#> -and $_.name -notlike "*Microsoft.BingWeather*" -and $_.name -notlike "*Microsoft.Office.OneNote*" -and $_.name -notlike "*Microsoft.MicrosoftStickyNotes*" -and $_.name -notlike "*xbox*" -and $_.name -notlike "*OneDrive*" -and $_.name -notlike "*Microsoft.WindowsAlarms*" -and $_.name -notlike "*Terminal*"  -and $_.name -notlike "*Microsoft.Net.*" -and $_.name -notlike "*Notepad*" -and $_.name -notlike "Microsoft.MicrosoftEdge*" -and $_.name -notlike "*Microsoft.UI*" -and $_.name -notlike "*Microsoft.OOBE*" -and $_.name -notlike "*Microsoft.VC*" -and $_.name -notlike "*nVidia*" -and $_.name -notlike "*ASUS*" -and $_.name -notlike "*Armoury*" -and $_.name -notlike "*MSI*" -and $_.name -notlike "*EVGA*" -and $_.name -notlike "*Intel*" -and $_.name -notlike "*ASUS*" -and $_.name -notlike "*AMD*"  -and $_.name -notlike "*Adobe*"} | Remove-AppxPackage -ErrorAction SilentlyContinue
 
-#region Applications
-# Metro Apps
-Write-Host "2.0 Metro Apps" -ForegroundColor YELLOW
-Get-AppxPackage -AllUsers | where-object {$_.name -notlike "*Store*" -and $_.name -notlike "*Calculator*" -and $_.name -notlike "*Microsoft.Windows.Photos*" -and $_.name -notlike "*Microsoft.WindowsSoundRecorder*" -and $_.name -notlike "*Microsoft.MSPaint*" -and $_.name -notlike "*Microsoft.ScreenSketch*" -and $_.name -notlike "*Microsoft.WindowsCamera*" -and $_.name -notlike "*microsoft.windowscommunicationsapps*" -and $_.name -notlike "*Microsoft.BingWeather*" -and $_.name -notlike "*Nvidia*" -and $_.name -notlike "*ASUS*" -and $_.name -notlike "*Armoury*" -and $_.name -notlike "*MSI*" -and $_.name -notlike "*EVGA*" -and $_.name -notlike "*Intel*" -and $_.name -notlike "*Microsoft.Office.OneNote*" -and $_.name -notlike "*Microsoft.MicrosoftStickyNotes*"  -and $_.name -notlike "*ASUS*" -and $_.name -notlike "*AMD*" -and $_.name -notlike "*OneDrive*"} | Remove-AppxPackage -erroraction silentlycontinue
+
+
 #- Disable SILENT installs of new Apps
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "SilentInstalledAppsEnabled" -Value "0"
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "ContentDeliveryAllowed" -Value "0"
@@ -32,26 +34,99 @@ Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentD
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "PreInstalledAppsEverEnabled" -Value "0"
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "OEMPreInstalledAppsEnabled" -Value "0"
 
-# Applications
-Write-Host "2.1 Applications" -ForegroundColor YELLOW
+# 2.2 Applications
+Write-Host "2.2 Applications" -ForegroundColor YELLOW
 
-# Edge
-Write-Host "2.1.1 Microsoft Edge" -ForegroundColor YELLOW
+# 2.2.1 Edge
+Write-Host "2.2.1 Microsoft Edge" -ForegroundColor YELLOW
 ## Services
-Get-Service "*edge*" | Stop-Service | Set-Service -StartupType Disabled
+Get-Service "edgeupdate" | Stop-Service
+Get-Service "edgeupdate" | Set-Service -StartupType Disabled
+Get-Service "edgeupdatem" | Stop-Service
+Get-Service "edgeupdatem" | Set-Service -StartupType Disabled
 ## Scheduled Tasks
 Get-Scheduledtask "*edge*" -erroraction silentlycontinue | Disable-ScheduledTask
 #endregion
 
+# 2.2.2 Cortana
+Write-Host "2.2.2 Cortana" -ForegroundColor YELLOW
+# Disable Web Searching from Start Menu
+Set-Location HKCU:
+New-Item -Path .\SOFTWARE\Policies\Microsoft\Windows\Explorer
+New-ItemProperty -Path ".\SOFTWARE\Policies\Microsoft\Windows\Explorer" -Name "DisableSearchBoxSuggestions" -Value "1"
+Set-Location C:\
 
 
-#region Services
+#region 3.0 Services
 Write-Host "3.0 Services" -ForegroundColor YELLOW
-
+# Bing Downloaded Maps Manager
+Get-Service "MapsBroker" | Stop-Service
+Get-Service "MapsBroker" | Set-Service -StartupType Disabled
+Write-Host "Disabled: Bing Downloaded Maps Manager" -ForegroundColor DarkYellow
+# Bluetooth (Setting to Manual in the event BT is used.)
+Get-Service "BTAGService" | Stop-Service
+Get-Service "BTAGService" | Set-Service -StartupType Manual
+Get-Service "BluetoothUserService*" | Stop-Service
+Get-Service "BluetoothUserService*" | Set-Service -StartupType Manual
+Get-Service "bthserv" | Stop-Service
+Get-Service "bthserv" | Set-Service -StartupType Manual
+Write-Host "Set to Manual: Bluetooth" -ForegroundColor DarkYellow
+# Celluar Time
+Get-Service "autotimesvc" | Stop-Service
+Get-Service "autotimesvc" | Set-Service -StartupType Disabled
+Write-Host "Disabled: Celluar Time" -ForegroundColor DarkYellow
+# Fax
+Get-Service "Fax" | Stop-Service
+Get-Service "Fax" | Set-Service -StartupType Disabled
+Write-Host "Disabled: Fax" -ForegroundColor DarkYellow
+# HomeGroup
+Get-Service "HomeGroupListener" | Stop-Service
+Get-Service "HomeGroupListener" | Set-Service -StartupType Disabled
+Write-Host "Disabled: HomeGroup" -ForegroundColor DarkYellow
+# Parental Controls
+Get-Service "WpcMonSvc" | Stop-Service
+Get-Service "WpcMonSvc" | Set-Service -StartupType Disabled
+Write-Host "Disabled: Parental Controls" -ForegroundColor DarkYellow
+# Phone Service
+Get-Service "PhoneSvc" | Stop-Service
+Get-Service "PhoneSvc" | Set-Service -StartupType Disabled
+Write-Host "Disabled: Phone Service" -ForegroundColor DarkYellow
+# Portable Device Enumerator Service
+Get-Service "WPDBusEnum" | Stop-Service
+Get-Service "WPDBusEnum" | Set-Service -StartupType Disabled
+Write-Host "Disabled: Portable Device Enumeration Service" -ForegroundColor DarkYellow
+# Program Compatibility Assistant Service
+Get-Service "PcaSvc" | Stop-Service
+Get-Service "PcaSvc" | Set-Service -StartupType Disabled
+Write-Host "Disabled: Program Compatibility Assistant Service" -ForegroundColor DarkYellow
+# Remote Registry
+Get-Service "RemoteRegistry" | Stop-Service
+Get-Service "RemoteRegistry" | Set-Service -StartupType Disabled
+Write-Host "Disabled: Remote Registry (Security Increased)" -ForegroundColor DarkYellow
+# Retail Demo
+Get-Service "RetailDemo" | Stop-Service
+Get-Service "RetailDemo" | Set-Service -StartupType Disabled
+Write-Host "Disabled: Retail Demo" -ForegroundColor DarkYellow
+# Themes
+Get-Service "Themes" | Stop-Service
+Get-Service "Themes" | Set-Service -StartupType Disabled
+Write-Host "Disabled: Touch Keyboard and Handwritting Panel" -ForegroundColor DarkYellow
+# Touch Keyboard and Handwriting Panel
+Get-Service "TabletInputService" | Stop-Service
+Get-Service "TabletInputService" | Set-Service -StartupType Disabled
+Write-Host "Disabled: Touch Keyboard and Handwritting Panel" -ForegroundColor DarkYellow
+# Windows Insider Service
+Get-Service "wisvc" | Stop-Service
+Get-Service "wisvc" | Set-Service -StartupType Disabled
+Write-Host "Disabled: Windows Insider Service" -ForegroundColor DarkYellow
+# Windows Mobile Hotspot Service
+Get-Service "icssvc" | Stop-Service
+Get-Service "icssvc" | Set-Service -StartupType Disabled
+Write-Host "Disabled: Windows Mobile Hotspot Service" -ForegroundColor DarkYellow
 #endregion
 
 
-#region Features
+#region 4.0 Features
 Write-Host "4.0 Features" -ForegroundColor YELLOW
 
 #- Take Ownership to right click context menu
@@ -74,16 +149,41 @@ New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows
 #endregion
 
 
-
-#region Performance
+#region 5.0 Performance
 Write-Host "5.0 Performance" -ForegroundColor YELLOW
 # Delay time on menu displaying / Animation
 Set-Itemproperty -path 'HKCU:\Control Panel\Desktop' -Name 'MenuShowDelay' -value '100'
-
-
 #endregion
 
-#region De-Elevate Session
+
+#region 6.0 Quality of Life
+Write-Host "6.0 Quality of Life" -ForegroundColor YELLOW
+# Restoring Windows 10 Right Click Menu
+reg.exe add "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" /f /ve
+#endregion
+
+#region 0.0 De-Elevate Session
 #- Changing Powershell Execution Policy - RemoteSigned
 Set-ExecutionPolicy RemoteSigned
 #endregion
+
+
+
+#region Notify User to Reboot
+Clear-Host
+Write-Host "Restart your computer for changes to take effect!" -ForegroundColor Black
+Write-Host "Restart your computer for changes to take effect!" -ForegroundColor Blue
+Write-Host "Restart your computer for changes to take effect!" -ForegroundColor Cyan
+Write-Host "Restart your computer for changes to take effect!" -ForegroundColor DarkBlue
+Write-Host "Restart your computer for changes to take effect!" -ForegroundColor DarkCyan
+Write-Host "Restart your computer for changes to take effect!" -ForegroundColor DarkGray
+Write-Host "Restart your computer for changes to take effect!" -ForegroundColor DarkGreen
+Write-Host "Restart your computer for changes to take effect!" -ForegroundColor DarkMagenta 
+Write-Host "Restart your computer for changes to take effect!" -ForegroundColor DarkRed
+Write-Host "Restart your computer for changes to take effect!" -ForegroundColor DarkYellow
+Write-Host "Restart your computer for changes to take effect!" -ForegroundColor Gray
+Write-Host "Restart your computer for changes to take effect!" -ForegroundColor Green
+Write-Host "Restart your computer for changes to take effect!" -ForegroundColor Magenta
+Write-Host "Restart your computer for changes to take effect!" -ForegroundColor Red
+Write-Host "Restart your computer for changes to take effect!" -ForegroundColor White
+Write-Host "Restart your computer for changes to take effect!" -ForegroundColor Yellow
