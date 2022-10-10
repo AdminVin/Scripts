@@ -7,7 +7,7 @@ Set-ExecutionPolicy Unrestricted
 #endregion
 
 
-
+<#############################################################################################################################>
 #region 1.0 Diagnostics
 Write-Host "1.0 Diagnostics" -ForegroundColor YELLOW
 #- Verbose Status Messaging
@@ -15,15 +15,11 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVers
 #endregion
 
 
-
+<#############################################################################################################################>
 #region 2.0 Applications
 # 2.1 Metro Apps
 Write-Host "2.1 Metro Apps" -ForegroundColor YELLOW
 Get-AppxPackage -AllUsers | where-object {$_.name -notlike "*Store*" -and $_.name -notlike "*Calculator*" -and $_.name -notlike "Microsoft.Windows.Photos*" -and $_.name -notlike "Microsoft.WindowsSoundRecorder*" -and $_.name -notlike "Microsoft.Paint*" -and $_.name -notlike "Microsoft.MSPaint*" -and $_.name -notlike "Microsoft.ScreenSketch*" -and $_.name -notlike "Microsoft.WindowsCamera*" -and $_.name -notlike "microsoft.windowscommunicationsapps*"<# Mail App#> -and $_.name -notlike "*Weather*" -and $_.name -notlike "Microsoft.Office.OneNote*" -and $_.name -notlike "*Note*" -and $_.name -notlike "*xbox*" -and $_.name -notlike "*OneDrive*" -and $_.name -notlike "Microsoft.WindowsAlarms*" -and $_.name -notlike "*Terminal*" -and $_.name -notlike "Microsoft.Net.*" -and $_.name -notlike "*Edge*" -and $_.name -notlike "Microsoft.UI*" -and $_.name -notlike "Microsoft.OOBE*" -and $_.name -notlike "Microsoft.VC*" -and $_.name -notlike "Microsoft.VC*" -and $_.name -notlike "Windows.Print*" -and $_.name -notlike "Microsoft.HEVCVideo*" -and $_.name -notlike "Microsoft.HEIFImage*" -and $_.name -notlike "Microsoft.Web*" -and $_.name -notlike "Microsoft.MPEG*" -and $_.name -notlike "Microsoft.VP9*" -and $_.name -notlike "Microsoft.MicrosoftSolitaire*" -and $_.name -notlike "Microsoft.QuickAssist*" -and $_.name -notlike "Microsoft.Wallet*" -and $_.name -notlike "Microsoft.Windows*" -and $_.name -notlike "Windows*" -and $_.name -notlike "*nVidia*"  -and $_.name -notlike "*AMD*" -and $_.name -notlike "*ASUS*" -and $_.name -notlike "*Armoury*" -and $_.name -notlike "*MSI*" -and $_.name -notlike "*EVGA*" -and $_.name -notlike "*Intel*" -and $_.name -notlike "*Adobe*" -and $_.name -notlike "*Spotify*"} | Remove-AppxPackage -ErrorAction SilentlyContinue
-
-Microsoft.Win32WebViewHost
-Microsoft.LockApp
-Microsoft.Getstarted_10.2206.
 
 #- Disable SILENT installs of new Apps
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "SilentInstalledAppsEnabled" -Value "0"
@@ -48,7 +44,6 @@ Get-Service "edgeupdatem" | Stop-Service
 Get-Service "edgeupdatem" | Set-Service -StartupType Disabled
 ## Scheduled Tasks
 Get-Scheduledtask "*edge*" -erroraction silentlycontinue | Disable-ScheduledTask
-#endregion
 
 # 2.2.2 Cortana
 Write-Host "2.2.2 Cortana" -ForegroundColor YELLOW
@@ -57,8 +52,10 @@ Set-Location HKCU:
 New-Item -Path .\SOFTWARE\Policies\Microsoft\Windows\Explorer
 New-ItemProperty -Path ".\SOFTWARE\Policies\Microsoft\Windows\Explorer" -Name "DisableSearchBoxSuggestions" -Value "1"
 Set-Location C:\
+#endregion
 
 
+<#############################################################################################################################>
 #region 3.0 Services
 Write-Host "3.0 Services" -ForegroundColor YELLOW
 # Bing Downloaded Maps Manager
@@ -128,6 +125,7 @@ Write-Host "Disabled: Windows Mobile Hotspot Service" -ForegroundColor DarkYello
 #endregion
 
 
+<#############################################################################################################################>
 #region 4.0 Features
 Write-Host "4.0 Features" -ForegroundColor YELLOW
 
@@ -151,6 +149,7 @@ New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows
 #endregion
 
 
+<#############################################################################################################################>
 #region 5.0 Performance
 Write-Host "5.0 Performance" -ForegroundColor YELLOW
 # Delay time on menu displaying / Animation
@@ -158,13 +157,18 @@ Set-Itemproperty -path 'HKCU:\Control Panel\Desktop' -Name 'MenuShowDelay' -valu
 #endregion
 
 
+<#############################################################################################################################>
 #region 6.0 Quality of Life
 Write-Host "6.0 Quality of Life" -ForegroundColor YELLOW
-# Restoring Windows 10 Right Click Menu
+Write-Host "6.1 Restoring Windows 10 Right Click Menu" -ForegroundColor YELLOW
 reg.exe add "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" /f /ve
+Write-Host "6.2 Disable 'High Precision Event Timer' (Formerly Multimedia Timer)" -ForegroundColor YELLOW
+bcdedit /deletevalue useplatformclock
+bcdedit /set disabledynamictick yes
 #endregion
 
 
+<#############################################################################################################################>
 #region 7.0 Privacy
 Write-Host "7.0 Privacy" -ForegroundColor YELLOW
 # App Permissions
@@ -183,6 +187,7 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Capabili
 #endregion
 
 
+<#############################################################################################################################>
 #region 0.0 De-Elevate Session
 #- Changing Powershell Execution Policy - RemoteSigned
 Set-ExecutionPolicy RemoteSigned
