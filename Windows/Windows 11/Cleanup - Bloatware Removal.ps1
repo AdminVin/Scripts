@@ -187,3 +187,4 @@ Write-Host "Restart your computer for changes to take effect!" -ForegroundColor 
 Write-Host "Restart your computer for changes to take effect!" -ForegroundColor Red
 Write-Host "Restart your computer for changes to take effect!" -ForegroundColor White
 Write-Host "Restart your computer for changes to take effect!" -ForegroundColor Yellow
+#endregion
