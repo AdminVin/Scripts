@@ -19,7 +19,7 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVers
 #region 2.0 Applications
 # 2.1 Metro Apps
 Write-Host "2.1 Metro Apps" -ForegroundColor YELLOW
-Get-AppxPackage -AllUsers | where-object {$_.name -notlike "*Store*" -and $_.name -notlike "*Calculator*" -and $_.name -notlike "*Microsoft.Windows.Photos*" -and $_.name -notlike "*Microsoft.WindowsSoundRecorder*" -and $_.name -notlike "*Microsoft.Paint*" -and $_.name -notlike "*Microsoft.MSPaint*" -and $_.name -notlike "*Microsoft.ScreenSketch*" -and $_.name -notlike "*Microsoft.WindowsCamera*" -and $_.name -notlike "*microsoft.windowscommunicationsapps*"<# Mail App#> -and $_.name -notlike "*Microsoft.BingWeather*" -and $_.name -notlike "*Microsoft.Office.OneNote*" -and $_.name -notlike "*Microsoft.MicrosoftStickyNotes*" -and $_.name -notlike "*xbox*" -and $_.name -notlike "*OneDrive*" -and $_.name -notlike "*Microsoft.WindowsAlarms*" -and $_.name -notlike "*Terminal*" -and $_.name -notlike "*Microsoft.Net.*" -and $_.name -notlike "*Notepad*" -and $_.name -notlike "Microsoft.MicrosoftEdge*" -and $_.name -notlike "*Microsoft.UI*" -and $_.name -notlike "*Microsoft.OOBE*" -and $_.name -notlike "*Microsoft.VC*" -and $_.name -notlike "Windows.Print*" -and $_.name -notlike "Microsoft.HEVCVideo*" -and $_.name -notlike "Microsoft.HEIFImage*" -and $_.name -notlike "Microsoft.Windows*" -and $_.name -notlike "Microsoft.*" -and $_.name -notlike "Microsoft*" -and $_.name -notlike "Windows*" -and $_.name -notlike "*nVidia*" -and $_.name -notlike "*ASUS*" -and $_.name -notlike "*Armoury*" -and $_.name -notlike "*MSI*" -and $_.name -notlike "*EVGA*" -and $_.name -notlike "*Intel*" -and $_.name -notlike "*ASUS*" -and $_.name -notlike "*AMD*"  -and $_.name -notlike "*Adobe*"} | Remove-AppxPackage -ErrorAction SilentlyContinue
+Get-AppxPackage -AllUsers | where-object {$_.name -notlike "*Store*" -and $_.name -notlike "*Calculator*" -and $_.name -notlike "Microsoft.Windows.Photos*" -and $_.name -notlike "Microsoft.WindowsSoundRecorder*" -and $_.name -notlike "Microsoft.Paint*" -and $_.name -notlike "Microsoft.MSPaint*" -and $_.name -notlike "Microsoft.ScreenSketch*" -and $_.name -notlike "Microsoft.WindowsCamera*" -and $_.name -notlike "microsoft.windowscommunicationsapps*"<# Mail App#> -and $_.name -notlike "*Weather*" -and $_.name -notlike "Microsoft.Office.OneNote*" -and $_.name -notlike "*Note*" -and $_.name -notlike "*xbox*" -and $_.name -notlike "*OneDrive*" -and $_.name -notlike "Microsoft.WindowsAlarms*" -and $_.name -notlike "*Terminal*" -and $_.name -notlike "Microsoft.Net.*" -and $_.name -notlike "*Edge*" -and $_.name -notlike "Microsoft.UI*" -and $_.name -notlike "Microsoft.OOBE*" -and $_.name -notlike "Microsoft.VC*" -and $_.name -notlike "Microsoft.VC*" -and $_.name -notlike "Windows.Print*" -and $_.name -notlike "Microsoft.HEVCVideo*" -and $_.name -notlike "Microsoft.HEIFImage*" -and $_.name -notlike "Microsoft.Web*" -and $_.name -notlike "Microsoft.MPEG*" -and $_.name -notlike "Microsoft.VP9*" -and $_.name -notlike "Microsoft.MicrosoftSolitaire*" -and $_.name -notlike "Microsoft.QuickAssist*" -and $_.name -notlike "Microsoft.Wallet*" -and $_.name -notlike "Microsoft.Windows*" -and $_.name -notlike "Windows*" -and $_.name -notlike "*nVidia*"  -and $_.name -notlike "*AMD*" -and $_.name -notlike "*ASUS*" -and $_.name -notlike "*Armoury*" -and $_.name -notlike "*MSI*" -and $_.name -notlike "*EVGA*" -and $_.name -notlike "*Intel*" -and $_.name -notlike "*Adobe*" -and $_.name -notlike "*Spotify*"} | Remove-AppxPackage -ErrorAction SilentlyContinue
 
 Microsoft.Win32WebViewHost
 Microsoft.LockApp
@@ -154,7 +154,7 @@ New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows
 #region 5.0 Performance
 Write-Host "5.0 Performance" -ForegroundColor YELLOW
 # Delay time on menu displaying / Animation
-Set-Itemproperty -path 'HKCU:\Control Panel\Desktop' -Name 'MenuShowDelay' -value '100'
+Set-Itemproperty -path 'HKCU:\Control Panel\Desktop' -Name 'MenuShowDelay' -value '50'
 #endregion
 
 
@@ -192,20 +192,16 @@ Set-ExecutionPolicy RemoteSigned
 
 #region Notify User to Reboot
 Clear-Host
-Write-Host "Restart your computer for changes to take effect!" -ForegroundColor Black
-Write-Host "Restart your computer for changes to take effect!" -ForegroundColor Blue
-Write-Host "Restart your computer for changes to take effect!" -ForegroundColor Cyan
-Write-Host "Restart your computer for changes to take effect!" -ForegroundColor DarkBlue
-Write-Host "Restart your computer for changes to take effect!" -ForegroundColor DarkCyan
-Write-Host "Restart your computer for changes to take effect!" -ForegroundColor DarkGray
-Write-Host "Restart your computer for changes to take effect!" -ForegroundColor DarkGreen
-Write-Host "Restart your computer for changes to take effect!" -ForegroundColor DarkMagenta 
-Write-Host "Restart your computer for changes to take effect!" -ForegroundColor DarkRed
-Write-Host "Restart your computer for changes to take effect!" -ForegroundColor DarkYellow
-Write-Host "Restart your computer for changes to take effect!" -ForegroundColor Gray
-Write-Host "Restart your computer for changes to take effect!" -ForegroundColor Green
-Write-Host "Restart your computer for changes to take effect!" -ForegroundColor Magenta
-Write-Host "Restart your computer for changes to take effect!" -ForegroundColor Red
-Write-Host "Restart your computer for changes to take effect!" -ForegroundColor White
-Write-Host "Restart your computer for changes to take effect!" -ForegroundColor Yellow
+Write-Host "*********************************************************" -ForegroundColor Red
+Write-Host "*                                                       *" -ForegroundColor Red
+Write-Host "* Restart your computer for the changes to take effect! *" -ForegroundColor Red
+Write-Host "*                                                       *" -ForegroundColor Red
+Write-Host "*********************************************************" -ForegroundColor Red
+Write-Host ""
+Write-Host "To get the latest version of this script visit:" -ForegroundColor Yellow
+Write-Host "https://github.com/AdminVin/Scripts/" -ForegroundColor Yellow
+Write-Host ""
+Write-Host ""
+Write-Host ""
+pause
 #endregion
