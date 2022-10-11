@@ -1,24 +1,29 @@
-#region 0.0 Elevate Session
-#- Elevating Powershell Script with Administrative Rights
-if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) { Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs; exit }
+#reigon Introduction
+Write-Host "Hello!" -ForegroundColor DarkGreen
+Write-Host ""
+Write-Host "This script was created by AdminVin, and the purpose of it is to remove all bloatware from your Windows 11 Installation." -ForegroundColor DarkGreen
+Write-Host "This has been updated for Windows 11 - Update 22H2." -ForegroundColor DarkGreen
+Write-Host ""
 
-#- Changing Powershell Execution Policy - Unrestricted (Temporarily)
-Set-ExecutionPolicy Unrestricted
+<#############################################################################################################################>
+#region 1.0 Elevate PowerShell Session
+Write-Host "1.0 Elevating Powershell Session with Administrative Rights" -ForegroundColor YELLOW
+if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) { Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs; exit }
 #endregion
 
 
 <#############################################################################################################################>
-#region 1.0 Diagnostics
-Write-Host "1.0 Diagnostics" -ForegroundColor YELLOW
+#region 2.0 Diagnostics
+Write-Host "2.0 Diagnostics" -ForegroundColor YELLOW
 #- Verbose Status Messaging
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\System" -Name "VerboseStatus" -Value "1"
 #endregion
 
 
 <#############################################################################################################################>
-#region 2.0 Applications
-# 2.1 Metro Apps
-Write-Host "2.1 Metro Apps" -ForegroundColor YELLOW
+#region 3.0 Applications
+# 3.1 Metro Apps
+Write-Host "3.1 Metro Apps" -ForegroundColor YELLOW
 <# Old method of removal #>
 # Get-AppxPackage -AllUsers | where-object {$_.name -notlike "*Store*" -and $_.name -notlike "*Calculator*" -and $_.name -notlike "Microsoft.Windows.Photos*" -and $_.name -notlike "Microsoft.WindowsSoundRecorder*" -and $_.name -notlike "Microsoft.Paint*" -and $_.name -notlike "Microsoft.MSPaint*" -and $_.name -notlike "Microsoft.ScreenSketch*" -and $_.name -notlike "Microsoft.WindowsCamera*" -and $_.name -notlike "microsoft.windowscommunicationsapps*"<# Mail App#> -and $_.name -notlike "*Weather*" -and $_.name -notlike "Microsoft.Office.OneNote*" -and $_.name -notlike "*Note*" -and $_.name -notlike "*xbox*" -and $_.name -notlike "*OneDrive*" -and $_.name -notlike "Microsoft.WindowsAlarms*" -and $_.name -notlike "*Terminal*" -and $_.name -notlike "Microsoft.Net.*" -and $_.name -notlike "*Edge*" -and $_.name -notlike "Microsoft.UI*" -and $_.name -notlike "Microsoft.OOBE*" -and $_.name -notlike "Microsoft.VC*" -and $_.name -notlike "Microsoft.VC*" -and $_.name -notlike "Windows.Print*" -and $_.name -notlike "Microsoft.HEVCVideo*" -and $_.name -notlike "Microsoft.HEIFImage*" -and $_.name -notlike "Microsoft.Web*" -and $_.name -notlike "Microsoft.MPEG*" -and $_.name -notlike "Microsoft.VP9*" -and $_.name -notlike "Microsoft.MicrosoftSolitaire*" -and $_.name -notlike "Microsoft.QuickAssist*" -and $_.name -notlike "Microsoft.Wallet*" -and $_.name -notlike "Microsoft.Windows*" -and $_.name -notlike "Windows*" -and $_.name -notlike "*nVidia*"  -and $_.name -notlike "*AMD*" -and $_.name -notlike "*ASUS*" -and $_.name -notlike "*Armoury*" -and $_.name -notlike "*MSI*" -and $_.name -notlike "*EVGA*" -and $_.name -notlike "*Intel*" -and $_.name -notlike "*Adobe*" -and $_.name -notlike "*Spotify*"} | Remove-AppxPackage -ErrorAction SilentlyContinue
 
@@ -130,11 +135,11 @@ Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentD
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "PreInstalledAppsEverEnabled" -Value "0"
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "OEMPreInstalledAppsEnabled" -Value "0"
 
-# 2.2 Applications
-Write-Host "2.2 Applications" -ForegroundColor YELLOW
+# 3.2 Applications
+Write-Host "3.2 Applications" -ForegroundColor YELLOW
 
-# 2.2.1 Edge
-Write-Host "2.2.1 Microsoft Edge" -ForegroundColor YELLOW
+# 3.2.1 Edge
+Write-Host "3.2.1 Microsoft Edge" -ForegroundColor YELLOW
 ## Services
 Get-Service "edgeupdate" | Stop-Service
 Get-Service "edgeupdate" | Set-Service -StartupType Disabled
@@ -142,25 +147,27 @@ Get-Service "edgeupdatem" | Stop-Service
 Get-Service "edgeupdatem" | Set-Service -StartupType Disabled
 ## Scheduled Tasks
 Get-Scheduledtask "*edge*" -erroraction silentlycontinue | Disable-ScheduledTask
-Write-Host "2.2.1 Disabled Microsoft Edge Auto Start" -ForegroundColor DarkYellow
+Write-Host "3.2.1 Disabled Microsoft Edge Auto Start" -ForegroundColor YELLOW
 
-# 2.2.2 Cortana
-Write-Host "2.2.2 Cortana" -ForegroundColor YELLOW
+# 3.2.2 Cortana
+Write-Host "3.2.2 Cortana" -ForegroundColor YELLOW
 # Disable Web Searching from Start Menu
 Set-Location HKCU:
 New-Item -Path .\SOFTWARE\Policies\Microsoft\Windows\Explorer
 New-ItemProperty -Path ".\SOFTWARE\Policies\Microsoft\Windows\Explorer" -Name "DisableSearchBoxSuggestions" -Value "1"
 Set-Location C:\
-Write-Host "2.2.2 Disabled Cortana Web Search" -ForegroundColor DarkYellow
+Write-Host "3.2.2 Disabled Cortana Web Search" -ForegroundColor YELLOW
 
-# 2.3 Widgets
+# 3.3 Widgets
 winget uninstall "Windows web experience pack"
-Write-Host "2.3 Widgets Removal" -ForegroundColor DarkYellow
+Write-Host "3.3 Widgets Removal" -ForegroundColor YELLOW
 
 #endregion
+
+
 <#############################################################################################################################>
-#region 3.0 Services
-Write-Host "3.0 Services" -ForegroundColor YELLOW
+#region 4.0 Services
+Write-Host "4.0 Services" -ForegroundColor YELLOW
 # Bing Downloaded Maps Manager
 Get-Service "MapsBroker" | Stop-Service
 Get-Service "MapsBroker" | Set-Service -StartupType Disabled
@@ -229,8 +236,8 @@ Write-Host "Disabled: Windows Mobile Hotspot Service" -ForegroundColor DarkYello
 
 
 <#############################################################################################################################>
-#region 4.0 Quality of Life
-Write-Host "4.0 Quality of Life" -ForegroundColor YELLOW
+#region 5.0 Quality of Life
+Write-Host "5.0 Quality of Life" -ForegroundColor YELLOW
 
 # Take Ownership (Right Click Menu)
 if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Classes\*\shell\runas") -ne $true) {  New-Item "HKLM:\SOFTWARE\Classes\*\shell\runas" -force -ea SilentlyContinue };
@@ -245,50 +252,50 @@ New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\runas' -Na
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\runas' -Name 'NoWorkingDirectory' -Value '' -PropertyType String -Force -ea SilentlyContinue;
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\runas\command' -Name '(default)' -Value 'cmd.exe /c takeown /f \"%1\" /r /d y && icacls \"%1\" /grant administrators:F /t' -PropertyType String -Force -ea SilentlyContinue;
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\runas\command' -Name 'IsolatedCommand' -Value 'cmd.exe /c takeown /f \"%1\" /r /d y && icacls \"%1\" /grant administrators:F /t' -PropertyType String -Force -ea SilentlyContinue;
-Write-Host "4.1 Adding File/Folder Take Ownership (Right Click Menu)" -ForegroundColor YELLOW
+Write-Host "5.1 Adding File/Folder Take Ownership (Right Click Menu)" -ForegroundColor YELLOW
 
 reg.exe add "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" /f /ve
-Write-Host "4.2 Restoring Windows 10 Right Click Menu" -ForegroundColor YELLOW
+Write-Host "5.2 Restoring Windows 10 Right Click Menu" -ForegroundColor YELLOW
 
 bcdedit /deletevalue useplatformclock
 bcdedit /set disabledynamictick yes
-Write-Host "4.3 Disable 'High Precision Event Timer' (Formerly Multimedia Timer)" -ForegroundColor YELLOW
+Write-Host "5.3 Disable 'High Precision Event Timer' (Formerly Multimedia Timer)" -ForegroundColor YELLOW
 #endregion
 
 
 <#############################################################################################################################>
-#region 5.0 Performance
-Write-Host "5.0 Performance" -ForegroundColor YELLOW
+#region 6.0 Performance
+Write-Host "6.0 Performance" -ForegroundColor YELLOW
 # Delay time on menu displaying / Animation
 Set-Itemproperty -path 'HKCU:\Control Panel\Desktop' -Name 'MenuShowDelay' -value '50'
-Write-Host "5.1 Start Menu Responsiveness" -ForegroundColor YELLOW
+Write-Host "6.1 Start Menu Responsiveness" -ForegroundColor YELLOW
 # Power Settings
-Write-Host "5.2 Power Settings" -ForegroundColor YELLOW
+Write-Host "6.2 Power Settings" -ForegroundColor YELLOW
 # Monitor Screen Timeout
 Powercfg /Change monitor-timeout-ac 15
 Powercfg /Change monitor-timeout-dc 15
-Write-Host "5.2.1 Power Settings: Monitor" -ForegroundColor YELLOW
+Write-Host "6.2.1 Power Settings: Monitor" -ForegroundColor YELLOW
 # PC Sleep Timeout
 Powercfg /Change standby-timeout-ac 0
 Powercfg /Change standby-timeout-dc 60
-Write-Host "5.2.2 Power Settings: PC" -ForegroundColor YELLOW
+Write-Host "6.2.2 Power Settings: PC" -ForegroundColor YELLOW
 # Disable Hard Drive from turning off
 powercfg /Change -disk-timeout-dc 0
 powercfg /Change -disk-timeout-ac 0
-Write-Host "5.2.3 Power Settings: Hard Drive" -ForegroundColor YELLOW
+Write-Host "6.2.3 Power Settings: Hard Drive" -ForegroundColor YELLOW
 # Hibernate Disable
 powercfg /Change -hibernate-timeout-ac 0
 powercfg /Change -hibernate-timeout-dc 0
 powercfg -h off
-Write-Host "5.2.4 Power Settings: Hibernate" -ForegroundColor YELLOW
+Write-Host "6.2.4 Power Settings: Hibernate" -ForegroundColor YELLOW
 #endregion
 
 
 <#############################################################################################################################>
-#region 6.0 Privacy
-Write-Host "6.0 Privacy" -ForegroundColor YELLOW
+#region 7.0 Privacy
+Write-Host "7.0 Privacy" -ForegroundColor YELLOW
 # App Permissions
-Write-Host "6.1 App Permissions" -ForegroundColor YELLOW
+Write-Host "7.1 App Permissions" -ForegroundColor YELLOW
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location" -Name "Value" -Value "Deny" -ErrorAction SilentlyContinue
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location" -Name "Value" -Value "Deny" -ErrorAction SilentlyContinue
 Set-Location HKLM:
@@ -297,23 +304,14 @@ New-ItemProperty -Path ".SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Ove
 New-Item -Path ".\SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration" -ErrorAction SilentlyContinue
 New-ItemProperty -Path ".\SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration" -Name "EnableStatus" -Type DWord -Value "1" -ErrorAction SilentlyContinue
 # App Diagnostics
-Write-Host "6.2 App Diagnostics" -ForegroundColor YELLOW
+Write-Host "7.2 App Diagnostics" -ForegroundColor YELLOW
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\appDiagnostics" -Name "Value" -Value "Deny" -ErrorAction SilentlyContinue
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\appDiagnostics" -Name "Value" -Value "Deny" -ErrorAction SilentlyContinue
 #endregion
 
 
 <#############################################################################################################################>
-#region 0.0 De-Elevate Session
-#- Changing Powershell Execution Policy - RemoteSigned
-Set-ExecutionPolicy RemoteSigned
-#endregion
-
-
-<#############################################################################################################################>
-#region Notify User to Reboot
-Write-Host ""
-Write-Host "The above error is expected, and there to ensure your system is secure." -ForegroundColor Green
+#region 8.0 Notify User to Reboot
 Write-Host ""
 Write-Host "*********************************************************" -ForegroundColor Red
 Write-Host "*                                                       *" -ForegroundColor Red
