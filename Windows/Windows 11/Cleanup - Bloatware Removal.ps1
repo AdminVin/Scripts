@@ -160,7 +160,7 @@ Set-Location C:\
 Write-Host "3.2.2 Disabled Cortana Web Search" -ForegroundColor YELLOW
 
 # 3.3 Widgets
-winget uninstall "Windows web experience pack"
+winget uninstall "Windows web experience pack" --force
 Write-Host "3.3 Widgets Removal" -ForegroundColor YELLOW
 
 #endregion
