@@ -4,7 +4,8 @@ Write-Host ""
 Write-Host "This script was created by AdminVin, and the purpose of it is to remove all bloatware from your Windows 11 Installation." -ForegroundColor DarkGreen
 Write-Host "This has been updated for Windows 11 - Update 22H2." -ForegroundColor DarkGreen
 Write-Host ""
-
+Write-Host "Script Version 1.1" -ForegroundColor DarkGreen
+Write-Host ""
 <#############################################################################################################################>
 #region 1.0 Elevate PowerShell Session
 Write-Host "1.0 Elevating Powershell Session with Administrative Rights" -ForegroundColor YELLOW
