@@ -1,18 +1,14 @@
 # Updated: 2021-08-06
 
-
 ###- Elevating Powershell Script with Administrative Rights
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) { Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs; exit }
 
-###- Changing Powershell Execution Policy (Temporarily)
-Set-ExecutionPolicy Unrestricted
-
-echo "1. Diagnostics"
+Write-Output "1. Diagnostics"
 ###- Diagnostics
 #- Verbose Status Messaging
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\System" -Name "VerboseStatus" -Value "1"
 
-echo "2. Applications"
+Write-Output "2. Applications"
 ###- Applications
 
 ##- Metro Apps
@@ -97,25 +93,20 @@ Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentD
 
 
 ##- One Drive
-#- Hide Icon in Explorer
+#- Close OneDrive (if running in background)
+taskkill /f /im OneDrive.exe
+#- Remove OneDrive from left hand navigation
 Set-ItemProperty -Path "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" -Name "System.IsPinnedToNameSpaceTree" -Value "0"
 #- Prevent usage of OneDrive			
 #Set-ItemProperty -Path "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSyncNGSC" -Value "1"
 #Set-ItemProperty -Path "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSync" -Value "1"
 #- Remove OneDrive
-#- Kill Task
-taskkill /f /im OneDrive.exe
 #- 32 Bit Installs
 %SystemRoot%\System32\OneDriveSetup.exe /uninstall
 #- 64 Bit Installs
 %SystemRoot%\SysWOW64\OneDriveSetup.exe /uninstall
 
-echo "Closing OneDrive and Explorer Process"
-taskkill.exe /F /IM "OneDrive.exe"
-# taskkill.exe /F /IM "explorer.exe"
-# Caused all programs to close when running the explorer.exe to close, skipping this step.
-
-echo "Remove OneDrive"
+Write-Output "Remove OneDrive"
 if (Test-Path "$env:systemroot\System32\OneDriveSetup.exe") {
     & "$env:systemroot\System32\OneDriveSetup.exe" /uninstall
 }
@@ -123,39 +114,36 @@ if (Test-Path "$env:systemroot\SysWOW64\OneDriveSetup.exe") {
     & "$env:systemroot\SysWOW64\OneDriveSetup.exe" /uninstall
 }
 
-echo "Disable OneDrive via Group Policies"
+Write-Output "Disable OneDrive via Group Policies"
 force-mkdir "HKLM:\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\OneDrive"
-sp "HKLM:\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\OneDrive" "DisableFileSyncNGSC" 1
+Set-ItemProperty "HKLM:\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\OneDrive" "DisableFileSyncNGSC" 1
 
-echo "Removing OneDrive Leftovers"
-rm -Recurse -Force -ErrorAction SilentlyContinue "$env:localappdata\Microsoft\OneDrive"
-rm -Recurse -Force -ErrorAction SilentlyContinue "$env:programdata\Microsoft OneDrive"
-rm -Recurse -Force -ErrorAction SilentlyContinue "C:\OneDriveTemp"
+Write-Output "Removing OneDrive Leftovers"
+Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:localappdata\Microsoft\OneDrive"
+Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:programdata\Microsoft OneDrive"
+Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "C:\OneDriveTemp"
 
-echo "Remove Onedrive from explorer sidebar"
+Write-Output "Remove Onedrive from explorer sidebar"
 New-PSDrive -PSProvider "Registry" -Root "HKEY_CLASSES_ROOT" -Name "HKCR"
 mkdir -Force "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
-sp "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" "System.IsPinnedToNameSpaceTree" 0
+Set-ItemProperty "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" "System.IsPinnedToNameSpaceTree" 0
 mkdir -Force "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
-sp "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" "System.IsPinnedToNameSpaceTree" 0
+Set-ItemProperty "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" "System.IsPinnedToNameSpaceTree" 0
 Remove-PSDrive "HKCR"
 
-echo "Removing run option for new users"
+Write-Output "Removing run option for new users"
 reg load "hku\Default" "C:\Users\Default\NTUSER.DAT"
 reg delete "HKEY_USERS\Default\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "OneDriveSetup" /f
 reg unload "hku\Default"
 
-echo "Removing startmenu junk entry"
-rm -Force -ErrorAction SilentlyContinue "$env:userprofile\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk"
-
-# echo "Restarting explorer..."
-# explorer.exe
+Write-Output "Removing startmenu junk entry"
+Remove-Item -Force -ErrorAction SilentlyContinue "$env:userprofile\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk"
 
 ##- Microsoft Edge
 #- Always send do not track			
 Set-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Main' -Name 'DoNotTrack' -Value '1'
 
-echo "3. Schedule Tasks"
+Write-Output "3. Schedule Tasks"
 ###- Schedule Tasks
 #- Remove tasks that are not needed/bloatware
 Get-Scheduledtask "SmartScreenSpecific","Microsoft Compatibility Appraiser","Consolidator","KernelCeipTask","UsbCeip","Microsoft-Windows-DiskDiagnosticDataCollector", "GatherNetworkInfo","QueueReporting" -erroraction silentlycontinue | Disable-scheduledtask 
@@ -163,19 +151,19 @@ Get-Scheduledtask "SmartScreenSpecific","Microsoft Compatibility Appraiser","Con
 Get-Scheduledtask "Proxy" -erroraction silentlycontinue | Disable-scheduledtask 
 
 
-echo "4. Services"
+Write-Output "4. Services"
 ###- Services
 #- Disable Services that are not needed
 Get-Service Diagtrack,Fax,OneSyncSvc,PhoneSvc,WMPNetworkSvc,DmwApPushService,WpcMonSvc -erroraction silentlycontinue | stop-service -passthru | set-service -startuptype disabled
 
 
-echo "5. Windows Features"
+Write-Output "5. Windows Features"
 ###- Windows Features/Built-In
 ##- Advertisements
 #- Disable ads in File Explorer
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "ShowSyncProviderNotifications" -Value "0"
 
-echo "5.1 Windows Features - Cortana"
+Write-Output "5.1 Windows Features - Cortana"
 ##- Cortana
 #- Disable "Microsoft from getting to know you"
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Personalization\Settings" -Name "AcceptedPrivacyPolicy" -Value "0"
@@ -192,7 +180,7 @@ Set-Itemproperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentD
 #- Disable Cortana 'Activity Feed' in Start Menu
 Set-Itemproperty -Path 'HKCU:\SOFTWARE\Policies\Microsoft\Windows\System' -Name 'EnableActivityFeed' -value '0'
 
-echo "5.2 Windows Features - Privacy"
+Write-Output "5.2 Windows Features - Privacy"
 ##- Feedback/Privacy
 #- Prompts Disabled
 Set-Itemproperty -Path "HKCU:\SOFTWARE\Microsoft\Siuf\Rules" -Name "NumberOfSIUFInPeriod" -Value "0"
@@ -215,7 +203,7 @@ Set-Itemproperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection
 Set-Itemproperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds" -Name "EnableConfigFlighting" -Value "0"
 
 
-echo "5.3 Windows Features - Start Menu"
+Write-Output "5.3 Windows Features - Start Menu"
 ##- People
 #- Removal of icon in system tray
 Set-ItemProperty -LiteralPath 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People' -Name 'PeopleBand' -Value '0'
@@ -227,7 +215,7 @@ Set-ItemProperty -LiteralPath 'HKCU:\Software\Policies\Microsoft\Windows\Explore
 
 
 #- Delay time on menu displaying / Animation
-Set-Itemproperty -path 'HKCU:\Control Panel\Desktop' -Name 'MenuShowDelay' -value '100'
+Set-Itemproperty -path 'HKCU:\Control Panel\Desktop' -Name 'MenuShowDelay' -value '50'
 
 #- Disable Internet Searches in Start (Bing)
 Set-ItemProperty -Path "HKCU:\Software\Policies\Microsoft\Windows\Explorer" -Name "DisableSearchBoxSuggestions" -Value "1"
@@ -237,7 +225,7 @@ if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Se
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search' -Name 'AllowCortana' -Value 0 -PropertyType DWord -Force -ea SilentlyContinue;
 
 
-echo "5.4 Windows Features - Misc"
+Write-Output "5.4 Windows Features - Misc"
 #- Remove 3D Objects From My Computer
 Remove-Item -LiteralPath "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}" -force;
 Remove-Item -LiteralPath "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}" -force;
@@ -300,7 +288,7 @@ Set-ItemProperty -LiteralPath 'HKCU:\Control Panel\Desktop' -Name 'FontSmoothing
 Set-ItemProperty -LiteralPath 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name 'ListviewShadow' -Value '1'
 #>
 
-echo "6. Performance"
+Write-Output "6. Performance"
 ###- Peformance
 ##- Power Settings
 #- Monitor Screen Timeout
@@ -358,7 +346,7 @@ Set-ExecutionPolicy Restricted
 
 ###- Notify User
 cls
-echo "***************************************************"
-echo "* RESTART YOUR SYSTEM FOR CHANGES TO TAKE EFFECT! *"
-echo "***************************************************"
+Write-Output "***************************************************"
+Write-Output "* RESTART YOUR SYSTEM FOR CHANGES TO TAKE EFFECT! *"
+Write-Output "***************************************************"
 pause
