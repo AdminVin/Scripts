@@ -1,8 +1,41 @@
-Mount Image (Extract to a directory for modifications)
+####################################################################################################################################################################################
+### Information
+1. Pull the network card hardware ID from sysdm.cpl > Hardware > Device Manager > Double Click the Network Card > Details (tab) > Select "Hardware Ids" from the drop down
+2. Navigate to https://www.catalog.update.microsoft.com/Home.aspx and input the network card ID
+
+
+####################################################################################################################################################################################
+### Notes
+Driver actual files are stored in two directories
+1. C:\WINDOWS\System32\drivers for .SYS file extensions
+2. C:\WINDOWS\inf for .INF file extensions
+
+
+####################################################################################################################################################################################
+### Procedure
+## Mount Image (Extract to a directory for modifications)
 DISM /Mount-Image /ImageFile:"D:\RemoteInstall\Boot\x64\Images\boot.wim" /index:1 /MountDir:"D:\RemoteInstall\Boot\x64\Images\Offline"
 
-Inject Driver into WIM
-DISM /image:"D:\RemoteInstall\Boot\x64\Images\Offline" /Add-Driver /Driver:"C:\Drivers\Realtek\rt640x64.inf" /forceunsigned
+# Output
+Deployment Image Servicing and Management tool
+Version: 10.0.17763.3406
 
-Commit Changes, and Unmount Image
-DIMS /unmount-image /mountdir:"D:\RemoteInstall\Boot\x64\Images\Offline" /commit
+Mounting image
+[==========================100.0%==========================]
+The operation completed successfully.
+
+## Inject Driver into WIM
+DISM /image:"D:\RemoteInstall\Boot\x64\Images\Offline" /Add-Driver /Driver:"D:\Drivers\Dell\Optiplex 3090\Network\rt640x64.inf" /forceunsigned
+
+# Output
+Deployment Image Servicing and Management tool
+Version: 10.0.17763.3406
+
+Image Version: 10.0.19041.1288
+
+Found 1 driver package(s) to install.
+Installing 1 of 1 - D:\Drivers\Dell\Optiplex 3090\Network\rt640x64.inf: The driver package was successfully installed.
+The operation completed successfully.
+
+## Commit Changes, and Unmount Image
+DISM /unmount-image /mountdir:"D:\RemoteInstall\Boot\x64\Images\Offline" /commit
