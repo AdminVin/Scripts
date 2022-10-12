@@ -256,11 +256,23 @@ New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\runas\comm
 Write-Host "5.1 Adding File/Folder Take Ownership (Right Click Menu)" -ForegroundColor YELLOW
 
 reg.exe add "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" /f /ve
-Write-Host "5.2 Restoring Windows 10 Right Click Menu" -ForegroundColor YELLOW
+Write-Host "5.2 Restored Windows 10 Right Click Menu" -ForegroundColor YELLOW
 
 bcdedit /deletevalue useplatformclock
 bcdedit /set disabledynamictick yes
-Write-Host "5.3 Disable 'High Precision Event Timer' (Formerly Multimedia Timer)" -ForegroundColor YELLOW
+Write-Host "5.3 Disabled 'High Precision Event Timer' (Formerly Multimedia Timer)" -ForegroundColor YELLOW
+
+if((Test-Path -LiteralPath "HKCU:\Control Panel\Desktop") -ne $true) {  New-Item "HKCU:\Control Panel\Desktop" -force -ea SilentlyContinue };
+if((Test-Path -LiteralPath "HKLM:\SYSTEM\CurrentControlSet\Control") -ne $true) {  New-Item "HKLM:\SYSTEM\CurrentControlSet\Control" -force -ea SilentlyContinue };
+New-ItemProperty -LiteralPath 'HKCU:\Control Panel\Desktop' -Name 'ForegroundLockTimeout' -Value 0 -PropertyType DWord -Force -ea SilentlyContinue;
+New-ItemProperty -LiteralPath 'HKCU:\Control Panel\Desktop' -Name 'HungAppTimeout' -Value '400' -PropertyType String -Force -ea SilentlyContinue;
+New-ItemProperty -LiteralPath 'HKCU:\Control Panel\Desktop' -Name 'WaitToKillAppTimeout' -Value '500' -PropertyType String -Force -ea SilentlyContinue;
+New-ItemProperty -LiteralPath 'HKLM:\SYSTEM\CurrentControlSet\Control' -Name 'WaitToKillServiceTimeout' -Value '500' -PropertyType String -Force -ea SilentlyContinue;
+Write-Host "5.4 Enabled Faster Shutdown" -ForegroundColor YELLOW
+
+if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer") -ne $true) {  New-Item "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" -force -ea SilentlyContinue };
+New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer' -Name 'ShowDriveLettersFirst' -Value 4 -PropertyType DWord -Force -ea SilentlyContinue;
+Write-Host "5.5 Explorer: Drive letters pre drive label" -ForegroundColor YELLOW
 #endregion
 
 
