@@ -9,4 +9,6 @@ $Date = Get-Date
 $Date
 # Log output in text file $LogFile
 $Date | Out-File -Append -FilePath $LogFile
+# Seperator between entries
+"#################################################################################################" | Out-File -Append -FilePath $LogFile
 #endregion
