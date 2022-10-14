@@ -1,29 +1,25 @@
 #region Modules
 Import-Module ActiveDirectory
-
 #endregion
+
 
 #region Varibles / Settings
 Set-PSDebug -Off
+$LogFile = ".\Users - Rename to FirstName.LastName.txt"
 $Domain = "@DOMAIN.org"
 $MicrosoftDomain = "@DOMAIN.onmicrosoft.com"
 Write-Host "Please enter in the EXISTING username for the user you wish to rename" -ForegroundColor Yellow
 $UsernameOLD = Read-Host "EXISTING Username"
-
 #endregion
 
 
-#region Old Account Information
+#region Display - Old Account Information
 Write-Host "*****************************" -ForegroundColor Red
 Write-Host "* EXISTING USER INFORMATION *" -ForegroundColor Red
 Write-Host "*****************************" -ForegroundColor Red
 Write-Host " "
-
 Get-ADUser $UsernameOLD -Properties UserPrincipalName,DisplayName,employeeNumber,ProxyAddresses,HomeDirectory | Select-Object Enabled,Samaccountname,DisplayName,GivenName,Surname,employeeNumber,@{Name='PrimarySMTPAddress';Expression={$_.ProxyAddresses -cmatch '^SMTP:' -creplace 'SMTP:'}},HomeDirectory
-
-$EmailOLD = Get-ADUser $UsernameOLD -Properties ProxyAddresses | Select-Object @{Name='PrimarySMTPAddress';Expression={$_.ProxyAddresses -cmatch '^SMTP:' -creplace 'SMTP:'}} 
 Write-Host "Please verify the correct is listed above." -ForegroundColor Yellow
-
 #endregion
 
 
@@ -38,11 +34,20 @@ $LastNameNEW = Read-Host "Please enter in the NEW last name"
 $UsernameNEW = $FirstNameNEW + "." + $LastNameNEW
 $EmailNEW = $UsernameNEW+$Domain
 Write-Host " "
-
 #endregion
 
 
-#region Process Changes
+#region Log - Old Account Information
+## Log (Description)
+"OLD ACCOUNT INFORMATION" | Out-File -Append -FilePath $LogFile
+## Log (Date)
+Get-Date | Out-File -Append -FilePath $LogFile
+## Log (Old Account information)
+Get-ADUser $UsernameOLD -Properties UserPrincipalName,DisplayName,employeeNumber,ProxyAddresses,HomeDirectory | Select-Object Enabled,Samaccountname,DisplayName,GivenName,Surname,employeeNumber,@{Name='PrimarySMTPAddress';Expression={$_.ProxyAddresses -cmatch '^SMTP:' -creplace 'SMTP:'}},HomeDirectory | Out-File -Append -FilePath $LogFile
+#endregion
+
+
+#region Process Account Changes
 # User Prinicipal Name [Account Tab]
 Get-ADUser $UsernameOLD | Set-ADUser -UserPrincipalName $UsernameNew$Domain
 Set-ADUser $UsernameOLD -Replace @{samaccountname=$UsernameNEW}
@@ -66,7 +71,6 @@ $ProxyAddressOLD = $UsernameOLD+$MicrosoftDomain
 $ProxyAddressOLD2 = $UsernameOLD+$Domain
 $ProxyAddressNEW = $EmailNEW
 $ProxyAddressNEW2 = $UsernameNEW+$MicrosoftDomain
-
 Set-ADUser -Identity $UsernameNEW -Clear ProxyAddresses
 Set-ADUser -Identity $UsernameNEW -Add @{Proxyaddresses="smtp:"+$ProxyAddressOLD}
 Set-ADUser -Identity $UsernameNEW -Add @{ProxyAddresses="smtp:"+$ProxyAddressOLD2}
@@ -93,12 +97,24 @@ Set-ADUser $UsernameNew -HomeDirectory $NewHomeDir
 $Date = Get-Date -UFormat "%Y-%m-%d %R"
 Set-ADUser $UsernameNEW -Description "Updated: $Date"
 
-# Display NEW account information
+# Display - NEW account information
 Get-ADUser $UsernameNEW -Properties UserPrincipalName,DisplayName,employeeNumber,ProxyAddresses,HomeDirectory | Select-Object Enabled,Samaccountname,DisplayName,GivenName,Surname,employeeNumber,@{Name='PrimarySMTPAddress';Expression={$_.ProxyAddresses -cmatch '^SMTP:' -creplace 'SMTP:'}},HomeDirectory
-
 #endregion
 
 
+#region Log - New Account Information
+## Log (Description)
+"NEW ACCOUNT INFORMATION" | Out-File -Append -FilePath $LogFile
+## Log (Date)
+Get-Date | Out-File -Append -FilePath $LogFile
+## Log (New Account information)
+Get-ADUser $UsernameNEW -Properties UserPrincipalName,DisplayName,employeeNumber,ProxyAddresses,HomeDirectory | Select-Object Enabled,Samaccountname,DisplayName,GivenName,Surname,employeeNumber,@{Name='PrimarySMTPAddress';Expression={$_.ProxyAddresses -cmatch '^SMTP:' -creplace 'SMTP:'}},HomeDirectory | Out-File -Append -FilePath $LogFile
+## Log (Seperator)
+"#################################################################################################" | Out-File -Append -FilePath $LogFile
+#endregion
 
+
+#region Notify User
 Write-Host " " -ForegroundColor Yellow
 Write-Host "If the above looks correct, run a DirSync (Delta Update) to sync the changes Azure/Office 365" -ForegroundColor Yellow
+#endregion
