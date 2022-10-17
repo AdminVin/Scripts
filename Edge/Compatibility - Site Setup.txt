@@ -1,0 +1,29 @@
+Information
+This guide will go over how to setup websites in IE mode with Microsft Edge
+
+Prerequisites
+- Optional: Install Microsoft Edge Policy Definitions to your domain controller
+
+Procedure
+1. Extract contents from "Compatibility - Site Setup.zip" to your Domain Controller
+2. Create a new GPO for Microsoft Edge Compability Settings
+3. Under Group Policy > DOMAIN.LOCAL > Group Policy Objects > Right click the new policy you created and select "Import Settings" > Browse to the extracted folder and import the settings.
+4. Edit the policy and edit the UNC path for the XML file
+
+XML File 
+- XML File should be placed on accessible UNC path for all users, and permissions for "Domain Users" to have read access.
+- XML File Example
+
+<site-list version="205">
+<!-- Begin Site List --> 
+<site url="https://DOMAIN_NAME_1.com">
+<compat-mode>IE7Enterprise</compat-mode>
+<open-in allow-redirect="true">IE11</open-in>
+</site>
+<site-list version="205">
+<!-- Begin Site List --> 
+<site url="https://DOMAIN_NAME_2.com">
+<compat-mode>IE7Enterprise</compat-mode>
+<open-in allow-redirect="true">IE11</open-in>
+</site>
+</site-list>

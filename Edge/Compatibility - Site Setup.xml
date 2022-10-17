@@ -1,0 +1,13 @@
+<site-list version="205">
+<!-- Begin Site List --> 
+<site url="https://DOMAIN_NAME_1.com">
+<compat-mode>IE7Enterprise</compat-mode>
+<open-in allow-redirect="true">IE11</open-in>
+</site>
+<site-list version="205">
+<!-- Begin Site List --> 
+<site url="https://DOMAIN_NAME_2.com">
+<compat-mode>IE7Enterprise</compat-mode>
+<open-in allow-redirect="true">IE11</open-in>
+</site>
+</site-list>
