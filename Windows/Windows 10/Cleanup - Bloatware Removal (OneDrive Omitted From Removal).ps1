@@ -129,17 +129,16 @@ Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentD
 
 ## One Drive
 <#
+## One Drive
 # Close OneDrive (if running in background)
 taskkill /f /im OneDrive.exe
-# Remove OneDrive from left hand navigation
+# OneDrive - Remove from left hand side navigation
 Set-ItemProperty -Path "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" -Name "System.IsPinnedToNameSpaceTree" -Value "0"
-# Prevent usage of OneDrive			
-#Set-ItemProperty -Path "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSyncNGSC" -Value "1"
-#Set-ItemProperty -Path "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSync" -Value "1"
-# Remove OneDrive
-# 32 Bit Installs
+# One Drive - Disable File Sync		
+Set-ItemProperty -Path "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSync" -Value "1"
+# Remove OneDrive - x86
 %SystemRoot%\System32\OneDriveSetup.exe /uninstall
-# 64 Bit Installs
+# Remove OneDrive - x64
 %SystemRoot%\SysWOW64\OneDriveSetup.exe /uninstall
 
 Write-Output "Remove OneDrive"
@@ -167,12 +166,12 @@ mkdir -Force "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
 Set-ItemProperty "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" "System.IsPinnedToNameSpaceTree" 0
 Remove-PSDrive "HKCR"
 
-Write-Output "Removing run option for new users"
+Write-Output "Removing run option for new Users"
 reg load "hku\Default" "C:\Users\Default\NTUSER.DAT"
 reg delete "HKEY_USERS\Default\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "OneDriveSetup" /f
 reg unload "hku\Default"
 
-Write-Output "Removing startmenu junk entry"
+Write-Output "Removing Start Menu Entry"
 Remove-Item -Force -ErrorAction SilentlyContinue "$env:userprofile\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk"
 #>
 
