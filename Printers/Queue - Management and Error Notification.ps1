@@ -12,3 +12,8 @@ Invoke-Command -ComputerName EBPRINT1 -ScriptBlock {Get-WMIObject Win32_PerfForm
 Write-Host "Queriying ALL printers on $ComputerNames at $Date" -ForegroundColor DarkYellow
 ForEach($ComputerName in $ComputerNames)
 {Get-Printer -ComputerName $ComputerName | ForEach-Object {Get-PrintJob -PrinterName $_.Name -ComputerName $ComputerName | Where-Object { $_.JobStatus -like '*Error*'}}}
+#endregion
+
+#region Email
+
+#endregion
