@@ -1,4 +1,12 @@
-# Updated: 2022-10-17
+#region Introduction
+Write-Host "Hello!" -ForegroundColor DarkGreen
+Write-Host ""
+Write-Host "This script was created by AdminVin, and the purpose of it is to remove all bloatware from your Windows 10 Installation." -ForegroundColor DarkGreen
+Write-Host "This has been updated for Windows 10 - Update 21H2." -ForegroundColor DarkGreen
+Write-Host ""
+Write-Host "Updated 2022-10-18" -ForegroundColor DarkGreen
+Write-Host ""
+#endregion
 
 ### Elevating Powershell Script with Administrative Rights
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) { Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs; exit }
@@ -128,52 +136,7 @@ Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentD
 
 
 ## One Drive
-<#
-## One Drive
-# Close OneDrive (if running in background)
-taskkill /f /im OneDrive.exe
-# OneDrive - Remove from left hand side navigation
-Set-ItemProperty -Path "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" -Name "System.IsPinnedToNameSpaceTree" -Value "0"
-# One Drive - Disable File Sync		
-Set-ItemProperty -Path "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSync" -Value "1"
-# Remove OneDrive - x86
-%SystemRoot%\System32\OneDriveSetup.exe /uninstall
-# Remove OneDrive - x64
-%SystemRoot%\SysWOW64\OneDriveSetup.exe /uninstall
-
-Write-Output "Remove OneDrive"
-if (Test-Path "$env:systemroot\System32\OneDriveSetup.exe") {
-    & "$env:systemroot\System32\OneDriveSetup.exe" /uninstall
-}
-if (Test-Path "$env:systemroot\SysWOW64\OneDriveSetup.exe") {
-    & "$env:systemroot\SysWOW64\OneDriveSetup.exe" /uninstall
-}
-
-Write-Output "Disable OneDrive via Group Policies"
-force-mkdir "HKLM:\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\OneDrive"
-Set-ItemProperty "HKLM:\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\OneDrive" "DisableFileSyncNGSC" 1
-
-Write-Output "Removing OneDrive Leftovers"
-Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:localappdata\Microsoft\OneDrive"
-Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:programdata\Microsoft OneDrive"
-Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "C:\OneDriveTemp"
-
-Write-Output "Remove Onedrive from explorer sidebar"
-New-PSDrive -PSProvider "Registry" -Root "HKEY_CLASSES_ROOT" -Name "HKCR"
-mkdir -Force "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
-Set-ItemProperty "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" "System.IsPinnedToNameSpaceTree" 0
-mkdir -Force "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
-Set-ItemProperty "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" "System.IsPinnedToNameSpaceTree" 0
-Remove-PSDrive "HKCR"
-
-Write-Output "Removing run option for new Users"
-reg load "hku\Default" "C:\Users\Default\NTUSER.DAT"
-reg delete "HKEY_USERS\Default\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "OneDriveSetup" /f
-reg unload "hku\Default"
-
-Write-Output "Removing Start Menu Entry"
-Remove-Item -Force -ErrorAction SilentlyContinue "$env:userprofile\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk"
-#>
+<# OMITTED FROM REMOVAL #>
 
 ## Microsoft Edge
 Write-Host "Microsoft Edge" -ForegroundColor YELLOW
@@ -359,7 +322,7 @@ powercfg -h off
 ###########################################################################################################################################################
 
 ### Notify User
-Clear-Host
+Write-Output ""
 Write-Output "***************************************************"
 Write-Output "* RESTART YOUR SYSTEM FOR CHANGES TO TAKE EFFECT! *"
 Write-Output "***************************************************"

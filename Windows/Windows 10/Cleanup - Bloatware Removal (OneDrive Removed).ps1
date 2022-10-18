@@ -1,4 +1,12 @@
-# Updated: 2022-10-17
+#region Introduction
+Write-Host "Hello!" -ForegroundColor DarkGreen
+Write-Host ""
+Write-Host "This script was created by AdminVin, and the purpose of it is to remove all bloatware from your Windows 10 Installation." -ForegroundColor DarkGreen
+Write-Host "This has been updated for Windows 10 - Update 21H2." -ForegroundColor DarkGreen
+Write-Host ""
+Write-Host "Updated 2022-10-18" -ForegroundColor DarkGreen
+Write-Host ""
+#endregion
 
 ### Elevating Powershell Script with Administrative Rights
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) { Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs; exit }
@@ -356,7 +364,7 @@ powercfg -h off
 ###########################################################################################################################################################
 
 ### Notify User
-Clear-Host
+Write-Output ""
 Write-Output "***************************************************"
 Write-Output "* RESTART YOUR SYSTEM FOR CHANGES TO TAKE EFFECT! *"
 Write-Output "***************************************************"

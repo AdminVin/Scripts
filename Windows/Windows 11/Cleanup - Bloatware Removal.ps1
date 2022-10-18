@@ -1,10 +1,10 @@
-#reigon Introduction
+#region Introduction
 Write-Host "Hello!" -ForegroundColor DarkGreen
 Write-Host ""
 Write-Host "This script was created by AdminVin, and the purpose of it is to remove all bloatware from your Windows 11 Installation." -ForegroundColor DarkGreen
 Write-Host "This has been updated for Windows 11 - Update 22H2." -ForegroundColor DarkGreen
 Write-Host ""
-Write-Host "Script Version 1.1" -ForegroundColor DarkGreen
+Write-Host "Updated 2022-10-18" -ForegroundColor DarkGreen
 Write-Host ""
 #endregion
 
@@ -182,7 +182,6 @@ Write-Host "3.2.2 Disabled Cortana Web Search" -ForegroundColor YELLOW
 # 3.3 Widgets
 winget uninstall "Windows web experience pack" --force
 Write-Host "3.3 Widgets Removal" -ForegroundColor YELLOW
-
 #endregion
 
 
