@@ -6,6 +6,9 @@ Write-Host "This has been updated for Windows 11 - Update 22H2." -ForegroundColo
 Write-Host ""
 Write-Host "Script Version 1.1" -ForegroundColor DarkGreen
 Write-Host ""
+#endregion
+
+
 <#############################################################################################################################>
 #region 1.0 Elevate PowerShell Session
 Write-Host "1.0 Elevating Powershell Session with Administrative Rights" -ForegroundColor YELLOW
@@ -146,9 +149,21 @@ Get-Service "edgeupdate" | Stop-Service
 Get-Service "edgeupdate" | Set-Service -StartupType Disabled
 Get-Service "edgeupdatem" | Stop-Service
 Get-Service "edgeupdatem" | Set-Service -StartupType Disabled
+Write-Host "3.2.1 Disabled Microsoft Edge - Auto Update Services" -ForegroundColor YELLOW
 ## Scheduled Tasks
 Get-Scheduledtask "*edge*" -erroraction silentlycontinue | Disable-ScheduledTask
-Write-Host "3.2.1 Disabled Microsoft Edge Auto Start" -ForegroundColor YELLOW
+Write-Host "3.2.1 Disabled Microsoft Edge - Auto Start (Scheduled Task)" -ForegroundColor YELLOW
+## Auto Start
+Set-Location HKLM:
+if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Policies\Microsoft") -ne $true) {  New-Item "HKLM:\SOFTWARE\Policies\Microsoft" -Force -ErrorAction SilentlyContinue | Out-Null};
+if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge") -ne $true) {  New-Item "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge" -Force -ErrorAction SilentlyContinue | Out-Null};
+if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Main") -ne $true) {  New-Item "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Main" -Force -ErrorAction SilentlyContinue | Out-Null};
+New-ItemProperty -LiteralPath "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Main" -Name "AllowPrelaunch" -Value "0" -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null
+Set-Location C:/
+Write-Host "3.2.1 Disabled Microsoft Edge - Auto Start (Startup Entry)" -ForegroundColor YELLOW
+# Tracking
+Set-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Main' -Name 'DoNotTrack' -Value '1'
+Write-Host "3.2.1 Disabled Microsoft Edge - Tracking" -ForegroundColor YELLOW
 
 # 3.2.2 Cortana
 Write-Host "3.2.2 Cortana" -ForegroundColor YELLOW
@@ -156,7 +171,7 @@ Write-Host "3.2.2 Cortana" -ForegroundColor YELLOW
 Set-Location HKCU:
 New-Item -Path .\SOFTWARE\Policies\Microsoft\Windows\Explorer
 New-ItemProperty -Path ".\SOFTWARE\Policies\Microsoft\Windows\Explorer" -Name "DisableSearchBoxSuggestions" -Value "1"
-Set-Location C:\
+Set-Location C:/
 Write-Host "3.2.2 Disabled Cortana Web Search" -ForegroundColor YELLOW
 
 # 3.3 Widgets

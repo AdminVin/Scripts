@@ -173,8 +173,29 @@ Write-Output "Removing Start Menu Entry"
 Remove-Item -Force -ErrorAction SilentlyContinue "$env:userprofile\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk"
 
 ## Microsoft Edge
-# Always send do not track			
+## Microsoft Edge
+Write-Host "Microsoft Edge" -ForegroundColor YELLOW
+## Services
+Get-Service "edgeupdate" | Stop-Service
+Get-Service "edgeupdate" | Set-Service -StartupType Disabled
+Get-Service "edgeupdatem" | Stop-Service
+Get-Service "edgeupdatem" | Set-Service -StartupType Disabled
+Write-Host "Disabled Microsoft Edge - Auto Update Services" -ForegroundColor YELLOW
+## Scheduled Tasks
+Get-Scheduledtask "*edge*" -erroraction silentlycontinue | Disable-ScheduledTask
+Write-Host "Disabled Microsoft Edge - Auto Start (Scheduled Task)" -ForegroundColor YELLOW
+## Auto Start
+Set-Location HKLM:
+if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Policies\Microsoft") -ne $true) {  New-Item "HKLM:\SOFTWARE\Policies\Microsoft" -Force -ErrorAction SilentlyContinue | Out-Null};
+if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge") -ne $true) {  New-Item "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge" -Force -ErrorAction SilentlyContinue | Out-Null};
+if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Main") -ne $true) {  New-Item "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Main" -Force -ErrorAction SilentlyContinue | Out-Null};
+New-ItemProperty -LiteralPath "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Main" -Name "AllowPrelaunch" -Value "0" -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null
+Set-Location C:/
+Write-Host "Disabled Microsoft Edge - Auto Start (Startup Entry)" -ForegroundColor YELLOW
+# Tracking
 Set-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Main' -Name 'DoNotTrack' -Value '1'
+Write-Host "Disabled Microsoft Edge - Tracking" -ForegroundColor YELLOW
+
 
 Write-Output "3. Schedule Tasks"
 ### Schedule Tasks
