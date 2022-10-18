@@ -5,7 +5,7 @@ Windows Registry Editor Version 5.00
 [HKEY_CURRENT_USER\Control Panel\Desktop]
 "ForegroundLockTimeout"=dword:00000000
 "HungAppTimeout"="400"
-"MenuShowDelay"="100"
+"MenuShowDelay"="50"
 "WaitToKillAppTimeout"="500"
 
 [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control]
