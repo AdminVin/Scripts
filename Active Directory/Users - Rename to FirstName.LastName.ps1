@@ -32,6 +32,8 @@ Write-Host " "
 $FirstNameNEW = Read-Host "Please enter in the NEW first name"
 $LastNameNEW = Read-Host "Please enter in the NEW last name"
 $UsernameNEW = $FirstNameNEW + "." + $LastNameNEW
+# Convert username to 15 characters maximum (if longer)
+$UsernameNEW = $UsernameNEW.Substring(0,15)
 $EmailNEW = $UsernameNEW+$Domain
 Write-Host " "
 #endregion
