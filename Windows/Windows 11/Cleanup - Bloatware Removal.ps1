@@ -180,7 +180,7 @@ Set-Location C:/
 Write-Host "3.2.2 Disabled Cortana Web Search" -ForegroundColor YELLOW
 
 # 3.3 Widgets
-winget uninstall "Windows web experience pack" --force
+winget uninstall "Windows web experience pack" --Force
 Write-Host "3.3 Widgets Removal" -ForegroundColor YELLOW
 #endregion
 
@@ -258,40 +258,62 @@ Write-Host "Disabled: Windows Mobile Hotspot Service" -ForegroundColor DarkYello
 <#############################################################################################################################>
 #region 5.0 Quality of Life
 Write-Host "5.0 Quality of Life" -ForegroundColor YELLOW
-
+-ErrorAction
 # Take Ownership (Right Click Menu)
-if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Classes\*\shell\runas") -ne $true) {  New-Item "HKLM:\SOFTWARE\Classes\*\shell\runas" -force -ea SilentlyContinue };
-if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Classes\*\shell\runas\command") -ne $true) {  New-Item "HKLM:\SOFTWARE\Classes\*\shell\runas\command" -force -ea SilentlyContinue };
-if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Classes\Directory\shell\runas") -ne $true) {  New-Item "HKLM:\SOFTWARE\Classes\Directory\shell\runas" -force -ea SilentlyContinue };
-if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Classes\Directory\shell\runas\command") -ne $true) {  New-Item "HKLM:\SOFTWARE\Classes\Directory\shell\runas\command" -force -ea SilentlyContinue };
-New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\*\shell\runas' -Name '(default)' -Value 'Take Ownership' -PropertyType String -Force -ea SilentlyContinue;
-New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\*\shell\runas' -Name 'NoWorkingDirectory' -Value '' -PropertyType String -Force -ea SilentlyContinue;
-New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\*\shell\runas\command' -Name '(default)' -Value 'cmd.exe /c takeown /f \"%1\" && icacls \"%1\" /grant administrators:F' -PropertyType String -Force -ea SilentlyContinue;
-New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\*\shell\runas\command' -Name 'IsolatedCommand' -Value 'cmd.exe /c takeown /f \"%1\" && icacls \"%1\" /grant administrators:F' -PropertyType String -Force -ea SilentlyContinue;
-New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\runas' -Name '(default)' -Value 'Take Ownership' -PropertyType String -Force -ea SilentlyContinue;
-New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\runas' -Name 'NoWorkingDirectory' -Value '' -PropertyType String -Force -ea SilentlyContinue;
-New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\runas\command' -Name '(default)' -Value 'cmd.exe /c takeown /f \"%1\" /r /d y && icacls \"%1\" /grant administrators:F /t' -PropertyType String -Force -ea SilentlyContinue;
-New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\runas\command' -Name 'IsolatedCommand' -Value 'cmd.exe /c takeown /f \"%1\" /r /d y && icacls \"%1\" /grant administrators:F /t' -PropertyType String -Force -ea SilentlyContinue;
+if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Classes\*\shell\runas") -ne $true) {  New-Item "HKLM:\SOFTWARE\Classes\*\shell\runas" -Force -ErrorAction SilentlyContinue };
+if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Classes\*\shell\runas\command") -ne $true) {  New-Item "HKLM:\SOFTWARE\Classes\*\shell\runas\command" -Force -ErrorAction SilentlyContinue };
+if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Classes\Directory\shell\runas") -ne $true) {  New-Item "HKLM:\SOFTWARE\Classes\Directory\shell\runas" -Force -ErrorAction SilentlyContinue };
+if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Classes\Directory\shell\runas\command") -ne $true) {  New-Item "HKLM:\SOFTWARE\Classes\Directory\shell\runas\command" -Force -ErrorAction SilentlyContinue };
+New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\*\shell\runas' -Name '(default)' -Value 'Take Ownership' -PropertyType String -Force -ErrorAction SilentlyContinue;
+New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\*\shell\runas' -Name 'NoWorkingDirectory' -Value '' -PropertyType String -Force -ErrorAction SilentlyContinue;
+New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\*\shell\runas\command' -Name '(default)' -Value 'cmd.exe /c takeown /f \"%1\" && icacls \"%1\" /grant administrators:F' -PropertyType String -Force -ErrorAction SilentlyContinue;
+New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\*\shell\runas\command' -Name 'IsolatedCommand' -Value 'cmd.exe /c takeown /f \"%1\" && icacls \"%1\" /grant administrators:F' -PropertyType String -Force -ErrorAction SilentlyContinue;
+New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\runas' -Name '(default)' -Value 'Take Ownership' -PropertyType String -Force -ErrorAction SilentlyContinue;
+New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\runas' -Name 'NoWorkingDirectory' -Value '' -PropertyType String -Force -ErrorAction SilentlyContinue;
+New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\runas\command' -Name '(default)' -Value 'cmd.exe /c takeown /f \"%1\" /r /d y && icacls \"%1\" /grant administrators:F /t' -PropertyType String -Force -ErrorAction SilentlyContinue;
+New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\runas\command' -Name 'IsolatedCommand' -Value 'cmd.exe /c takeown /f \"%1\" /r /d y && icacls \"%1\" /grant administrators:F /t' -PropertyType String -Force -ErrorAction SilentlyContinue;
 Write-Host "5.1 Adding File/Folder Take Ownership (Right Click Menu)" -ForegroundColor YELLOW
 
+# Restore Classic W10 right click menu
 reg.exe add "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" /f /ve
 Write-Host "5.2 Restored Windows 10 Right Click Menu" -ForegroundColor YELLOW
 
+# Add "Open with Powershell" to right click menu
+New-PSDrive -PSProvider registry -Root HKEY_CLASSES_ROOT -Name HKCR
+if((Test-Path -LiteralPath "HKCR:\Directory\Shell\PowershellMenu") -ne $true) {  New-Item "HKCR:\Directory\Shell\PowershellMenu" -Force | Out-Null};
+New-ItemProperty -LiteralPath "HKCR:\Directory\Shell\PowershellMenu" -Name "(Default)" -Value "Open with PowerShell (Admin)" -Force  | Out-Null
+Set-ItemProperty -LiteralPath "HKCR:\Directory\Shell\PowershellMenu" -Name "(Default)" -Value "Open with PowerShell (Admin)" -Force | Out-Null
+if((Test-Path -LiteralPath "HKCR:\Directory\Shell\PowershellMenu\command") -ne $true) {  New-Item "HKCR:\Directory\Shell\PowershellMenu\command" -Force -ErrorAction SilentlyContinue };
+Set-ItemProperty -LiteralPath "HKCR:\Directory\Shell\PowershellMenu\command" -Name "(Default)" -Value "C:\\Windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe -NoExit -Command Set-Location -LiteralPath '%L'" -Force | Out-Null
+Remove-PSDrive HKCR
+Write-Host "5.3 Added 'Open with PowerShell' to right click menu" -ForegroundColor YELLOW
+
+# Add "Open with Command Prompt" to right click menu
+New-PSDrive -PSProvider registry -Root HKEY_CLASSES_ROOT -Name HKCR
+if((Test-Path -LiteralPath "HKCR:\Directory\Shell\CMDMenu") -ne $true) {  New-Item "HKCR:\Directory\Shell\CMDMenu" -Force | Out-Null};
+New-ItemProperty -LiteralPath "HKCR:\Directory\Shell\CMDMenu" -Name "(Default)" -Value "Open with Command Prompt (Admin)" -Force  | Out-Null
+Set-ItemProperty -LiteralPath "HKCR:\Directory\Shell\CMDMenu" -Name "(Default)" -Value "Open with Command Prompt (Admin)" -Force | Out-Null
+if((Test-Path -LiteralPath "HKCR:\Directory\Shell\CMDMenu\command") -ne $true) {  New-Item "HKCR:\Directory\Shell\CMDMenu\command" -Force -ErrorAction SilentlyContinue };
+Set-ItemProperty -LiteralPath "HKCR:\Directory\Shell\CMDMenu\command" -Name "(Default)" -Value 'cmd.exe /s /k pushd "%V"' -Force | Out-Null
+Remove-PSDrive HKCR
+Write-Host "5.4 Added 'Open with CMD' to right click menu" -ForegroundColor YELLOW
+
+# Disable 'High Precision Event Timer' to prevent input lag on older games
 bcdedit /deletevalue useplatformclock
 bcdedit /set disabledynamictick yes
-Write-Host "5.3 Disabled 'High Precision Event Timer' (Formerly Multimedia Timer)" -ForegroundColor YELLOW
+Write-Host "5.5 Disabled 'High Precision Event Timer' (Formerly Multimedia Timer)" -ForegroundColor YELLOW
 
-if((Test-Path -LiteralPath "HKCU:\Control Panel\Desktop") -ne $true) {  New-Item "HKCU:\Control Panel\Desktop" -force -ea SilentlyContinue };
-if((Test-Path -LiteralPath "HKLM:\SYSTEM\CurrentControlSet\Control") -ne $true) {  New-Item "HKLM:\SYSTEM\CurrentControlSet\Control" -force -ea SilentlyContinue };
-New-ItemProperty -LiteralPath 'HKCU:\Control Panel\Desktop' -Name 'ForegroundLockTimeout' -Value 0 -PropertyType DWord -Force -ea SilentlyContinue;
-New-ItemProperty -LiteralPath 'HKCU:\Control Panel\Desktop' -Name 'HungAppTimeout' -Value '400' -PropertyType String -Force -ea SilentlyContinue;
-New-ItemProperty -LiteralPath 'HKCU:\Control Panel\Desktop' -Name 'WaitToKillAppTimeout' -Value '500' -PropertyType String -Force -ea SilentlyContinue;
-New-ItemProperty -LiteralPath 'HKLM:\SYSTEM\CurrentControlSet\Control' -Name 'WaitToKillServiceTimeout' -Value '500' -PropertyType String -Force -ea SilentlyContinue;
-Write-Host "5.4 Enabled Faster Shutdown" -ForegroundColor YELLOW
+if((Test-Path -LiteralPath "HKCU:\Control Panel\Desktop") -ne $true) {  New-Item "HKCU:\Control Panel\Desktop" -Force -ErrorAction SilentlyContinue };
+if((Test-Path -LiteralPath "HKLM:\SYSTEM\CurrentControlSet\Control") -ne $true) {  New-Item "HKLM:\SYSTEM\CurrentControlSet\Control" -Force -ErrorAction SilentlyContinue };
+New-ItemProperty -LiteralPath 'HKCU:\Control Panel\Desktop' -Name 'ForegroundLockTimeout' -Value 0 -PropertyType DWord -Force -ErrorAction SilentlyContinue;
+New-ItemProperty -LiteralPath 'HKCU:\Control Panel\Desktop' -Name 'HungAppTimeout' -Value '400' -PropertyType String -Force -ErrorAction SilentlyContinue;
+New-ItemProperty -LiteralPath 'HKCU:\Control Panel\Desktop' -Name 'WaitToKillAppTimeout' -Value '500' -PropertyType String -Force -ErrorAction SilentlyContinue;
+New-ItemProperty -LiteralPath 'HKLM:\SYSTEM\CurrentControlSet\Control' -Name 'WaitToKillServiceTimeout' -Value '500' -PropertyType String -Force -ErrorAction SilentlyContinue;
+Write-Host "5.6 Enabled Faster Shutdown" -ForegroundColor YELLOW
 
-if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer") -ne $true) {  New-Item "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" -force -ea SilentlyContinue };
-New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer' -Name 'ShowDriveLettersFirst' -Value 4 -PropertyType DWord -Force -ea SilentlyContinue;
-Write-Host "5.5 Explorer: Drive letters pre drive label" -ForegroundColor YELLOW
+if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer") -ne $true) {  New-Item "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" -Force -ErrorAction SilentlyContinue };
+New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer' -Name 'ShowDriveLettersFirst' -Value 4 -PropertyType DWord -Force -ErrorAction SilentlyContinue;
+Write-Host "5.7 Explorer: Drive letters PRE drive label [Example: '(C:) Windows vs. Windows (C:)]'" -ForegroundColor YELLOW
 #endregion
 
 
