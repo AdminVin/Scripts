@@ -4,7 +4,7 @@ Write-Host ""
 Write-Host "This script was created by AdminVin, and the purpose of it is to remove all bloatware from your Windows 11 Installation." -ForegroundColor DarkGreen
 Write-Host "This has been updated for Windows 11 - Update 22H2." -ForegroundColor DarkGreen
 Write-Host ""
-Write-Host "Updated 2022-10-20" -ForegroundColor DarkGreen
+Write-Host "Updated 2022-10-20" -ForegroundColor DarkGreen2022-10-20
 Write-Host ""
 #endregion
 
@@ -19,7 +19,7 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 <#############################################################################################################################>
 #region 2.0 Diagnostics
 Write-Host "2.0 Diagnostics" -ForegroundColor YELLOW
-#- Verbose Status Messaging
+# Verbose Status Messaging
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\System" -Name "VerboseStatus" -Value "1"
 #endregion
 
@@ -128,13 +128,13 @@ Get-AppxPackage -AllUsers "SAMSUNGELECTRONICSCO.LTD.PCGallery*" | Remove-AppxPac
 Get-AppxPackage -AllUsers "SAMSUNGELECTRONICSCO.LTD.OnlineSupportSService*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "4AE8B7C2.BOOKING.COMPARTNERAPPSAMSUNGEDITION*" | Remove-AppxPackage
 
-#- Disable SILENT installs of new Apps
+# Disable SILENT installs of new Apps
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "SilentInstalledAppsEnabled" -Value "0"
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "ContentDeliveryAllowed" -Value "0"
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "SubscribedContentEnabled" -Value "0"
-#- Start Menu Application suggestions
+# Start Menu Application suggestions
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "SystemPaneSuggestionsEnabled" -Value "0"
-#- Disable future installs/re-installs of factory/OEM Metro Apps
+# Disable future installs/re-installs of factory/OEM Metro Apps
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "PreInstalledAppsEnabled" -Value "0"
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "PreInstalledAppsEverEnabled" -Value "0"
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "OEMPreInstalledAppsEnabled" -Value "0"
