@@ -4,7 +4,7 @@ Write-Host ""
 Write-Host "This script was created by AdminVin, and the purpose of it is to remove all bloatware from your Windows 10 Installation." -ForegroundColor DarkGreen
 Write-Host "This has been updated for Windows 10 - Update 21H2." -ForegroundColor DarkGreen
 Write-Host ""
-Write-Host "Updated 2022-10-18" -ForegroundColor DarkGreen
+Write-Host "Updated 2022-10-20" -ForegroundColor DarkGreen
 Write-Host ""
 #endregion
 
