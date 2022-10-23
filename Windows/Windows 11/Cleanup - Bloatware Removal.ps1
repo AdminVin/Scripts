@@ -335,11 +335,11 @@ New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\runas' -Na
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\runas' -Name 'NoWorkingDirectory' -Value '' -PropertyType String -Force -ErrorAction SilentlyContinue;
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\runas\command' -Name '(default)' -Value 'cmd.exe /c takeown /f \"%1\" /r /d y && icacls \"%1\" /grant administrators:F /t' -PropertyType String -Force -ErrorAction SilentlyContinue;
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\runas\command' -Name 'IsolatedCommand' -Value 'cmd.exe /c takeown /f \"%1\" /r /d y && icacls \"%1\" /grant administrators:F /t' -PropertyType String -Force -ErrorAction SilentlyContinue;
-Write-Host "5.1 Adding File/Folder Take Ownership (Right Click Menu)" -ForegroundColor YELLOW
+Write-Host "5.1 Windows: Adding File/Folder Take Ownership (Right Click Context Menu)" -ForegroundColor YELLOW
 
 # Restore Classic W10 right click menu
 reg.exe add "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" /f /ve
-Write-Host "5.2 Restored Windows 10 Right Click Menu" -ForegroundColor YELLOW
+Write-Host "5.2 Windows: Restored W10 Right Click Context Menu" -ForegroundColor YELLOW
 
 # Add "Open with Powershell (Admin)" to right click menu
 if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Classes\Directory\Background\shell\PowerShellAsAdmin") -ne $true) {  New-Item "HKLM:\SOFTWARE\Classes\Directory\Background\shell\PowerShellAsAdmin" -Force -ErrorAction SilentlyContinue };
@@ -366,7 +366,7 @@ New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Drive\shell\PowerShellAsAd
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Drive\shell\PowerShellAsAdmin' -Name 'Icon' -Value 'powershell.exe' -PropertyType String -Force -ErrorAction SilentlyContinue;
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Drive\shell\PowerShellAsAdmin\command' -Name '(default)' -Value 'powershell -WindowStyle Hidden -NoProfile -Command "Start-Process -Verb RunAs powershell.exe -ArgumentList \"-NoExit -Command Push-Location \\\"\"%V/\\\"\"\"' -PropertyType String -Force -ErrorAction SilentlyContinue;
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' -Name 'EnableLinkedConnections' -Value 1 -PropertyType DWord -Force -ErrorAction SilentlyContinue;
-Write-Host "5.3 Added 'Open with PowerShell (Admin)' to right click menu" -ForegroundColor YELLOW
+Write-Host "5.3 Explorer: Added 'Open with PowerShell (Admin)' to right click menu" -ForegroundColor YELLOW
 
 # Disable 'High Precision Event Timer' to prevent input lag on older games
 bcdedit /deletevalue useplatformclock
@@ -379,7 +379,7 @@ New-ItemProperty -LiteralPath "HKCU:\Control Panel\Desktop" -Name 'ForegroundLoc
 New-ItemProperty -LiteralPath "HKCU:\Control Panel\Desktop" -Name 'HungAppTimeout' -Value '400' -PropertyType String -Force -ErrorAction SilentlyContinue;
 New-ItemProperty -LiteralPath "HKCU:\Control Panel\Desktop" -Name 'WaitToKillAppTimeout' -Value '500' -PropertyType String -Force -ErrorAction SilentlyContinue;
 New-ItemProperty -LiteralPath 'HKLM:\SYSTEM\CurrentControlSet\Control' -Name 'WaitToKillServiceTimeout' -Value '500' -PropertyType String -Force -ErrorAction SilentlyContinue;
-Write-Host "5.5 Enabled Faster Shutdown" -ForegroundColor YELLOW
+Write-Host "5.5 Windows: Enabled Faster Shutdown" -ForegroundColor YELLOW
 
 if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer") -ne $true) {  New-Item "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" -Force -ErrorAction SilentlyContinue };
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer' -Name 'ShowDriveLettersFirst' -Value 4 -PropertyType DWord -Force -ErrorAction SilentlyContinue;
@@ -400,32 +400,35 @@ New-ItemProperty -LiteralPath 'Registry::\HKEY_USERS\.DEFAULT\Control Panel\Mous
 Write-Host "5.7 Mouse: MarkC's Acceleration Fix (Source: http://donewmouseaccel.blogspot.com/)" -ForegroundColor YELLOW
 
 Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorAdmin" -Value "0"
-Write-Host "5.8 Disabled UAC Prompts" -ForegroundColor YELLOW
+Write-Host "5.8 UAC: Disabled Prompt" -ForegroundColor YELLOW
 
 if((Test-Path -LiteralPath "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced") -ne $true) {  New-Item "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -force -ErrorAction SilentlyContinue };
 New-ItemProperty -LiteralPath 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name 'LaunchTo' -Value 1 -PropertyType DWord -Force -ErrorAction SilentlyContinue;
-Write-Host "5.9 Explorer opens with 'This PC' instead of 'Most Recent'" -ForegroundColor YELLOW
+Write-Host "5.9 Explorer: Launch with 'This PC' instead of 'Most Recent'" -ForegroundColor YELLOW
 
 Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAl" -Force | Out-Null
 New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -PropertyType "Dword" -Name "TaskbarAl" -Value "0"
-Write-Host "5.10 Explorer opens with 'This PC' instead of 'Most Recent'" -ForegroundColor YELLOW
+Write-Host "5.10 Start Menu: Alignment - Left" -ForegroundColor YELLOW
 
 Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Terminal Server" -name "fDenyTSConnections" -value "0" -Force | Out-Null
 Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
-Write-Host "5.11 RDP Enabled" -ForegroundColor YELLOW
+Write-Host "5.11 Remote Desktop: Enabled" -ForegroundColor YELLOW
 
 Remove-ItemProperty -Path "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Run" -Name "Discord" -Force | Out-Null
-Write-host "5.12 Disabled Discord from auto launching on Login" -ForegroundColor YELLOW
+Write-host "5.12 Discord: Disabled Auto Start" -ForegroundColor YELLOW
 
 Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\PushNotifications" -Name "ToastEnabled" -Force | Out-Null
 New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\PushNotifications" -PropertyType "Dword" -Name "ToastEnabled" -Value "0" | Out-Null
 Write-host "5.13 Disabled Toast Notifications from Windows 11" -ForegroundColor YELLOW
 
 New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -PropertyType "Dword" -Name "ShowTaskViewButton" -Value "0"
-Write-host "5.14 Removed 'Task View' Button on Taskbar" -ForegroundColor YELLOW
+Write-host "5.14 Taskbar: Removed 'Task View' Button" -ForegroundColor YELLOW
 
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" -Name "SearchBoxTaskbarMode" -Value "0" -Type "DWord" -Force
-Write-host "5.15 Removed 'Search' Button on Taskbar" -ForegroundColor YELLOW
+Write-host "5.15 Taskbar: Removed 'Search' Button" -ForegroundColor YELLOW
+
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "HideFileExt" -Value "0"
+Write-Host "5.16 Explorer: Display File Extensions" -ForegroundColor YELLOW
 #endregion
 
 
