@@ -4,7 +4,7 @@ Write-Host ""
 Write-Host "This script was created by AdminVin, and the purpose of it is to remove all bloatware from your Windows 11 Installation." -ForegroundColor DarkGreen
 Write-Host "This has been updated for Windows 11 - Update 22H2." -ForegroundColor DarkGreen
 Write-Host ""
-Write-Host "Updated 2022-10-21" -ForegroundColor DarkGreen2022-10-20
+Write-Host "Updated 2022-10-23" -ForegroundColor DarkGreen
 Write-Host ""
 #endregion
 
@@ -45,6 +45,7 @@ Get-AppxPackage -AllUsers "Microsoft.BingTranslator*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "Microsoft.BingTravel*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "Microsoft.CommsPhone*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "Microsoft.ConnectivityStore*" | Remove-AppxPackage
+Get-AppxPackage -AllUsers "Microsoft.WindowsFeedbackHub*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "Microsoft.GetHelp*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "Microsoft.Getstarted*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "Microsoft.Messaging*" | Remove-AppxPackage
@@ -57,7 +58,11 @@ Get-AppxPackage -AllUsers "Microsoft.Office.Sway*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "Microsoft.OneConnect*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "Microsoft.People*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "Microsoft.Print3D*" | Remove-AppxPackage
+Get-AppxPackage -AllUsers "Microsoft.MicrosoftSolitaireCollection" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "Microsoft.SkypeApp*" | Remove-AppxPackage
+# Remove "Chat" icon from Taskbar for free edition of "Teams"
+REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /f /v TaskbarMn /t REG_DWORD /d 0
+Get-AppxPackage -AllUsers "MicrosoftTeams*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "Microsoft.Todos*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "Microsoft.Wallet*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "Microsoft.Whiteboard*" | Remove-AppxPackage
@@ -79,7 +84,7 @@ Get-AppxPackage -AllUsers "*CaesarsSlotsFreeCasino*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "*CandyCrush*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "*COOKINGFEVER*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "*CyberLinkMediaSuiteEssentials*" | Remove-AppxPackage
-Get-AppxPackage -AllUsers "*DisneyMagicKingdoms*" | Remove-AppxPackage
+Get-AppxPackage -AllUsers "*Disney*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "*DrawboardPDF*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "*Duolingo-LearnLanguagesforFree*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "*EclipseManager*" | Remove-AppxPackage
@@ -90,7 +95,9 @@ Get-AppxPackage -AllUsers "*Flipboard*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "*HiddenCity*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "*Hulu*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "*iHeartRadio*" | Remove-AppxPackage
+Get-AppxPackage -AllUsers "*Instagram*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "*Keeper*" | Remove-AppxPackage
+Get-AppxPackage -AllUsers "*Kindle*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "*LinkedInforWindows*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "*MarchofEmpires*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "*NYTCrossword*" | Remove-AppxPackage
@@ -99,11 +106,13 @@ Get-AppxPackage -AllUsers "*PandoraMediaInc*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "*PhototasticCollage*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "*PicsArt-PhotoStudio*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "*PolarrPhotoEditorAcademicEdition*" | Remove-AppxPackage
+Get-AppxPackage -AllUsers "*Prime*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "*RoyalRevolt*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "*Shazam*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "*Sidia.LiveWallpaper*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "*SlingTV*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "*Speed" | Remove-AppxPackage
+Get-AppxPackage -AllUsers "*SpotifyAB.SpotifyMusic*" | Remove-AppxPackage # W11 Branded Spotify
 Get-AppxPackage -AllUsers "*Sway*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "*TuneInRadio*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "*Twitter*" | Remove-AppxPackage
@@ -180,14 +189,55 @@ Set-Location C:/
 Write-Host "3.2.2 Disabled Cortana Web Search" -ForegroundColor YELLOW
 
 # 3.3 Widgets
-winget uninstall --Name "Windows web experience pack" --accept-source-agreements --Force
+winget uninstall --Name "Windows web experience pack" --accept-source-agreements
 Write-Host "3.3 Widgets Removal" -ForegroundColor YELLOW
+
+# 3.4 OneDrive
+# Close OneDrive (if running in background)
+taskkill /f /im OneDrive.exe
+# OneDrive - Remove from left hand side navigation
+Set-ItemProperty -Path "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" -Name "System.IsPinnedToNameSpaceTree" -Value "0"
+# One Drive - Disable File Sync		
+Set-ItemProperty -Path "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSync" -Value "1"
+# Remove OneDrive - x86
+%SystemRoot%\System32\OneDriveSetup.exe /uninstall
+# Remove OneDrive - x64
+%SystemRoot%\SysWOW64\OneDriveSetup.exe /uninstall
+# Uninstall OneDrive
+if (Test-Path "$env:systemroot\System32\OneDriveSetup.exe") {
+    & "$env:systemroot\System32\OneDriveSetup.exe" /uninstall
+}
+if (Test-Path "$env:systemroot\SysWOW64\OneDriveSetup.exe") {
+    & "$env:systemroot\SysWOW64\OneDriveSetup.exe" /uninstall
+}
+# Disable OneDrive via Group Policies
+force-mkdir "HKLM:\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\OneDrive"
+Set-ItemProperty "HKLM:\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\OneDrive" "DisableFileSyncNGSC" 1
+# Removing OneDrive Leftovers
+Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:localappdata\Microsoft\OneDrive"
+Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:programdata\Microsoft OneDrive"
+Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "C:\OneDriveTemp"
+# Remove OneDrive from explorer sidebar
+New-PSDrive -PSProvider "Registry" -Root "HKEY_CLASSES_ROOT" -Name "HKCR"
+mkdir -Force "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
+Set-ItemProperty "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" "System.IsPinnedToNameSpaceTree" 0
+mkdir -Force "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
+Set-ItemProperty "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" "System.IsPinnedToNameSpaceTree" 0
+Remove-PSDrive "HKCR"
+# Removing run option for new Users
+reg load "hku\Default" "C:\Users\Default\NTUSER.DAT"
+reg delete "HKEY_USERS\Default\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "OneDriveSetup" /f
+reg unload "hku\Default"
+# Removing Start Menu Entry
+Remove-Item -Force -ErrorAction SilentlyContinue "$env:userprofile\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk"
+Write-Host "3.4 OneDrive Removed" -ForegroundColor YELLOW
 #endregion
 
 
 <#############################################################################################################################>
-#region 4.0 Services
-Write-Host "4.0 Services" -ForegroundColor YELLOW
+#region 4.0 Services and Scheduled Tasks
+# Services
+Write-Host "4.1 Services" -ForegroundColor YELLOW
 # Bing Downloaded Maps Manager
 Get-Service "MapsBroker" | Stop-Service
 Get-Service "MapsBroker" | Set-Service -StartupType Disabled
@@ -252,6 +302,19 @@ Write-Host "Disabled: Windows Insider Service" -ForegroundColor DarkYellow
 Get-Service "icssvc" | Stop-Service
 Get-Service "icssvc" | Set-Service -StartupType Disabled
 Write-Host "Disabled: Windows Mobile Hotspot Service" -ForegroundColor DarkYellow
+
+# Scheduled Tasks
+Write-Host "4.2 Scheduled Tasks" -ForegroundColor YELLOW
+Get-Scheduledtask "Proxy" -ErrorAction SilentlyContinue | Disable-ScheduledTask
+Get-Scheduledtask "SmartScreenSpecific" -ErrorAction SilentlyContinue | Disable-ScheduledTask
+Get-Scheduledtask "Microsoft Compatibility Appraiser" -ErrorAction SilentlyContinue | Disable-ScheduledTask
+Get-Scheduledtask "Consolidator" -ErrorAction SilentlyContinue | Disable-ScheduledTask
+Get-Scheduledtask "KernelCeipTask" -ErrorAction SilentlyContinue | Disable-ScheduledTask
+Get-Scheduledtask "UsbCeip" -ErrorAction SilentlyContinue | Disable-ScheduledTask
+Get-Scheduledtask "Microsoft-Windows-DiskDiagnosticDataCollector" -ErrorAction SilentlyContinue | Disable-ScheduledTask
+Get-Scheduledtask "GatherNetworkInfo" -ErrorAction SilentlyContinue | Disable-ScheduledTask
+Get-Scheduledtask "QueueReporting" -ErrorAction SilentlyContinue | Disable-ScheduledTask
+Get-Scheduledtask "UpdateLibrary" -ErrorAction SilentlyContinue | Disable-ScheduledTask
 #endregion
 
 
@@ -335,6 +398,34 @@ New-ItemProperty -LiteralPath 'Registry::\HKEY_USERS\.DEFAULT\Control Panel\Mous
 New-ItemProperty -LiteralPath 'Registry::\HKEY_USERS\.DEFAULT\Control Panel\Mouse' -Name 'MouseThreshold1' -Value '0' -PropertyType String -Force -ErrorAction SilentlyContinue;
 New-ItemProperty -LiteralPath 'Registry::\HKEY_USERS\.DEFAULT\Control Panel\Mouse' -Name 'MouseThreshold2' -Value '0' -PropertyType String -Force -ErrorAction SilentlyContinue;
 Write-Host "5.7 Mouse: MarkC's Acceleration Fix (Source: http://donewmouseaccel.blogspot.com/)" -ForegroundColor YELLOW
+
+Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorAdmin" -Value "0"
+Write-Host "5.8 Disabled UAC Prompts" -ForegroundColor YELLOW
+
+if((Test-Path -LiteralPath "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced") -ne $true) {  New-Item "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -force -ErrorAction SilentlyContinue };
+New-ItemProperty -LiteralPath 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name 'LaunchTo' -Value 1 -PropertyType DWord -Force -ErrorAction SilentlyContinue;
+Write-Host "5.9 Explorer opens with 'This PC' instead of 'Most Recent'" -ForegroundColor YELLOW
+
+Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAl" -Force | Out-Null
+New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -PropertyType "Dword" -Name "TaskbarAl" -Value "0"
+Write-Host "5.10 Explorer opens with 'This PC' instead of 'Most Recent'" -ForegroundColor YELLOW
+
+Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Terminal Server" -name "fDenyTSConnections" -value "0" -Force | Out-Null
+Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+Write-Host "5.11 RDP Enabled" -ForegroundColor YELLOW
+
+Remove-ItemProperty -Path "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Run" -Name "Discord" -Force | Out-Null
+Write-host "5.12 Disabled Discord from auto launching on Login" -ForegroundColor YELLOW
+
+Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\PushNotifications" -Name "ToastEnabled" -Force | Out-Null
+New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\PushNotifications" -PropertyType "Dword" -Name "ToastEnabled" -Value "0" | Out-Null
+Write-host "5.13 Disabled Toast Notifications from Windows 11" -ForegroundColor YELLOW
+
+New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -PropertyType "Dword" -Name "ShowTaskViewButton" -Value "0"
+Write-host "5.14 Removed 'Task View' Button on Taskbar" -ForegroundColor YELLOW
+
+Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" -Name "SearchBoxTaskbarMode" -Value "0" -Type "DWord" -Force
+Write-host "5.15 Removed 'Search' Button on Taskbar" -ForegroundColor YELLOW
 #endregion
 
 
