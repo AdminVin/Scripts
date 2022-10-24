@@ -28,8 +28,8 @@ Write-Host "2.1 Verbose Status Messaging Enabled" -ForegroundColor Green
 
 <#############################################################################################################################>
 #region 3.0 Applications
-# 3.1 Metro Apps
-Write-Host "3.1 Metro Apps" -ForegroundColor Green
+Write-Host "3.0 Applications" -ForegroundColor Green
+Write-Host "3.1 Applications - Metro" -ForegroundColor Green
 # Default W11 Bloatware
 Get-AppxPackage -AllUsers "Microsoft.3DBuilder*" | Remove-AppxPackage -ErrorAction SilentlyContinue
 Get-AppxPackage -AllUsers "Microsoft.549981C3F5F10*" | Remove-AppxPackage -ErrorAction SilentlyContinue
@@ -147,7 +147,7 @@ Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentD
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "OEMPreInstalledAppsEnabled" -Value "0"
 
 # 3.2 Applications
-Write-Host "3.2 Applications" -ForegroundColor Green
+Write-Host "3.2 Applications - Desktop" -ForegroundColor Green
 
 # 3.2.1 Edge
 Write-Host "3.2.1 Microsoft Edge" -ForegroundColor Green
@@ -213,55 +213,55 @@ Write-Host "3.3 Widgets Removal" -ForegroundColor Green
 # Services
 Write-Host "4.1 Services" -ForegroundColor Green
 # Bing Downloaded Maps Manager
-Get-Service "MapsBroker" | Stop-Service | Out-Null
+Get-Service "MapsBroker" | Stop-Service -ErrorAction SilentlyContinue | Out-Null
 Get-Service "MapsBroker" | Set-Service -StartupType Disabled | Out-Null
-Write-Host "Disabled: Bing Downloaded Maps Manager" -ForegroundColor Green
+Write-Host "4.1.1 Disabled: Bing Downloaded Maps Manager" -ForegroundColor Green
 # Bluetooth (Setting to Manual in the event BT is used.)
-Get-Service "BTAGService" | Stop-Service | Out-Null
+Get-Service "BTAGService" | Stop-Service -ErrorAction SilentlyContinue | Out-Null
 Get-Service "BTAGService" | Set-Service -StartupType Manual | Out-Null
-Get-Service "bthserv" | Stop-Service | Out-Null
+Get-Service "bthserv" | Stop-Service -ErrorAction SilentlyContinue | Out-Null
 Get-Service "bthserv" | Set-Service -StartupType Manual | Out-Null
-Write-Host "Set to Manual: Bluetooth" -ForegroundColor Green
+Write-Host "4.1.2 Set to Manual: Bluetooth" -ForegroundColor Green
 # Celluar Time
-Get-Service "autotimesvc" | Stop-Service | Out-Null
+Get-Service "autotimesvc" | Stop-Service -ErrorAction SilentlyContinue | Out-Null
 Get-Service "autotimesvc" | Set-Service -StartupType Disabled | Out-Null
-Write-Host "Disabled: Celluar Time" -ForegroundColor Green
+Write-Host "4.1.3 Disabled: Celluar Time" -ForegroundColor Green
 # Parental Controls
-Get-Service "WpcMonSvc" | Stop-Service | Out-Null
+Get-Service "WpcMonSvc" | Stop-Service -ErrorAction SilentlyContinue | Out-Null
 Get-Service "WpcMonSvc" | Set-Service -StartupType Disabled | Out-Null
-Write-Host "Disabled: Parental Controls" -ForegroundColor Green
+Write-Host "4.1.4 Disabled: Parental Controls" -ForegroundColor Green
 # Phone Service
-Get-Service "PhoneSvc" | Stop-Service | Out-Null
+Get-Service "PhoneSvc" | Stop-Service -ErrorAction SilentlyContinue | Out-Null
 Get-Service "PhoneSvc" | Set-Service -StartupType Disabled | Out-Null
-Write-Host "Disabled: Phone Service" -ForegroundColor Green
+Write-Host "4.1.5 Disabled: Phone Service" -ForegroundColor Green
 # Portable Device Enumerator Service
-Get-Service "WPDBusEnum" | Stop-Service | Out-Null
+Get-Service "WPDBusEnum" | Stop-Service -ErrorAction SilentlyContinue | Out-Null
 Get-Service "WPDBusEnum" | Set-Service -StartupType Disabled | Out-Null
-Write-Host "Disabled: Portable Device Enumeration Service" -ForegroundColor Green
+Write-Host "4.1.6 Disabled: Portable Device Enumeration Service" -ForegroundColor Green
 # Program Compatibility Assistant Service
-Get-Service "PcaSvc" | Stop-Service | Out-Null
+Get-Service "PcaSvc" | Stop-Service -ErrorAction SilentlyContinue | Out-Null
 Get-Service "PcaSvc" | Set-Service -StartupType Disabled | Out-Null
-Write-Host "Disabled: Program Compatibility Assistant Service" -ForegroundColor Green
+Write-Host "4.1.7 Disabled: Program Compatibility Assistant Service" -ForegroundColor Green
 # Remote Registry
-Get-Service "RemoteRegistry" | Stop-Service | Out-Null
+Get-Service "RemoteRegistry" | Stop-Service -ErrorAction SilentlyContinue | Out-Null
 Get-Service "RemoteRegistry" | Set-Service -StartupType Disabled | Out-Null
-Write-Host "Disabled: Remote Registry (Security Increased)" -ForegroundColor Green
+Write-Host "4.1.8 Disabled: Remote Registry (Security Increased)" -ForegroundColor Green
 # Retail Demo
-Get-Service "RetailDemo" | Stop-Service | Out-Null
+Get-Service "RetailDemo" | Stop-Service -ErrorAction SilentlyContinue | Out-Null
 Get-Service "RetailDemo" | Set-Service -StartupType Disabled | Out-Null
-Write-Host "Disabled: Retail Demo" -ForegroundColor Green
+Write-Host "4.1.9 Disabled: Retail Demo" -ForegroundColor Green
 # Themes
-Get-Service "Themes" | Stop-Service | Out-Null
+Get-Service "Themes" | Stop-Service -ErrorAction SilentlyContinue | Out-Null
 Get-Service "Themes" | Set-Service -StartupType Disabled | Out-Null
-Write-Host "Disabled: Touch Keyboard and Handwritting Panel" -ForegroundColor Green
+Write-Host "4.1.10 Disabled: Touch Keyboard and Handwritting Panel" -ForegroundColor Green
 # Windows Insider Service
-Get-Service "wisvc" | Stop-Service | Out-Null
+Get-Service "wisvc" | Stop-Service -ErrorAction SilentlyContinue | Out-Null
 Get-Service "wisvc" | Set-Service -StartupType Disabled | Out-Null
-Write-Host "Disabled: Windows Insider Service" -ForegroundColor Green
+Write-Host "4.1.11 Disabled: Windows Insider Service" -ForegroundColor Green
 # Windows Mobile Hotspot Service
-Get-Service "icssvc" | Stop-Service | Out-Null
+Get-Service "icssvc" | Stop-Service -ErrorAction SilentlyContinue | Out-Null
 Get-Service "icssvc" | Set-Service -StartupType Disabled | Out-Null
-Write-Host "Disabled: Windows Mobile Hotspot Service" -ForegroundColor Green
+Write-Host "4.1.12 Disabled: Windows Mobile Hotspot Service" -ForegroundColor Green
 
 # Scheduled Tasks
 Write-Host "4.2 Scheduled Tasks" -ForegroundColor Green
