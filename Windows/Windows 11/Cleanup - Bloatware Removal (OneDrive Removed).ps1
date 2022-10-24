@@ -179,58 +179,44 @@ Write-Host "3.2.1 Disabled Microsoft Edge - Auto Start (Startup Entry)" -Foregro
 Set-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Main' -Name 'DoNotTrack' -Value '1'
 Write-Host "3.2.1 Disabled Microsoft Edge - Tracking" -ForegroundColor YELLOW
 
-# 3.2.2 Cortana
-Write-Host "3.2.2 Cortana" -ForegroundColor YELLOW
-# Disable Web Searching from Start Menu
-Set-Location HKCU:
-New-Item -Path .\SOFTWARE\Policies\Microsoft\Windows\Explorer
-New-ItemProperty -Path ".\SOFTWARE\Policies\Microsoft\Windows\Explorer" -Name "DisableSearchBoxSuggestions" -Value "1"
-Set-Location C:/
-Write-Host "3.2.2 Disabled Cortana Web Search" -ForegroundColor YELLOW
-
-# 3.3 Widgets
-winget uninstall --Name "Windows web experience pack" --accept-source-agreements
-Write-Host "3.3 Widgets Removal" -ForegroundColor YELLOW
-
-# 3.4 OneDrive
+# 3.2.2 OneDrive
 # Close OneDrive (if running in background)
 taskkill /f /im OneDrive.exe
-# OneDrive - Remove from left hand side navigation
-Set-ItemProperty -Path "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" -Name "System.IsPinnedToNameSpaceTree" -Value "0"
-# One Drive - Disable File Sync		
+# File Explorer - Remove
+if((Test-Path -LiteralPath "HKCU:\Software\Classes\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}") -ne $true) {  New-Item "HKCU:\Software\Classes\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" -force -ea SilentlyContinue };
+New-ItemProperty -LiteralPath 'HKCU:\Software\Classes\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}' -Name '(default)' -Value 'OneDrive' -PropertyType String -Force -ea SilentlyContinue;
+New-ItemProperty -LiteralPath 'HKCU:\Software\Classes\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}' -Name 'System.IsPinnedToNameSpaceTree' -Value 0 -PropertyType DWord -Force -ea SilentlyContinue;
+# File Sync - Disable		
 Set-ItemProperty -Path "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSync" -Value "1"
-# Remove OneDrive - x86
+# Removal - x86
 %SystemRoot%\System32\OneDriveSetup.exe /uninstall
-# Remove OneDrive - x64
+# Removal - x64
 %SystemRoot%\SysWOW64\OneDriveSetup.exe /uninstall
-# Uninstall OneDrive
+# Removal - System
 if (Test-Path "$env:systemroot\System32\OneDriveSetup.exe") {
     & "$env:systemroot\System32\OneDriveSetup.exe" /uninstall
 }
 if (Test-Path "$env:systemroot\SysWOW64\OneDriveSetup.exe") {
     & "$env:systemroot\SysWOW64\OneDriveSetup.exe" /uninstall
 }
-# Disable OneDrive via Group Policies
+# Disable - Group Policies
 force-mkdir "HKLM:\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\OneDrive"
 Set-ItemProperty "HKLM:\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\OneDrive" "DisableFileSyncNGSC" 1
-# Removing OneDrive Leftovers
+# Misc - Leftovers
 Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:localappdata\Microsoft\OneDrive"
 Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:programdata\Microsoft OneDrive"
 Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "C:\OneDriveTemp"
-# Remove OneDrive from explorer sidebar
-New-PSDrive -PSProvider "Registry" -Root "HKEY_CLASSES_ROOT" -Name "HKCR"
-mkdir -Force "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
-Set-ItemProperty "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" "System.IsPinnedToNameSpaceTree" 0
-mkdir -Force "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
-Set-ItemProperty "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" "System.IsPinnedToNameSpaceTree" 0
-Remove-PSDrive "HKCR"
-# Removing run option for new Users
+# Misc - Prevent New User Accounts installone OneDrive
 reg load "hku\Default" "C:\Users\Default\NTUSER.DAT"
 reg delete "HKEY_USERS\Default\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "OneDriveSetup" /f
 reg unload "hku\Default"
-# Removing Start Menu Entry
+# Shorcut - Start Menu Removal
 Remove-Item -Force -ErrorAction SilentlyContinue "$env:userprofile\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk"
-Write-Host "3.4 OneDrive Removed" -ForegroundColor YELLOW
+Write-Host "3.2.2 OneDrive Removed" -ForegroundColor YELLOW
+
+# 3.3 Widgets
+winget uninstall --Name "Windows web experience pack" --accept-source-agreements
+Write-Host "3.3 Widgets Removal" -ForegroundColor YELLOW
 #endregion
 
 

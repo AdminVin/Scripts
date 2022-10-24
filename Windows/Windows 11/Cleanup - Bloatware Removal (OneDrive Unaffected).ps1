@@ -179,21 +179,12 @@ Write-Host "3.2.1 Disabled Microsoft Edge - Auto Start (Startup Entry)" -Foregro
 Set-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Main' -Name 'DoNotTrack' -Value '1'
 Write-Host "3.2.1 Disabled Microsoft Edge - Tracking" -ForegroundColor YELLOW
 
-# 3.2.2 Cortana
-Write-Host "3.2.2 Cortana" -ForegroundColor YELLOW
-# Disable Web Searching from Start Menu
-Set-Location HKCU:
-New-Item -Path .\SOFTWARE\Policies\Microsoft\Windows\Explorer
-New-ItemProperty -Path ".\SOFTWARE\Policies\Microsoft\Windows\Explorer" -Name "DisableSearchBoxSuggestions" -Value "1"
-Set-Location C:/
-Write-Host "3.2.2 Disabled Cortana Web Search" -ForegroundColor YELLOW
+# 3.2.2 OneDrive
+Write-Host "3.4 OneDrive Removal - Skipped!" -ForegroundColor RED
 
 # 3.3 Widgets
 winget uninstall --Name "Windows web experience pack" --accept-source-agreements
 Write-Host "3.3 Widgets Removal" -ForegroundColor YELLOW
-
-# 3.4 OneDrive
-Write-Host "3.4 OneDrive Unaffected." -ForegroundColor YELLOW
 #endregion
 
 
