@@ -12,11 +12,8 @@ Write-Host ""
 
 <#############################################################################################################################>
 #region 1.0 Elevate PowerShell Session
-Write-Host "1.1 Elevating Powershell Session with Administrative Rights" -ForegroundColor Green
+Write-Host "1.0 Elevating Powershell Session with Administrative Rights" -ForegroundColor Green
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) { Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs; exit }
-
-Invoke-Expression "& { $(Invoke-RestMethod https://aka.ms/install-powershell.ps1) }"
-Write-Host "1.2 PowerShell Updated" -ForegroundColor Green
 #endregion
 
 
@@ -25,6 +22,7 @@ Write-Host "1.2 PowerShell Updated" -ForegroundColor Green
 Write-Host "2.0 Diagnostics" -ForegroundColor Green
 # Verbose Status Messaging
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\System" -Name "VerboseStatus" -Value "1"
+Write-Host "2.1 Verbose Status Messaging Enabled" -ForegroundColor Green
 #endregion
 
 
@@ -35,7 +33,6 @@ Write-Host "3.1 Metro Apps" -ForegroundColor Green
 <# Old method of removal #>
 # Get-AppxPackage -AllUsers | where-object {$_.name -notlike "*Store*" -and $_.name -notlike "*Calculator*" -and $_.name -notlike "Microsoft.Windows.Photos*" -and $_.name -notlike "Microsoft.WindowsSoundRecorder*" -and $_.name -notlike "Microsoft.Paint*" -and $_.name -notlike "Microsoft.MSPaint*" -and $_.name -notlike "Microsoft.ScreenSketch*" -and $_.name -notlike "Microsoft.WindowsCamera*" -and $_.name -notlike "microsoft.windowscommunicationsapps*"<# Mail App#> -and $_.name -notlike "*Weather*" -and $_.name -notlike "Microsoft.Office.OneNote*" -and $_.name -notlike "*Note*" -and $_.name -notlike "*xbox*" -and $_.name -notlike "*OneDrive*" -and $_.name -notlike "Microsoft.WindowsAlarms*" -and $_.name -notlike "*Terminal*" -and $_.name -notlike "Microsoft.Net.*" -and $_.name -notlike "*Edge*" -and $_.name -notlike "Microsoft.UI*" -and $_.name -notlike "Microsoft.OOBE*" -and $_.name -notlike "Microsoft.VC*" -and $_.name -notlike "Microsoft.VC*" -and $_.name -notlike "Windows.Print*" -and $_.name -notlike "Microsoft.HEVCVideo*" -and $_.name -notlike "Microsoft.HEIFImage*" -and $_.name -notlike "Microsoft.Web*" -and $_.name -notlike "Microsoft.MPEG*" -and $_.name -notlike "Microsoft.VP9*" -and $_.name -notlike "Microsoft.MicrosoftSolitaire*" -and $_.name -notlike "Microsoft.QuickAssist*" -and $_.name -notlike "Microsoft.Wallet*" -and $_.name -notlike "Microsoft.Windows*" -and $_.name -notlike "Windows*" -and $_.name -notlike "*nVidia*"  -and $_.name -notlike "*AMD*" -and $_.name -notlike "*ASUS*" -and $_.name -notlike "*Armoury*" -and $_.name -notlike "*MSI*" -and $_.name -notlike "*EVGA*" -and $_.name -notlike "*Intel*" -and $_.name -notlike "*Adobe*" -and $_.name -notlike "*Spotify*"} | Remove-AppxPackage -ErrorAction SilentlyContinue
 
-<# New Method for Metro Apps Removal #>
 # Default W11 Bloatware
 Get-AppxPackage -AllUsers "Microsoft.3DBuilder*" | Remove-AppxPackage
 Get-AppxPackage -AllUsers "Microsoft.549981C3F5F10*" | Remove-AppxPackage
@@ -158,13 +155,13 @@ Write-Host "3.2 Applications" -ForegroundColor Green
 # 3.2.1 Edge
 Write-Host "3.2.1 Microsoft Edge" -ForegroundColor Green
 ## Services
-Get-Service "edgeupdate" | Stop-Service | Out-Null | Out-Null
-Get-Service "edgeupdate" | Set-Service -StartupType Disabled | Out-Null | Out-Null
-Get-Service "edgeupdatem" | Stop-Service | Out-Null | Out-Null
-Get-Service "edgeupdatem" | Set-Service -StartupType Disabled | Out-Null | Out-Null
+Get-Service "edgeupdate" | Stop-Service | Out-Null
+Get-Service "edgeupdate" | Set-Service -StartupType Disabled | Out-Null
+Get-Service "edgeupdatem" | Stop-Service | Out-Null
+Get-Service "edgeupdatem" | Set-Service -StartupType Disabled | Out-Null
 Write-Host "3.2.1 Disabled Microsoft Edge - Auto Update Services" -ForegroundColor Green
 ## Scheduled Tasks
-Get-Scheduledtask "*edge*" -erroraction silentlycontinue | Disable-ScheduledTask | Out-Null | Out-Null
+Get-Scheduledtask "*edge*" -erroraction silentlycontinue | Disable-ScheduledTask | Out-Null
 Write-Host "3.2.1 Disabled Microsoft Edge - Auto Start (Scheduled Task)" -ForegroundColor Green
 ## Auto Start
 Set-Location HKLM:
@@ -174,9 +171,9 @@ if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Main
 New-ItemProperty -LiteralPath "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Main" -Name "AllowPrelaunch" -Value "0" -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null
 Set-Location HKCU:
 Set-Location "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run\"
-Remove-ItemProperty -Path. -Name "*MicrosoftEdge*" -Force | Out-Null
+Remove-ItemProperty -Path. -Name "*MicrosoftEdge*" -Force -ErrorAction SilentlyContinue | Out-Null
 Set-Location "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
-Remove-ItemProperty -Path. -Name "*MicrosoftEdge*" -Force | Out-Null
+Remove-ItemProperty -Path. -Name "*MicrosoftEdge*" -Force -ErrorAction SilentlyContinue | Out-Null
 Set-Location C:/
 Write-Host "3.2.1 Disabled Microsoft Edge - Auto Start (Startup Entry)" -ForegroundColor Green
 # Tracking
