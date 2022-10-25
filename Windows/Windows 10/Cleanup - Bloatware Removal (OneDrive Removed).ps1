@@ -4,23 +4,23 @@ Write-Host ""
 Write-Host "This script was created by AdminVin, and the purpose of it is to remove all bloatware from your Windows 10 Installation." -ForegroundColor DarkGreen
 Write-Host "This has been updated for Windows 10 - Update 22H2." -ForegroundColor DarkGreen
 Write-Host ""
-Write-Host "Updated 2022-10-24" -ForegroundColor DarkGreen
+Write-Host "Updated 2022-10-25" -ForegroundColor DarkGreen
 Write-Host ""
 #endregion
 
 <### Elevating Powershell Script with Administrative Rights ###>
-Write-Output "1.0 Elevating Powershell Script with Administrative Rights" -ForegroundColor Green
+Write-Host "1.0 Elevating Powershell Script with Administrative Rights" -ForegroundColor Green
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) { Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs; exit }
 
 
 <### Diagnostics ###>
-Write-Output "2.0 Diagnostics" -ForegroundColor Green
+Write-Host "2.0 Diagnostics" -ForegroundColor Green
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\System" -Name "VerboseStatus" -Value "1"
-Write-Output "2.1 Enabled Verbose Status Messaging" -ForegroundColor Green
+Write-Host "2.1 Enabled Verbose Status Messaging" -ForegroundColor Green
 
 <### Applications ###>
-Write-Output "3.0 Applications" -ForegroundColor Green
-Write-Output "3.1 Applications - Metro" -ForegroundColor Green
+Write-Host "3.0 Applications" -ForegroundColor Green
+Write-Host "3.1 Applications - Metro" -ForegroundColor Green
 # Default Windows Bloatware
 Get-AppxPackage -AllUsers "Microsoft.3DBuilder*" | Remove-AppxPackage -ErrorAction SilentlyContinue
 Get-AppxPackage -AllUsers "Microsoft.549981C3F5F10*" | Remove-AppxPackage -ErrorAction SilentlyContinue
@@ -191,11 +191,11 @@ Remove-Item -Force -ErrorAction SilentlyContinue "$env:userprofile\AppData\Roami
 Write-Host "3.2.2 OneDrive Removed" -ForegroundColor Green
 
 <### Services and Scheduled Tasks ###>
-Write-Output "3.0 Services and Scheduled Tasks" -ForegroundColor Green
-Write-Output "3.1 Services" -ForegroundColor Green
+Write-Host "3.0 Services and Scheduled Tasks" -ForegroundColor Green
+Write-Host "3.1 Services" -ForegroundColor Green
 Get-Service Diagtrack,Fax,PhoneSvc,WMPNetworkSvc,DmwApPushService,WpcMonSvc -ErrorAction SilentlyContinue | Stop-Service | Set-Service -StartupType Disabled
 
-Write-Output "3.2 Scheduled Tasks" -ForegroundColor Green
+Write-Host "3.2 Scheduled Tasks" -ForegroundColor Green
 Get-Scheduledtask "Proxy" -ErrorAction SilentlyContinue | Disable-ScheduledTask
 Get-Scheduledtask "SmartScreenSpecific" -ErrorAction SilentlyContinue | Disable-ScheduledTask
 Get-Scheduledtask "Microsoft Compatibility Appraiser" -ErrorAction SilentlyContinue | Disable-ScheduledTask
@@ -208,10 +208,10 @@ Get-Scheduledtask "QueueReporting" -ErrorAction SilentlyContinue | Disable-Sched
 
 
  <### 5.0 Quality of Life###>
-Write-Output "5.0 Quality of Life" -ForegroundColor Green
+Write-Host "5.0 Quality of Life" -ForegroundColor Green
 
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "ShowSyncProviderNotifications" -Value "0"
-Write-Output "5.1 Explorer: Disable Ads in File Explorer" -ForegroundColor Green
+Write-Host "5.1 Explorer: Disable Ads in File Explorer" -ForegroundColor Green
 
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Personalization\Settings" -Name "AcceptedPrivacyPolicy" -Value "0"
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Language" -Name "Enabled" -Value "0"
@@ -220,55 +220,55 @@ Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization" -Name "Re
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore" -Name "HarvestContacts" -Value "0"
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Input\TIPC" -Name "Enabled" -Value "0"
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" -Name "HistoryViewEnabled" -Value "0"
-Write-Output "5.2 Cortana - Disabled 'Microsoft from getting to know you'" -ForegroundColor Green
+Write-Host "5.2 Cortana - Disabled 'Microsoft from getting to know you'" -ForegroundColor Green
 
 Set-Itemproperty -Path 'HKCU:\SOFTWARE\Policies\Microsoft\Windows\System' -Name 'EnableActivityFeed' -Value '0'
-Write-Output "5.3 Cortana: Disabled 'Activity Feed' in Start Menu" -ForegroundColor Green
+Write-Host "5.3 Cortana: Disabled 'Activity Feed' in Start Menu" -ForegroundColor Green
 
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "SoftLandingEnabled" -Value "0"
 Set-Itemproperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "RotatingLockScreenEnabled" -Value "0"
 Set-Itemproperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "RotatingLockScreenOverlayEnabled" -Value "0"
-Write-Output "5.4 Windows: Disabled Lockscreen suggestions and rotating pictures" -ForegroundColor Green
+Write-Host "5.4 Windows: Disabled Lockscreen suggestions and rotating pictures" -ForegroundColor Green
 
 Set-Itemproperty -Path "HKCU:\SOFTWARE\Microsoft\Siuf\Rules" -Name "NumberOfSIUFInPeriod" -Value "0"
 Set-Itemproperty -Path "HKCU:\SOFTWARE\Microsoft\Siuf\Rules" -Name "PeriodInNanoSeconds" -Value "0"
 Set-Itemproperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" -Name "DoNotShowFeedbackNotifications" -Value "1"
-Write-Output "5.5 Windows: Disabled Feedback Prompts" -ForegroundColor Green
+Write-Host "5.5 Windows: Disabled Feedback Prompts" -ForegroundColor Green
 
 Set-Itemproperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppCompat" -Name "DisableUAR" -Value "1"
-Write-Output "5.6 Windows: Disabled Troubleshooting 'Steps Recorder'" -ForegroundColor Green
+Write-Host "5.6 Windows: Disabled Troubleshooting 'Steps Recorder'" -ForegroundColor Green
 
 Set-Itemproperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent" -Name "DisableSoftLanding" -Value "1"
-Write-Output "5.7 Windows: Disabled Tips" -ForegroundColor Green
+Write-Host "5.7 Windows: Disabled Tips" -ForegroundColor Green
 
 #Set-Itemproperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppCompat" -Name "AITEnable" -Value "0"	
-Write-Output "5.8 Windows: Disabled Application Telemetry - Skipped! Required by InTune." -ForegroundColor Yellow
+Write-Host "5.8 Windows: Disabled Application Telemetry - Skipped! Required by InTune." -ForegroundColor Yellow
 
 #Set-Itemproperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppCompat" -Name "DisableInventory" -Value "1"
-Write-Output "5.8 Windows: Disabled Inventory Collector - Skipped! Required by InTune." -ForegroundColor Yellow
+Write-Host "5.8 Windows: Disabled Inventory Collector - Skipped! Required by InTune." -ForegroundColor Yellow
 
 Set-Itemproperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent" -Name "DisableWindowsConsumerFeatures" -Value "1"
-Write-Output "5.9 Windows: Disabled Consumer Experiences" -ForegroundColor Green
+Write-Host "5.9 Windows: Disabled Consumer Experiences" -ForegroundColor Green
 
 Set-Itemproperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds" -Name "EnableConfigFlighting" -Value "0"
-Write-Output "5.10 Windows: Disabled Pre-Release Features" -ForegroundColor Green
+Write-Host "5.10 Windows: Disabled Pre-Release Features" -ForegroundColor Green
 
 Set-ItemProperty -LiteralPath 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People' -Name 'PeopleBand' -Value '0'
-Write-Output "5.11 Start: Disabled 'People' in system tray" -ForegroundColor Green
+Write-Host "5.11 Start: Disabled 'People' in system tray" -ForegroundColor Green
 
 Set-ItemProperty -LiteralPath 'HKCU:\Software\Policies\Microsoft\Windows\Explorer' -Name 'DisableNotificationCenter' -Value '0'
-Write-Output "5.12 Start: Disabled 'Windows Action Center' in system tray" -ForegroundColor Green
+Write-Host "5.12 Start: Disabled 'Windows Action Center' in system tray" -ForegroundColor Green
 
 Set-Itemproperty -path 'HKCU:\Control Panel\Desktop' -Name 'MenuShowDelay' -Value '50'
-Write-Output "5.13 Start: Decreased Menu Animation Time" -ForegroundColor Green
+Write-Host "5.13 Start: Decreased Menu Animation Time" -ForegroundColor Green
 
 Remove-Item -LiteralPath "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}" -Force;
 Remove-Item -LiteralPath "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}" -Force;
-Write-Output "5.14 Windows: Removed '3D Objects' from File Explorer" -ForegroundColor Green
+Write-Host "5.14 Windows: Removed '3D Objects' from File Explorer" -ForegroundColor Green
 
 if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer") -ne $true) {  New-Item "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" -Force -ErrorAction SilentlyContinue };
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer' -Name 'ShowDriveLettersFirst' -Value 4 -PropertyType DWord -Force -ErrorAction SilentlyContinue;
-Write-Output "5.15 File Explorer: Drive letters PRE drive label [Example: '(C:) Windows vs. Windows (C:)]'" -ForegroundColor Green
+Write-Host "5.15 File Explorer: Drive letters PRE drive label [Example: '(C:) Windows vs. Windows (C:)]'" -ForegroundColor Green
 
 if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Classes\*\shell\runas") -ne $true) {  New-Item "HKLM:\SOFTWARE\Classes\*\shell\runas" -Force -ErrorAction SilentlyContinue };
 if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Classes\*\shell\runas\command") -ne $true) {  New-Item "HKLM:\SOFTWARE\Classes\*\shell\runas\command" -Force -ErrorAction SilentlyContinue };
@@ -282,7 +282,7 @@ New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\runas' -Na
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\runas' -Name 'NoWorkingDirectory' -Value '' -PropertyType String -Force -ErrorAction SilentlyContinue;
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\runas\command' -Name '(default)' -Value 'cmd.exe /c takeown /f \"%1\" /r /d y && icacls \"%1\" /grant administrators:F /t' -PropertyType String -Force -ErrorAction SilentlyContinue;
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\runas\command' -Name 'IsolatedCommand' -Value 'cmd.exe /c takeown /f \"%1\" /r /d y && icacls \"%1\" /grant administrators:F /t' -PropertyType String -Force -ErrorAction SilentlyContinue;
-Write-Output "5.16 Windows: Adding File/Folder Take Ownership (Right Click Context Menu)" -ForegroundColor Green
+Write-Host "5.16 Windows: Adding File/Folder Take Ownership (Right Click Context Menu)" -ForegroundColor Green
 
 if((Test-Path -LiteralPath "HKCU:\Control Panel\Desktop") -ne $true) {  New-Item "HKCU:\Control Panel\Desktop" -Force -ErrorAction SilentlyContinue };
 if((Test-Path -LiteralPath "HKLM:\SYSTEM\CurrentControlSet\Control") -ne $true) {  New-Item "HKLM:\SYSTEM\CurrentControlSet\Control" -Force -ErrorAction SilentlyContinue };
@@ -322,9 +322,14 @@ if((Test-Path -LiteralPath "HKCU:\Software\Microsoft\Windows\CurrentVersion\Expl
 New-ItemProperty -LiteralPath 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name 'LaunchTo' -Value 1 -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null;
 Write-Host "5.19 Explorer: Launch with 'This PC' instead of 'Most Recent'" -ForegroundColor Green
 
+if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings") -ne $true) {  New-Item "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings" -force  -Force -ErrorAction SilentlyContinue };
+New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings' -Name 'ShowSleepOption' -Value 0 -PropertyType DWord -Force -ErrorAction SilentlyContinue;
+New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings' -Name 'ShowHibernateOption' -Value 0 -PropertyType DWord -Force  -Force -ErrorAction SilentlyContinue;
+Write-Host "5.20 Start Menu: Remove Sleep/Hibernate from Shutdown Options" -ForegroundColor Green
+
 
  <### 6.0 Performance ###>
-Write-Output "6.0 Performance"
+Write-Host "6.0 Performance"
 Powercfg /Change monitor-timeout-ac 15
 Powercfg /Change monitor-timeout-dc 15
 Write-Host "6.1 Sleep Settings: Monitor" -ForegroundColor Green
@@ -366,8 +371,8 @@ Write-Host "6.4 Sleep Settings: Hibernate" -ForegroundColor Green
 ###########################################################################################################################################################
 
 ### Notify User
-Write-Output ""
-Write-Output "***************************************************"
-Write-Output "* RESTART YOUR SYSTEM FOR CHANGES TO TAKE EFFECT! *"
-Write-Output "***************************************************"
+Write-Host ""
+Write-Host "***************************************************"
+Write-Host "* RESTART YOUR SYSTEM FOR CHANGES TO TAKE EFFECT! *"
+Write-Host "***************************************************"
 pause
