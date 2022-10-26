@@ -409,6 +409,11 @@ Write-Host "5.20 Explorer: Disabled Explorer Animations" -ForegroundColor Green
 if((Test-Path -LiteralPath "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced") -ne $true) {  New-Item "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Force -ErrorAction SilentlyContinue | Out-Null };
 New-ItemProperty -LiteralPath 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name 'EnableSnapBar' -Value 0 -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null;
 Write-Host "5.21 Explorer: Disabled 'Snap Layout' Overlay" -ForegroundColor Green
+
+# Source: https://www.majorgeeks.com/content/page/irpstacksize.html
+if((Test-Path -LiteralPath "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters") -ne $true) {  New-Item "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters"  -Force -ErrorAction SilentlyContinue | Out-Null };
+New-ItemProperty -LiteralPath 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters' -Name 'IRPStackSize' -Value 48 -PropertyType DWord  -Force -ErrorAction SilentlyContinue | Out-Null;
+Write-Host "5.22 Network: Increase Performance for 'I/O Request Packet Stack Size" -ForegroundColor Green
 #endregion
 
 
