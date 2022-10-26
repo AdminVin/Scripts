@@ -327,6 +327,11 @@ New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\E
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings' -Name 'ShowHibernateOption' -Value 0 -PropertyType DWord -Force  -Force -ErrorAction SilentlyContinue;
 Write-Host "5.20 Start Menu: Remove Sleep/Hibernate from Shutdown Options" -ForegroundColor Green
 
+# Source: https://www.majorgeeks.com/content/page/irpstacksize.html (Default 15-20 connections, increased to 30)
+if((Test-Path -LiteralPath "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters") -ne $true) {  New-Item "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters"  -Force -ErrorAction SilentlyContinue | Out-Null };
+New-ItemProperty -LiteralPath 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters' -Name 'IRPStackSize' -Value 48 -PropertyType DWord  -Force -ErrorAction SilentlyContinue | Out-Null;
+Write-Host "5.21 Network: Increase Performance for 'I/O Request Packet Stack Size" -ForegroundColor Green
+
 
 <### 6.0 Performance ###>
 Write-Host "6.0 Performance" -ForegroundColor Green
