@@ -1,13 +1,3 @@
-#region Introduction
-Write-Host "Hello!" -ForegroundColor DarkGreen
-Write-Host ""
-Write-Host "This script was created by AdminVin, and the purpose of it is to remove all bloatware from your Windows 10 Installation." -ForegroundColor DarkGreen
-Write-Host "This has been updated for Windows 10 - Update 22H2." -ForegroundColor DarkGreen
-Write-Host ""
-Write-Host "Updated 2022-10-26" -ForegroundColor DarkGreen
-Write-Host ""
-#endregion
-
 <### Elevating Powershell Script with Administrative Rights ###>
 Write-Host "1.0 Elevating Powershell Script with Administrative Rights" -ForegroundColor Green
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) { Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs; exit }
@@ -396,6 +386,11 @@ Write-Host "6.7 Sleep Settings: Disabled Sleep/Hibernate from Start Menu" -Foreg
 Set-Itemproperty -path "HKCU:\Control Panel\Desktop" -Name 'MenuShowDelay' -value '50'
 Write-Host "6.8 Start Menu: Animation Time Reduced" -ForegroundColor Green
 
+$ActiveNetworkAdapter = Get-NetAdapter | Where-Object {$_.Status -eq 'Up'} | Select-Object Name
+$ActiveNetworkAdapterConverted = $ActiveNetworkAdapter.Name
+Disable-NetAdapterPowerManagement -Name "$ActiveNetworkAdapterConverted" -DeviceSleepOnDisconnect -NoRestart
+Write-Host "6.9 Network: Disabled Ethernet/Wireless Power Saving Settings" -ForegroundColor Green
+
 ###########################################################################################################################################################
 ###########################################################################################################################################################
 ###########################################################################################################################################################
@@ -423,7 +418,15 @@ Write-Host "6.8 Start Menu: Animation Time Reduced" -ForegroundColor Green
 
 ### Notify User
 Write-Host ""
-Write-Host "***************************************************"
-Write-Host "* RESTART YOUR SYSTEM FOR CHANGES TO TAKE EFFECT! *"
-Write-Host "***************************************************"
+Write-Host "*********************************************************" -ForegroundColor Red
+Write-Host "*                                                       *" -ForegroundColor Red
+Write-Host "* Restart your computer for the changes to take effect! *" -ForegroundColor Red
+Write-Host "*                                                       *" -ForegroundColor Red
+Write-Host "*********************************************************" -ForegroundColor Red
+Write-Host ""
+Write-Host "To get the latest version of this script visit:" -ForegroundColor Green
+Write-Host "https://github.com/AdminVin/Scripts/" -ForegroundColor Green
+Write-Host ""
+Write-Host "Windows > Windows (10/11) > Cleanup - Bloatware Removal"
+Write-Host ""
 pause
