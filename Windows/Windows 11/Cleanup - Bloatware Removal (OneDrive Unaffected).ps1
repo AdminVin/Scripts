@@ -336,7 +336,7 @@ Write-Host "5.9 Explorer: Launch with 'This PC' instead of 'Most Recent'" -Foreg
 Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAl" -Force -ErrorAction SilentlyContinue | Out-Null
 New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -PropertyType "Dword" -Name "TaskbarAl" -Value "0" -Force -ErrorAction SilentlyContinue | Out-Null
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAnimations" -Value "0" -Force -ErrorAction SilentlyContinue | Out-Null
-Write-Host "5.10 Start Menu: Alignment - Left" -ForegroundColor Green
+Write-Host "5.10 Start Menu/Taskbar: Alignment - Left" -ForegroundColor Green
 
 Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Terminal Server" -name "fDenyTSConnections" -value "0" -Force | Out-Null
 Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
@@ -350,10 +350,10 @@ New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\PushNoti
 Write-host "5.13 Windows: Disabled Toast Notifications" -ForegroundColor Green
 
 New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -PropertyType "Dword" -Name "ShowTaskViewButton" -Value "0" -ErrorAction SilentlyContinue | Out-Null
-Write-host "5.14 Taskbar: Removed 'Task View' Button" -ForegroundColor Green
+Write-host "5.14 Start Menu/Taskbar: Removed 'Task View' Button" -ForegroundColor Green
 
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" -Name "SearchBoxTaskbarMode" -Value "0" -Type "DWord" -Force | Out-Null
-Write-host "5.15 Taskbar: Removed 'Search' Button" -ForegroundColor Green
+Write-host "5.15 Start Menu/Taskbar: Removed 'Search' Button" -ForegroundColor Green
 
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "HideFileExt" -Value "0" | Out-Null
 Write-Host "5.16 Explorer: Display File Extensions" -ForegroundColor Green
@@ -387,6 +387,10 @@ Write-Host "5.22 Network: Increase Performance for 'I/O Request Packet Stack Siz
 if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System") -ne $true) {  New-Item "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Force -ErrorAction SilentlyContinue | Out-Null };
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\System' -Name 'PublishUserActivities' -Value 0 -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null;
 Write-Host "5.23 File Explorer: Disable Activity Log" -ForegroundColor Green
+
+if((Test-Path -LiteralPath "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced") -ne $true) {  New-Item "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Force -ErrorAction SilentlyContinue | Out-Null };
+New-ItemProperty -LiteralPath 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name 'Start_Layout' -Value 1 -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null;
+Write-Host "5.24 Start Menu/Taskbar: Set Layout to reduce 'Recommened Apps'" -ForegroundColor Green
 #endregion
 
 
