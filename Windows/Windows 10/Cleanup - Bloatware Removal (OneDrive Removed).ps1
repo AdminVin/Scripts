@@ -439,6 +439,6 @@ Write-Host ""
 Write-Host "To get the latest version of this script visit:" -ForegroundColor Green
 Write-Host "https://github.com/AdminVin/Scripts/" -ForegroundColor Green
 Write-Host ""
-Write-Host "Windows > Windows (10/11) > Cleanup - Bloatware Removal"
+Write-Host "Windows > Windows (10/11) > Cleanup - Bloatware Removal" -ForegroundColor Green
 Write-Host ""
 pause
