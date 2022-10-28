@@ -1,24 +1,24 @@
 # View - Specific User
 Get-Mailbox USER@DOMAIN.COM | Select-Object UserPrincipalName,ForwardingSMTPAddress,DeliverToMailboxAndForward
 
-# View - All Users
-Get-Mailbox | Select-Object UserPrincipalName,ForwardingSMTPAddress,DeliverToMailboxAndForward
+# View - All Users with Forwarding Enabled
+Get-Mailbox -ResultSize Unlimited | Where-Object {($_.DeliverToMailboxAndForward -like "True") -AND ($_.ForwardingSMTPAddress -notlike $null)} | Select-Object UserPrincipalName,ForwardingSMTPAddress,DeliverToMailboxAndForward
 
-# View - Export to CSV
-Get-Mailbox -Filter {(ForwardingAddress -ne $null) -OR (DeliverToMailboxAndForward -ne $null)} -ResultSize Unlimited -RecipientTypeDetails UserMailbox | Select-Object UserPrincipalName,ForwardingSmtpAddress,DeliverToMailboxAndForward | Export-CSV AllForwardedEmail.csv
+# View - All Users with Forwarding Enabled | Export to CSV
+Get-Mailbox -ResultSize Unlimited | Where-Object {($_.DeliverToMailboxAndForward -like "True") -AND ($_.ForwardingSMTPAddress -notlike $null)} | Select-Object UserPrincipalName,ForwardingSMTPAddress,DeliverToMailboxAndForward | Export-CSV "Forwarding-AllUserswithForwardingEnabled.csv"
 
 # Set - Forwarding to another email, WITHOUT leaving a copy in the mailbox
-Set-Mailbox user@DOMAIN.com -ForwardingSMTPAddress "ForwardedUser@DOMAIN.com"
+Set-Mailbox USER@DOMAIN.COM -ForwardingSMTPAddress "ForwardedUSER@DOMAIN.COM"
 
 # Set - Forwarding to another email, WITH leaving a copy in the mailbox
-Set-Mailbox user@DOMAIN.com -DeliverToMailboxAndForward $true -ForwardingSMTPAddress "ForwardedUser@DOMAIN.com"
+Set-Mailbox USER@DOMAIN.COM -DeliverToMailboxAndForward $true -ForwardingSMTPAddress "ForwardedUSER@DOMAIN.COM"
 
 # Disable - Forwarding
-Set-Mailbox user@DOMAIN.com -DeliverToMailboxAndForward $False -ForwardingAddress $Null
+Set-Mailbox USER@DOMAIN.COM -DeliverToMailboxAndForward $False -ForwardingAddress $Null
 
 # Verify - Forwarding Status
-Get-Mailbox user@DOMAIN.com | Select-Object UserPrincipalName,ForwardingSmtpAddress,DeliverToMailboxAndForward
+Get-Mailbox USER@DOMAIN.COM | Select-Object UserPrincipalName,ForwardingSmtpAddress,DeliverToMailboxAndForward
 
 # Forwarding Bug: Turn on, and then turn off
-Set-Mailbox user@DOMAIN.com -DeliverToMailboxAndForward $true -ForwardingSMTPAddress "ForwardedUser@DOMAIN.com"
-Set-Mailbox user@DOMAIN.com -DeliverToMailboxAndForward $False -ForwardingAddress $Null
+Set-Mailbox USER@DOMAIN.COM -DeliverToMailboxAndForward $true -ForwardingSMTPAddress "ForwardedUSER@DOMAIN.COM"
+Set-Mailbox USER@DOMAIN.COM -DeliverToMailboxAndForward $False -ForwardingAddress $Null
