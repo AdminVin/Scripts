@@ -161,6 +161,21 @@ Write-Host "3.2.1.5 Removed Microsoft Edge - Addon - IE to Edge" -ForegroundColo
 ## One Drive
 Write-Host "3.2.2 OneDrive Removal - Skipped!" -ForegroundColor Yellow
 
+## Internet Explorer
+# Addon 'Send to One Note'
+Remove-Item -Path "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Internet Explorer\Extensions\{2670000A-7350-4f3c-8081-5663EE0C6C49}" -Force -ErrorAction SilentlyContinue | Out-Null
+Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Internet Explorer\Extensions\{2670000A-7350-4f3c-8081-5663EE0C6C49}" -Force -ErrorAction SilentlyContinue | Out-Null
+Write-Host "3.2.3.1 Internet Explorer - Addon - REMOVED 'Send to One Note'" -ForegroundColor Green
+# Addon 'OneNote Linked Notes'
+Remove-Item -Path "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Internet Explorer\Extensions\{789FE86F-6FC4-46A1-9849-EDE0DB0C95CA}" -Force -ErrorAction SilentlyContinue | Out-Null
+Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Internet Explorer\Extensions\{789FE86F-6FC4-46A1-9849-EDE0DB0C95CA}" -Force -ErrorAction SilentlyContinue | Out-Null
+Write-Host "3.2.3.2 Internet Explorer - Addon - REMOVED 'OneNote Linked Notes'" -ForegroundColor Green
+# Addon 'Lync Click to Call'
+Remove-Item -Path "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Internet Explorer\Extensions\{31D09BA0-12F5-4CCE-BE8A-2923E76605DA}" -Force -ErrorAction SilentlyContinue | Out-Null
+Remove-Item -Path "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer\Browser Helper Objects\{31D09BA0-12F5-4CCE-BE8A-2923E76605DA}" -Force -ErrorAction SilentlyContinue | Out-Null
+Write-Host "3.2.3.3 Internet Explorer - Addon - REMOVED 'Lync Click to Call'" -ForegroundColor Green
+
+
 <### Services and Scheduled Tasks ###>
 Write-Host "3.0 Services and Scheduled Tasks" -ForegroundColor Green
 Write-Host "3.1 Services" -ForegroundColor Green
