@@ -1,10 +1,5 @@
-#region Modules
+#region Settings
 Import-Module ActiveDirectory
-#endregion
-
-
-#region Varibles / Settings
-Set-PSDebug -Off
 $LogFile = ".\Users - Rename to FirstName.LastName.txt"
 $Domain = "@DOMAIN.org"
 $MicrosoftDomain = "@DOMAIN.onmicrosoft.com"
