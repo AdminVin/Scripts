@@ -158,7 +158,7 @@ Write-Host "3.2.1.4 Disabled Microsoft Edge - Tracking" -ForegroundColor Green
 Get-ChildItem -Path "C:\Program Files (x86)\Microsoft\Edge\Application" -Recurse -Filter "BHO" | Remove-Item -Force -Recurse | Out-Null
 Write-Host "3.2.1.5 Removed Microsoft Edge - Addon - IE to Edge" -ForegroundColor Green
 
-## One Drive
+## 3.2.2 One Drive
 Write-Host "3.2.2 OneDrive Removal [Skipped]" -ForegroundColor Yellow
 
 ## Internet Explorer
