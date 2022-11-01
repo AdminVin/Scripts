@@ -277,11 +277,11 @@ New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\runas' -Na
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\runas' -Name 'NoWorkingDirectory' -Value '' -PropertyType String -Force -ErrorAction SilentlyContinue | Out-Null;
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\runas\command' -Name '(default)' -Value 'cmd.exe /c takeown /f \"%1\" /r /d y && icacls \"%1\" /grant administrators:F /t' -PropertyType String -Force -ErrorAction SilentlyContinue | Out-Null;
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Directory\shell\runas\command' -Name 'IsolatedCommand' -Value 'cmd.exe /c takeown /f \"%1\" /r /d y && icacls \"%1\" /grant administrators:F /t' -PropertyType String -Force -ErrorAction SilentlyContinue | Out-Null;
-Write-Host "5.1 Windows: Adding File/Folder Take Ownership (Right Click Context Menu)" -ForegroundColor Green
+Write-Host "5.1 Windows: Adding File/Folder Take Ownership - Right Click Context Menu (Preference)" -ForegroundColor Green
 
 # Restore Classic W10 right click menu
 reg.exe add "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" /f /ve
-Write-Host "5.2 Windows: Restored W10 Right Click Context Menu" -ForegroundColor Green
+Write-Host "5.2 Windows: Restored W10 - Right Click Context Menu (Preference)" -ForegroundColor Green
 
 # Add "Open with Powershell (Admin)" to right click menu
 if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Classes\Directory\Background\shell\PowerShellAsAdmin") -ne $true) {  New-Item "HKLM:\SOFTWARE\Classes\Directory\Background\shell\PowerShellAsAdmin" -Force -ErrorAction SilentlyContinue | Out-Null };
@@ -308,13 +308,13 @@ New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Drive\shell\PowerShellAsAd
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Drive\shell\PowerShellAsAdmin' -Name 'Icon' -Value 'powershell.exe' -PropertyType String -Force -ErrorAction SilentlyContinue | Out-Null;
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Classes\Drive\shell\PowerShellAsAdmin\command' -Name '(default)' -Value 'powershell -WindowStyle Hidden -NoProfile -Command "Start-Process -Verb RunAs powershell.exe -ArgumentList \"-NoExit -Command Push-Location \\\"\"%V/\\\"\"\"' -PropertyType String -Force -ErrorAction SilentlyContinue | Out-Null;
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' -Name 'EnableLinkedConnections' -Value 1 -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null;
-Write-Host "5.3 Explorer: Added 'Open with PowerShell (Admin)' to right click menu" -ForegroundColor Green
+Write-Host "5.3 Explorer: Added 'Open with PowerShell (Admin)' to right click menu (Preference)" -ForegroundColor Green
 
 # Disable 'High Precision Event Timer' to prevent input lag/delays.
 bcdedit /deletevalue useplatformclock
 bcdedit /set useplatformtick yes
 bcdedit /set disabledynamictick yes
-Write-Host "5.4 Disabled 'High Precision Event Timer' (Formerly Multimedia Timer)" -ForegroundColor Green
+Write-Host "5.4 Disabled 'High Precision Event Timer' - Formerly Multimedia Timer (Performance)" -ForegroundColor Green
 
 if((Test-Path -LiteralPath "HKCU:\Control Panel\Desktop") -ne $true) {  New-Item "HKCU:\Control Panel\Desktop" -Force -ErrorAction SilentlyContinue | Out-Null};
 if((Test-Path -LiteralPath "HKLM:\SYSTEM\CurrentControlSet\Control") -ne $true) {  New-Item "HKLM:\SYSTEM\CurrentControlSet\Control" -Force -ErrorAction SilentlyContinue | Out-Null };
@@ -322,11 +322,11 @@ New-ItemProperty -LiteralPath "HKCU:\Control Panel\Desktop" -Name 'ForegroundLoc
 New-ItemProperty -LiteralPath "HKCU:\Control Panel\Desktop" -Name 'HungAppTimeout' -Value '400' -PropertyType String -Force -ErrorAction SilentlyContinue | Out-Null;
 New-ItemProperty -LiteralPath "HKCU:\Control Panel\Desktop" -Name 'WaitToKillAppTimeout' -Value '500' -PropertyType String -Force -ErrorAction SilentlyContinue | Out-Null;
 New-ItemProperty -LiteralPath 'HKLM:\SYSTEM\CurrentControlSet\Control' -Name 'WaitToKillServiceTimeout' -Value '500' -PropertyType String -Force -ErrorAction SilentlyContinue | Out-Null;
-Write-Host "5.5 Windows: Enabled Faster Shutdown" -ForegroundColor Green
+Write-Host "5.5 Windows: Enabled Faster Shutdown (Performance)" -ForegroundColor Green
 
 if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer") -ne $true) {  New-Item "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" -Force -ErrorAction SilentlyContinue | Out-Null };
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer' -Name 'ShowDriveLettersFirst' -Value 4 -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null;
-Write-Host "5.6 Explorer: Drive letters PRE drive label [Example: '(C:) Windows vs. Windows (C:)]'" -ForegroundColor Green
+Write-Host "5.6 Explorer: Drive letters PRE drive label [Example: '(C:) Windows vs. Windows (C:)]' (Preference)" -ForegroundColor Green
 
 # Source: http://donewmouseaccel.blogspot.com/
 if((Test-Path -LiteralPath "Registry::\HKEY_USERS\.DEFAULT\Control Panel\Mouse") -ne $true) {  New-Item "Registry::\HKEY_USERS\.DEFAULT\Control Panel\Mouse" -Force -ErrorAction SilentlyContinue | Out-Null };
@@ -340,98 +340,98 @@ New-ItemProperty -LiteralPath 'HKCU:\Control Panel\Mouse' -Name 'SmoothMouseYCur
 New-ItemProperty -LiteralPath 'Registry::\HKEY_USERS\.DEFAULT\Control Panel\Mouse' -Name 'MouseSpeed' -Value '0' -PropertyType String -Force -ErrorAction SilentlyContinue | Out-Null;
 New-ItemProperty -LiteralPath 'Registry::\HKEY_USERS\.DEFAULT\Control Panel\Mouse' -Name 'MouseThreshold1' -Value '0' -PropertyType String -Force -ErrorAction SilentlyContinue | Out-Null;
 New-ItemProperty -LiteralPath 'Registry::\HKEY_USERS\.DEFAULT\Control Panel\Mouse' -Name 'MouseThreshold2' -Value '0' -PropertyType String -Force -ErrorAction SilentlyContinue | Out-Null;
-Write-Host "5.7 Mouse: MarkC's Acceleration Fix" -ForegroundColor Green
+Write-Host "5.7 Mouse: MarkC's Acceleration Fix (Performance)" -ForegroundColor Green
 
 Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorAdmin" -Value "0"
-Write-Host "5.8 UAC: Disabled Prompt" -ForegroundColor Green
+Write-Host "5.8 UAC: Disabled Prompt (Performance)" -ForegroundColor Green
 
 if((Test-Path -LiteralPath "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced") -ne $true) {  New-Item "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -force -ErrorAction SilentlyContinue | Out-Null };
 New-ItemProperty -LiteralPath 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name 'LaunchTo' -Value 1 -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null;
-Write-Host "5.9 Explorer: Launch with 'This PC' instead of 'Most Recent'" -ForegroundColor Green
+Write-Host "5.9 Explorer: Launch with 'This PC' instead of 'Most Recent' (Preference)" -ForegroundColor Green
 
 Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAl" -Force -ErrorAction SilentlyContinue | Out-Null
 New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -PropertyType "Dword" -Name "TaskbarAl" -Value "0" -Force -ErrorAction SilentlyContinue | Out-Null
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAnimations" -Value "0" -Force -ErrorAction SilentlyContinue | Out-Null
-Write-Host "5.10 Start Menu/Taskbar: Alignment - Left" -ForegroundColor Green
+Write-Host "5.10 Start Menu/Taskbar: Alignment - Left (Preference)" -ForegroundColor Green
 
 Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Terminal Server" -name "fDenyTSConnections" -value "0" -Force | Out-Null
 Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
-Write-Host "5.11 Remote Desktop: Enabled" -ForegroundColor Green
+Write-Host "5.11 Remote Desktop: Enabled (Preference)" -ForegroundColor Green
 
 Remove-ItemProperty -Path "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Run" -Name "Discord" -Force -ErrorAction SilentlyContinue | Out-Null
-Write-host "5.12 Discord: Disabled Auto Start" -ForegroundColor Green
+Write-host "5.12 Discord: Disabled Auto Start (Performance)" -ForegroundColor Green
 
 Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\PushNotifications" -Name "ToastEnabled" -Force -ErrorAction SilentlyContinue | Out-Null
 New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\PushNotifications" -PropertyType "Dword" -Name "ToastEnabled" -Value "0" | Out-Null
-Write-host "5.13 Windows: Disabled Toast Notifications" -ForegroundColor Green
+Write-host "5.13 Windows: Disabled Toast Notifications (Performance)" -ForegroundColor Green
 
 New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -PropertyType "Dword" -Name "ShowTaskViewButton" -Value "0" -ErrorAction SilentlyContinue | Out-Null
-Write-host "5.14 Start Menu/Taskbar: Removed 'Task View' Button" -ForegroundColor Green
+Write-host "5.14 Start Menu/Taskbar: Removed 'Task View' Button (Performance)" -ForegroundColor Green
 
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" -Name "SearchBoxTaskbarMode" -Value "0" -Type "DWord" -Force | Out-Null
-Write-host "5.15 Start Menu/Taskbar: Removed 'Search' Button" -ForegroundColor Green
+Write-host "5.15 Start Menu/Taskbar: Removed 'Search' Button (Performance)" -ForegroundColor Green
 
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "HideFileExt" -Value "0" | Out-Null
-Write-Host "5.16 Explorer: Display File Extensions" -ForegroundColor Green
+Write-Host "5.16 Explorer: Display File Extensions (Performance)" -ForegroundColor Green
 
 #if((Test-Path -LiteralPath "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer") -ne $true) {  New-Item "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer" -Force -ErrorAction SilentlyContinue };
 #New-ItemProperty -LiteralPath "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer" -Name "ShowRecent" -Value "0" -PropertyType "DWord" -Force -ErrorAction SilentlyContinue | Out-Null;
 Set-ItemProperty -LiteralPath "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer" -Name "ShowRecent" -Value "1" -Force -ErrorAction SilentlyContinue | Out-Null;
-Write-Host "5.17 Explorer: Disabled 'Recent Files' in Explorer [Skipped]" -ForegroundColor Yellow
+Write-Host "5.17 Explorer: Disabled 'Recent Files' in Explorer (Performance) [Skipped]" -ForegroundColor Yellow
 
 if((Test-Path -LiteralPath "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer") -ne $true) {  New-Item "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer" -Force -ErrorAction SilentlyContinue };
 New-ItemProperty -LiteralPath 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer' -Name 'ShowFrequent' -Value "0" -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null;
-Write-Host "5.18 Explorer: Disabled 'Recent Folders' in Quick Access" -ForegroundColor Green
+Write-Host "5.18 Explorer: Disabled 'Recent Folders' in Quick Access (Performance)" -ForegroundColor Green
 
 #if((Test-Path -LiteralPath "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced") -ne $true) {  New-Item "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Force -ErrorAction SilentlyContinue };
 #New-ItemProperty -LiteralPath 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name 'Start_TrackDocs' -Value 0 -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null;
 Set-ItemProperty -LiteralPath "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "Start_TrackDocs" -Value "1" -Force -ErrorAction SilentlyContinue | Out-Null
-Write-Host "5.19 Explorer: Disabled Recent Files/Folders in Start Menu and Explorer [Skipped]" -ForegroundColor Yellow
+Write-Host "5.19 Explorer: Disabled Recent Files/Folders in Start Menu and Explorer (Performance) [Skipped]" -ForegroundColor Yellow
 
 if((Test-Path -LiteralPath "HKCU:\Control Panel\Desktop\WindowMetrics") -ne $true) {  New-Item "HKCU:\Control Panel\Desktop\WindowMetrics" -Force -ErrorAction SilentlyContinue };
 New-ItemProperty -LiteralPath 'HKCU:\Control Panel\Desktop\WindowMetrics' -Name 'MinAnimate' -Value '0' -PropertyType String -Force -ErrorAction SilentlyContinue | Out-Null;
-Write-Host "5.20 Explorer: Disabled Explorer Animations" -ForegroundColor Green
+Write-Host "5.20 Explorer: Disabled Explorer Animations (Performance)" -ForegroundColor Green
 
 if((Test-Path -LiteralPath "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced") -ne $true) {  New-Item "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Force -ErrorAction SilentlyContinue | Out-Null };
 New-ItemProperty -LiteralPath 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name 'EnableSnapBar' -Value 0 -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null;
-Write-Host "5.21 Explorer: Disabled 'Snap Layout' Overlay" -ForegroundColor Green
+Write-Host "5.21 Explorer: Disabled 'Snap Layout' Overlay (Preference)" -ForegroundColor Green
 
 # Source: https://www.majorgeeks.com/content/page/irpstacksize.html (Default 15-20 connections, increased to 30)
 if((Test-Path -LiteralPath "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters") -ne $true) {  New-Item "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters"  -Force -ErrorAction SilentlyContinue | Out-Null };
 New-ItemProperty -LiteralPath 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters' -Name 'IRPStackSize' -Value 48 -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null;
-Write-Host "5.22 Network: Increase Performance for 'I/O Request Packet Stack Size" -ForegroundColor Green
+Write-Host "5.22 Network: Increase Performance for 'I/O Request Packet Stack Size (Performance)" -ForegroundColor Green
 
 #Source: https://www.elevenforum.com/t/enable-or-disable-store-activity-history-on-device-in-windows-11.7812/ #Note: Potentially needed for InTune
 if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System") -ne $true) {  New-Item "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Force -ErrorAction SilentlyContinue | Out-Null };
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\System' -Name 'PublishUserActivities' -Value 0 -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null;
-Write-Host "5.23 File Explorer: Disable Activity Log" -ForegroundColor Green
+Write-Host "5.23 File Explorer: Disable Activity Log (Privacy)" -ForegroundColor Green
 
 if((Test-Path -LiteralPath "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced") -ne $true) {  New-Item "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Force -ErrorAction SilentlyContinue | Out-Null };
 New-ItemProperty -LiteralPath 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name 'Start_Layout' -Value 1 -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null;
-Write-Host "5.24 Start Menu/Taskbar: Set Layout to reduce 'Recommened Apps'" -ForegroundColor Green
+Write-Host "5.24 Start Menu/Taskbar: Set Layout to reduce 'Recommened Apps' (Preference)" -ForegroundColor Green
 
 if((Test-Path -LiteralPath "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Power") -ne $true) {  New-Item "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Power" -Force -ErrorAction SilentlyContinue | Out-Null };
 New-ItemProperty -LiteralPath 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Power' -Name 'HiberbootEnabled' -Value 0 -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null;
-Write-Host "5.25 Windows: Disabled Fast Startup (Restored original 'fresh' reboot)" -ForegroundColor Green
+Write-Host "5.25 Windows: Windows: Disabled Fast Startup - Restored 'Fresh' Reboot (Performance)" -ForegroundColor Green
 
 if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games") -ne $true) {  New-Item "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" -Force -ErrorAction SilentlyContinue | Out-Null };
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games' -Name 'GPU Priority' -Value 8 -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null;
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games' -Name 'Priority' -Value 6 -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null;
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games' -Name 'Scheduling Category' -Value 'High' -PropertyType String -Force -ErrorAction SilentlyContinue | Out-Null;
-Write-Host "5.26 Windows: Updating 'MMCSS' to prioritize games with higher system resources" -ForegroundColor Green
+Write-Host "5.26 Windows: Updating 'MMCSS' to prioritize games with higher system resources (Performance)" -ForegroundColor Green
 
 if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile") -ne $true) {  New-Item "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" -Force -ErrorAction SilentlyContinue | Out-Null };
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile' -Name 'NetworkThrottlingIndex' -Value -1 -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null;
-Write-Host "5.27 Network: Disabled Acceleration (Lower Latency)" -ForegroundColor Green
+Write-Host "5.27 Network: Disabled Acceleration (Performance)" -ForegroundColor Green
 
 if((Test-Path -LiteralPath "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management") -ne $true) {  New-Item "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" -Force -ErrorAction SilentlyContinue | Out-Null };
 New-ItemProperty -LiteralPath 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management' -Name 'ClearPageFileAtShutdown' -Value 1 -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null;
-Write-Host "5.28 Windows: Clear Page File at Shutdown (Security+)" -ForegroundColor Green
+Write-Host "5.28 Windows: Clear Page File at Shutdown (Privacy)" -ForegroundColor Green
 
-# Source: https://www.thewindowsclub.com/disable-windows-10-startup-delay-startupdelayinmsec
+# Source: https://www.thewindowsclub.com/disable-windows-10-startup-delay-startupdelayinmsec (Default=10, New Default=0)
 if((Test-Path -LiteralPath "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Serialize") -ne $true) {  New-Item "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Serialize" -Force -ErrorAction SilentlyContinue | Out-Null };
 New-ItemProperty -LiteralPath 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Serialize' -Name 'StartupDelayInMSec' -Value 0 -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null;
-Write-Host "5.29 Windows: Disable Startup Delay" -ForegroundColor Green
+Write-Host "5.29 Windows: Disable Startup Delay (Performance)" -ForegroundColor Green
 #endregion
 
 
