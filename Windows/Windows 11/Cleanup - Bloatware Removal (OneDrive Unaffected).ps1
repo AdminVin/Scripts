@@ -1,7 +1,27 @@
 <#############################################################################################################################>
-#region 1.0 Elevate PowerShell Session
-Write-Host "1.0 Elevating Powershell Session with Administrative Rights" -ForegroundColor Green
+#region Elevate PowerShell Session
+Write-Host "Elevating Powershell Session with Administrative Rights" -ForegroundColor Green
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) { Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs; exit }
+#endregion
+
+
+<#############################################################################################################################>
+#region 1.0 Log - Start
+$PCName = (Get-CIMInstance CIM_ComputerSystem).Name
+$Date = Get-Date
+$LogFile = "C:\ProgramData\AV\Cleanup\$PCName.txt"
+# Check if log directory exists
+if (Test-Path -Path "C:\ProgramData\AV\Cleanup") {
+    Write-Host "Log folder exists, and does not need to be created." -ForegroundColor Green
+} else {
+    Write-Host "Log folder does NOT exist, and will be created." -ForegroundColor Red
+    New-Item "C:\ProgramData\AV\Cleanup" -Type Directory | Out-Null
+	New-Item "C:\ProgramData\AV\Cleanup\$PCName.txt" | Out-Null
+}
+# Log Locally
+$Date | Out-File -Append -FilePath $LogFile
+Write-Host "1.0 Log: Script started at $Date" -ForegroundColor Green
+$Timer = [System.Diagnostics.Stopwatch]::StartNew()
 #endregion
 
 
@@ -496,9 +516,19 @@ Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Capabili
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\appDiagnostics" -Name "Value" -Value "Deny" -ErrorAction SilentlyContinue
 #endregion
 
+<#############################################################################################################################>
+#region 8.0 Log - End
+# Log Locally
+"Script Duration" | Out-File -Append -FilePath $LogFile
+$Timer.Elapsed | Select-Object Hours, Minutes, Seconds | Format-Table | Out-File -Append -FilePath $LogFile
+$Timer.Stop()
+$TimerFinal = $Timer.Elapsed | Select-Object Hours, Minutes, Seconds | Format-Table
+Write-Host "8.0 Log: Script Duration: $TimerFinal" -ForegroundColor Green
+Write-Host "Log file located at $LogFile" -ForegroundColor Yellow
+#endregion
 
 <#############################################################################################################################>
-#region 8.0 Notify User to Reboot
+#region 9.0 Notify User to Reboot
 Write-Host ""
 Write-Host "*********************************************************" -ForegroundColor Red
 Write-Host "*                                                       *" -ForegroundColor Red

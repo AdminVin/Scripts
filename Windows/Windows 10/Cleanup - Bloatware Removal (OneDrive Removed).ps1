@@ -1,12 +1,31 @@
 <### Elevating Powershell Script with Administrative Rights ###>
-Write-Host "1.0 Elevating Powershell Script with Administrative Rights" -ForegroundColor Green
+Write-Host "Elevating Powershell Script with Administrative Rights" -ForegroundColor Green
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) { Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs; exit }
+
+
+<### Log - Start ###>
+$PCName = (Get-CIMInstance CIM_ComputerSystem).Name
+$Date = Get-Date
+$LogFile = "C:\ProgramData\AV\Cleanup\$PCName.txt"
+# Check if log directory exists
+if (Test-Path -Path "C:\ProgramData\AV\Cleanup") {
+    Write-Host "Log folder exists, and does not need to be created." -ForegroundColor Green
+} else {
+    Write-Host "Log folder does NOT exist, and will be created." -ForegroundColor Red
+    New-Item "C:\ProgramData\AV\Cleanup" -Type Directory | Out-Null
+	New-Item "C:\ProgramData\AV\Cleanup\$PCName.txt" | Out-Null
+}
+# Log Locally
+$Date | Out-File -Append -FilePath $LogFile
+Write-Host "1.0 Log: Script started at $Date" -ForegroundColor Green
+$Timer = [System.Diagnostics.Stopwatch]::StartNew()
 
 
 <### Diagnostics ###>
 Write-Host "2.0 Diagnostics" -ForegroundColor Green
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\System" -Name "VerboseStatus" -Value "1"
 Write-Host "2.1 Enabled Verbose Status Messaging" -ForegroundColor Green
+
 
 <### Applications ###>
 Write-Host "3.0 Applications" -ForegroundColor Green
@@ -127,6 +146,7 @@ Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentD
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "PreInstalledAppsEverEnabled" -Value "0"
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "OEMPreInstalledAppsEnabled" -Value "0"
 
+Write-Host "3.2 Applications - Desktop"
 # 3.2.1 Edge
 Write-Host "3.2.1 Microsoft Edge" -ForegroundColor Green
 ## Services
@@ -197,11 +217,14 @@ Remove-Item -Path "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Internet Explorer\Extens
 Remove-Item -Path "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer\Browser Helper Objects\{31D09BA0-12F5-4CCE-BE8A-2923E76605DA}" -Force -ErrorAction SilentlyContinue | Out-Null
 Write-Host "3.2.3.3 Internet Explorer - Addon - REMOVED 'Lync Click to Call'" -ForegroundColor Green
 
-<### Services and Scheduled Tasks ###>
-Write-Host "3.0 Services" -ForegroundColor Green
-Get-Service Diagtrack,Fax,PhoneSvc,WMPNetworkSvc,DmwApPushService,WpcMonSvc -ErrorAction SilentlyContinue | Stop-Service | Set-Service -StartupType Disabled
 
-Write-Host "4.0 Scheduled Tasks" -ForegroundColor Green
+<### Services and Scheduled Tasks ###>
+Write-Host "4.0 Services and Scheduled Tasks" -ForegroundColor Green
+# Services
+Write-Host "4.1 Services" -ForegroundColor Green
+Get-Service Diagtrack,Fax,PhoneSvc,WMPNetworkSvc,DmwApPushService,WpcMonSvc -ErrorAction SilentlyContinue | Stop-Service | Set-Service -StartupType Disabled
+# Scheduled Tasks
+Write-Host "4.2 Scheduled Tasks" -ForegroundColor Green
 Get-Scheduledtask "UpdateLibrary" -ErrorAction SilentlyContinue | Disable-ScheduledTask | Out-Null
 Get-Scheduledtask "Proxy" -ErrorAction SilentlyContinue | Disable-ScheduledTask | Out-Null 
 Get-Scheduledtask "SmartScreenSpecific" -ErrorAction SilentlyContinue | Disable-ScheduledTask | Out-Null 
@@ -209,8 +232,8 @@ Get-Scheduledtask "Microsoft Compatibility Appraiser" -ErrorAction SilentlyConti
 Get-Scheduledtask "Consolidator" -ErrorAction SilentlyContinue | Disable-ScheduledTask | Out-Null 
 Get-Scheduledtask "KernelCeipTask" -ErrorAction SilentlyContinue | Disable-ScheduledTask | Out-Null 
 Get-Scheduledtask "UsbCeip" -ErrorAction SilentlyContinue | Disable-ScheduledTask | Out-Null 
-Get-Scheduledtask "Microsoft-Windows-DiskDiagnosticDataCollector" -ErrorAction SilentlyContinue | Disable-ScheduledTask | Out-Null
-Get-Scheduledtask "GatherNetworkInfo" -ErrorAction SilentlyContinue | Disable-ScheduledTask | Out-Null
+Get-Scheduledtask "Microsoft-Windows-DiskDiagnosticDataCollector" -ErrorAction SilentlyContinue | Disable-ScheduledTask | Out-Null #Required for InTune
+Get-Scheduledtask "GatherNetworkInfo" -ErrorAction SilentlyContinue | Disable-ScheduledTask | Out-Null  #Required for InTune
 Get-Scheduledtask "QueueReporting" -ErrorAction SilentlyContinue | Disable-ScheduledTask | Out-Null 
 
 
@@ -248,11 +271,11 @@ Write-Host "5.6 Windows: Disabled Troubleshooting 'Steps Recorder' (Performance)
 Set-Itemproperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent" -Name "DisableSoftLanding" -Value "1" -Force -ErrorAction SilentlyContinue | Out-Null
 Write-Host "5.7 Windows: Disabled Tips (Performance)" -ForegroundColor Green
 
-#Set-Itemproperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppCompat" -Name "AITEnable" -Value "0"	
-Write-Host "5.8 Windows: Disabled Application Telemetry [Skipped]" -ForegroundColor Yellow
+Set-Itemproperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppCompat" -Name "AITEnable" -Value "0" #Required by InTune	
+Write-Host "5.8 Windows: Disabled Application Telemetry" -ForegroundColor Yellow 
 
-#Set-Itemproperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppCompat" -Name "DisableInventory" -Value "1"
-Write-Host "5.8 Windows: Disabled Inventory Collector [Skipped]" -ForegroundColor Yellow
+Set-Itemproperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppCompat" -Name "DisableInventory" -Value "1" #Required by InTune
+Write-Host "5.8 Windows: Disabled Inventory Collector" -ForegroundColor Yellow 
 
 Set-Itemproperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent" -Name "DisableWindowsConsumerFeatures" -Value "1" -Force -ErrorAction SilentlyContinue | Out-Null
 Write-Host "5.9 Windows: Disabled Consumer Experiences (Performance)" -ForegroundColor Green
@@ -416,7 +439,7 @@ powercfg -setdcvalueindex SCHEME_CURRENT 4f971e89-eebd-4455-a8de-9e59040e7347 96
 powercfg -setacvalueindex SCHEME_CURRENT 4f971e89-eebd-4455-a8de-9e59040e7347 96996bc0-ad50-47ec-923b-6f41874dd9eb 4
 Write-Host "6.6 Sleep Settings: Changed 'Sleep Button' turns off display" -ForegroundColor Green
 
-if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings") -ne $true) {  New-Item "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings" -force -ErrorAction SilentlyContinue | Out-Null };
+if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings") -ne $true) {  New-Item "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings" -Force -ErrorAction SilentlyContinue | Out-Null };
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings' -Name 'ShowSleepOption' -Value 0 -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null;
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings' -Name 'ShowHibernateOption' -Value 0 -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null;
 Write-Host "6.7 Sleep Settings: Disabled Sleep/Hibernate from Start Menu" -ForegroundColor Green
@@ -426,35 +449,20 @@ Write-Host "6.8 Start Menu: Animation Time Reduced" -ForegroundColor Green
 
 $ActiveNetworkAdapter = Get-NetAdapter | Where-Object {$_.Status -eq 'Up'} | Select-Object Name
 $ActiveNetworkAdapterConverted = $ActiveNetworkAdapter.Name
-Disable-NetAdapterPowerManagement -Name "$ActiveNetworkAdapterConverted" -DeviceSleepOnDisconnect -NoRestart
+Disable-NetAdapterPowerManagement -Name "$ActiveNetworkAdapterConverted" -DeviceSleepOnDisconnect -NoRestart -ErrorAction SilentlyContinue
 Write-Host "6.9 Network: Disabled Ethernet/Wireless Power Saving Settings" -ForegroundColor Green
 
-###########################################################################################################################################################
-###########################################################################################################################################################
-###########################################################################################################################################################
-###########################################################################################################################################################
-###########################################################################################################################################################
-###########################################################################################################################################################
-###########################################################################################################################################################
-###########################################################################################################################################################
-###########################################################################################################################################################
-###########################################################################################################################################################
-###########################################################################################################################################################
-###########################################################################################################################################################
-###########################################################################################################################################################
-###########################################################################################################################################################
-###########################################################################################################################################################
-###########################################################################################################################################################
-###########################################################################################################################################################
-###########################################################################################################################################################
-###########################################################################################################################################################
-###########################################################################################################################################################
-###########################################################################################################################################################
-###########################################################################################################################################################
-###########################################################################################################################################################
-###########################################################################################################################################################
 
-### Notify User
+<### Log - End ###>
+"Script Duration" | Out-File -Append -FilePath $LogFile
+$Timer.Elapsed | Select-Object Hours, Minutes, Seconds | Format-Table | Out-File -Append -FilePath $LogFile
+$Timer.Stop()
+$TimerFinal = $Timer.Elapsed | Select-Object Hours, Minutes, Seconds | Format-Table
+Write-Host "8.0 Log: Script Duration: $TimerFinal" -ForegroundColor Green
+Write-Host "Log file located at $LogFile" -ForegroundColor Yellow
+
+
+<### Notify User ###>
 Write-Host ""
 Write-Host "*********************************************************" -ForegroundColor Red
 Write-Host "*                                                       *" -ForegroundColor Red
