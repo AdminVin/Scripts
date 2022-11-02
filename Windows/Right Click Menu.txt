@@ -3,7 +3,7 @@ Windows: 7
 Description: 
 Start > Run > regedit
 
-HKEY_CLASSES_ROOT\*\shellex\ ContextMenuHandlers
+HKEY_CLASSES_ROOT\*\shellex\ContextMenuHandlers
 
 -Remove folders in directory
 
