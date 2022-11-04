@@ -5,5 +5,5 @@ Connect-MsolService
 $CSV = Import-Csv "Users - Restore without Password Reset"         
             
 ForEach ($User in $CSV) {            
-    Restore-MsolUser -UserPrincipalName $User.EmailAddress | Set-MSOLUser -ImmutableID "$null"
+    Restore-MsolUser -UserPrincipalName $User.EmailAddress | Set-MSOLUser -ImmutableID "$null" #Clear ImmutableID to allow DirSyncing to new AD Account
   }
