@@ -1,6 +1,7 @@
 <# 
 When creating this with a GPO, create a BAT file and use the code below.
 Powershell.exe -ExecutionPolicy Bypass -File "\\SERVER\SHARE\PowerShell_Script.ps1"
+GPO (User > Login Script)
 #>
 
 #region Configure OneDrive to Silently Configure
