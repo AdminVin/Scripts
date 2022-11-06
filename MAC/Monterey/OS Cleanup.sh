@@ -30,6 +30,8 @@ defaults write com.apple.dock launchanim -bool false
 
 
 
+
+
 ###################### Reboot REQUIRED after running commands in Terminal ######################
 
 
