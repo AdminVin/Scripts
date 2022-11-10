@@ -201,6 +201,13 @@ reg delete "HKEY_USERS\Default\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v
 reg unload "hku\Default"
 # Shorcut - Start Menu Removal
 Remove-Item -Force -ErrorAction SilentlyContinue "$env:userprofile\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk"
+# Program Files - Cleanup
+Remove-Item -LiteralPath "C:\Program Files (x86)\Microsoft OneDrive" -Recurse -Confirm:$false -Force -ErrorAction SilentlyContinue | Out-Null
+# Scheduled Tasks
+Get-ScheduledTask "*OneDrive*" | Unregister-ScheduledTask -Confirm:$false
+# Services
+$ODUPdaterService = Get-WmiObject -Class Win32_Service -Filter "Name='OneDrive Updater Service'"
+$ODUPdaterService.delete() | Out-Null
 Write-Host "3.2.2 OneDrive Removed" -ForegroundColor Green
 
 ## Internet Explorer
@@ -216,6 +223,19 @@ Write-Host "3.2.3.2 Internet Explorer - Addon - REMOVED 'OneNote Linked Notes'" 
 Remove-Item -Path "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Internet Explorer\Extensions\{31D09BA0-12F5-4CCE-BE8A-2923E76605DA}" -Force -ErrorAction SilentlyContinue | Out-Null
 Remove-Item -Path "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer\Browser Helper Objects\{31D09BA0-12F5-4CCE-BE8A-2923E76605DA}" -Force -ErrorAction SilentlyContinue | Out-Null
 Write-Host "3.2.3.3 Internet Explorer - Addon - REMOVED 'Lync Click to Call'" -ForegroundColor Green
+# Addon IE to Edge Browser Helper Object
+Get-ChildItem -Path "C:\Program Files (x86)\Microsoft\Edge\Application" -Recurse -Filter "BHO" | Remove-Item -Force -Recurse
+Write-Host "3.2.3.4 Internet Explorer - Addon - REMOVED 'IE to Edge'" -ForegroundColor Green
+
+## One Note
+Write-Host "3.2.4 One Note" -ForegroundColor Green
+Remove-Item -LiteralPath "C:\Users\$env:username\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\Send to OneNote.lnk"
+Write-Host "3.2.4.1 OneNote - REMOVED 'Send to OneNote'" -ForegroundColor Green
+
+## Mozilla Firefox
+# Scheduled Tasks
+Get-ScheduledTask "*Firefox Default*" | Unregister-ScheduledTask -Confirm:$false
+Write-Host "3.2.5.1 Firefox - Disabled 'Periodic requests to set as default browser'" -ForegroundColor Green
 
 
 <### Services and Scheduled Tasks ###>
