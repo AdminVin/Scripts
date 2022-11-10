@@ -2,6 +2,8 @@
 #region Elevate PowerShell Session
 Write-Host "Elevating Powershell Session with Administrative Rights" -ForegroundColor Green
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) { Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs; exit }
+# Update PowerShell to latest version
+Invoke-Expression "& { $(Invoke-RestMethod https://aka.ms/install-powershell.ps1) }"
 #endregion
 
 
