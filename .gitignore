@@ -2,19 +2,3 @@ git rm -r --cached _EBPS/
 _EBPS/
 git rm -r --cached _AV/
 _AV/
-git rm -r --cached Windows/Windows/10/bin/
-git rm --cached Windows/Windows/10/Cleanup - Bloatware Removal (OneDrive Removed).ps1
-git rm --cached Windows/Windows/10/Cleanup - Bloatware Removal (OneDrive Unaffected).ps1
-Windows/Windows 10/bin/
-Windows/Windows 10/Cleanup - Bloatware Removal (OneDrive Removed).ps1
-Windows/Windows 10/Cleanup - Bloatware Removal (OneDrive Removed).ps1.psbuild
-Windows/Windows 10/Cleanup - Bloatware Removal (OneDrive Unaffected).ps1
-Windows/Windows 10/Cleanup - Bloatware Removal (OneDrive Unaffected).ps1.psbuild
-git rm -r --cached Windows/Windows/11/bin/
-git rm --cached Windows/Windows/11/Cleanup - Bloatware Removal (OneDrive Removed).ps1
-git rm --cached Windows/Windows/11/Cleanup - Bloatware Removal (OneDrive Unaffected).ps1
-Windows/Windows 11/bin/
-Windows/Windows 11/Cleanup - Bloatware Removal (OneDrive Removed).ps1
-Windows/Windows 11/Cleanup - Bloatware Removal (OneDrive Removed).ps1.psbuild
-Windows/Windows 11/Cleanup - Bloatware Removal (OneDrive Unaffected).ps1
-Windows/Windows 11/Cleanup - Bloatware Removal (OneDrive Unaffected).ps1.psbuild
