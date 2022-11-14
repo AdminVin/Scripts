@@ -18,17 +18,6 @@ New-ItemProperty -Path $DiskSizeregistryPath -Name $TenantGUID -Value "102400" -
 #endregion
 
 #region OneDrive - FORCE Auto Start on Login
-<# Method 1 (some PCs would not auto launch OneDrive with this method)
-# Varibles
-$ODAutoRunPath = "C:\Users\$env:username\AppData\Local\Microsoft\OneDrive\OneDrive.exe"
-$ODSwitch = " /background"
-$ODAutoRun = $ODAutoRunPath + $ODSwitch
-# Changes
-if((Test-Path -LiteralPath "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run") -ne $true) {  New-Item "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" -Force -ErrorAction SilentlyContinue | Out-Null };
-New-ItemProperty -LiteralPath 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name 'OneDrive' -Value $ODAutoRun -PropertyType String -Force -ErrorAction SilentlyContinue | Out-Null;
-#>
-
-<# Method 2 #>
 # Varibles
 $ODAutoRunPath = "C:\Users\$env:username\AppData\Local\Microsoft\OneDrive\OneDrive.exe"
 $ShortcutPath = "C:\Users\$env:username\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\OneDrive.lnk"

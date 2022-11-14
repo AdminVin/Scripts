@@ -1,7 +1,11 @@
 # Windows Updates
+# Source: https://www.powershellgallery.com/packages/PSWindowsUpdate
 
 # Install Module
-Install-Module PSWindowsUpdate
+Install-Module -Name PSWindowsUpdate
+
+# View Windows Update History
+Get-WUHistory
 
 # Get All Windows Updates
 Get-WindowsUpdate
