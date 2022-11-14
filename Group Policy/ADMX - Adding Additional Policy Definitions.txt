@@ -1,0 +1,26 @@
+#############################################################################################################
+1. Download Additional Policies
+
+Download the CAB or ZIP file of the updated ADMX files and extract the contents to a temporary folder.
+For this example we will use C:\Temp\EdgePolicies 
+
+#############################################################################################################
+2. Extraction
+
+Extract the "en-US" or language pack needed to C:\Temp\EdgePolicies.
+- The folder will include .ADML files
+Extract the .ADMX files to C:\Temp\EdgePolicies.
+
+C:\Temp\EdgePolicies should resemble the following files and folder structure.
+
+Directory Contents
+en-US\msedge.adml
+en-US\msedgeupdate.adml
+en-US\msedgewebview2.adml
+msedge.admx
+msedgeupdate.admx
+msedgewebview2.admx
+
+#############################################################################################################
+3. Installation to Domain Controller(s)
+Copy the contents of C:\Temp\EdgePolicies to ONE domain controller location: C:\Windows\SYSVOL\domain\Policies\policyDefinitions
