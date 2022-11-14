@@ -24,3 +24,4 @@ msedgewebview2.admx
 #############################################################################################################
 3. Installation to Domain Controller(s)
 Copy the contents of C:\Temp\EdgePolicies to ONE domain controller location: C:\Windows\SYSVOL\domain\Policies\policyDefinitions
+Alternatively, you can copy the contents of C:\Temp\EdgePolicies (if you created the temp folder on your pc) to \\DOMAIN.LOCAL\sysvol\DOMAIN.LOCAL\Policies\policyDefinitions
