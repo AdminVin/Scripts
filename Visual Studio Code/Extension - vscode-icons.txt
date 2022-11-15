@@ -1,0 +1,5 @@
+Visual Upgrade
+https://marketplace.visualstudio.com/items?itemName=vscode-icons-team.vscode-icons
+
+Note: Uninstall "Community Material Theme Icons" for this to display correctly
+View > Extensions > Gear > Uninstall
