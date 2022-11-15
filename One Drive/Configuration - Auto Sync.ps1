@@ -11,3 +11,9 @@ $TenantGUID = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Policies\Microsoft\OneDrive") -ne $true) {  New-Item "HKLM:\SOFTWARE\Policies\Microsoft\OneDrive" -Force -ErrorAction SilentlyContinue };
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\Microsoft\OneDrive' -Name 'KFMSilentOptIn' -Value $TenantGUID -PropertyType String -Force -ErrorAction SilentlyContinue;
 #endregion
+
+#region Preliminary Checks
+# Re-Enable One Drive Usage/Syncing (if previously disabled)
+New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive' -Name 'DisableFileSyncNGSC' -Value '0' -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null;
+Set-ItemProperty -Path "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSyncNGSC" -Value "0" -ErrorAction SilentlyContinue | Out-Null;
+#endregion
