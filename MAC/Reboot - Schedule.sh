@@ -3,6 +3,9 @@
 # Scheduled weekly reboot on Sunday at 5 AM
 pmset repeat restart U 05:00:00
 
+# Scheduled weekly reboot daily at 5 AM
+pmset repeat restart MTWRFSU 05:00:00
+
 # Examples
 #The various types documented in pmset’s man page are as follows:
 
