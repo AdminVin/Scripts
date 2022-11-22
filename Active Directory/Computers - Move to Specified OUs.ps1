@@ -36,5 +36,4 @@ Get-ADComputer -Filter {name -like "PCNamePrefix*"} -SearchBase $defaultlocation
 Get-ADComputer -Filter {name -like "PCNamePrefix*"} -SearchBase $defaultlocation | Move-ADObject -Targetpath $location11
 Get-ADComputer -Filter {name -like "PCNamePrefix*"} -SearchBase $defaultlocation | Move-ADObject -Targetpath $location12
 Get-ADComputer -Filter {name -like "PCNamePrefix*"} -SearchBase $defaultlocation | Move-ADObject -Targetpath $location13
-
 #endregion
