@@ -1,3 +1,6 @@
+Write-Host "Elevating Powershell Script with Administrative Rights" -ForegroundColor Green
+if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) { Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs exit }
+
 # Close OneDrive (if running in background)
 taskkill /f /im OneDrive.exe
 # File Explorer - Remove
@@ -6,6 +9,8 @@ New-ItemProperty -LiteralPath 'HKCU:\Software\Classes\CLSID\{018D5C66-4533-4307-
 New-ItemProperty -LiteralPath 'HKCU:\Software\Classes\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}' -Name 'System.IsPinnedToNameSpaceTree' -Value 0 -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null;
 # File Sync - Disable		
 Set-ItemProperty -Path "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSync" -Value "1" | Out-Null
+New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive' -Name 'DisableFileSyncNGSC' -Value "1" -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null
+Set-ItemProperty -Path "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSyncNGSC" -Value "1" -ErrorAction SilentlyContinue | Out-Null
 # Removal - x86
 %SystemRoot%\System32\OneDriveSetup.exe /uninstall
 # Removal - x64
