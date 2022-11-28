@@ -1,0 +1,1 @@
+reg load HKU\<username> C:\Users\<username>\ntuser.dat
