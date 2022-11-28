@@ -8,7 +8,7 @@ $IPv4Range = "*"
 # IPv6 Range
 $IPv6Range = "" 
 
-if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service") -ne $true) {  New-Item "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service" -force -ea SilentlyContinue };
+if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service") -ne $true) {  New-Item "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service" -Force -ErrorAction SilentlyContinue }
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service' -Name 'AllowAutoConfig' -Value 1 -PropertyType DWord -Force -ErrorAction SilentlyContinue
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service' -Name 'IPv4Filter' -Value $IPv4Range -PropertyType String -Force -ErrorAction SilentlyContinue
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service' -Name 'IPv6Filter' -Value $IPv6Range -PropertyType String -Force -ErrorAction SilentlyContinue
