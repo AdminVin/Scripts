@@ -7,7 +7,5 @@
 #endregion
 
 #region Cleanup
-# Change "Administrator" to proper user account
-Set-Location C:\Users\Administrator\AppData\Local\Plex Media Server\Media\localhost
-Remove-Item * -Include *.bif
+Set-Location "C:\Users\$env:username\AppData\Local\Plex Media Server\Media\localhost" | Remove-Item * -Include *.bif -Force
 #endregion
