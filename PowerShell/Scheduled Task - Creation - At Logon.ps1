@@ -1,5 +1,6 @@
 # Specify the command and argument
-$action = New-ScheduledTaskAction -Execute 'cmd.exe' -Argument '/c C:\Temp\start.cmd'
+#$action = New-ScheduledTaskAction -Execute 'cmd.exe' -Argument '/c C:\Temp\start.cmd'
+$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "Remove-Item 'C:\Users\$env:username\temp'"
 
 ### Use Powershell instead
 # $action = New-ScheduledTaskAction -Execute 'Powershell.exe' `
