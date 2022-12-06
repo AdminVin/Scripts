@@ -12,3 +12,6 @@ Comparison Operators
 -notcontains (doesn't contain the specified value)
 
 
+Examples:
+Get-Command | Where-Object {$_.CommandType -eq 'cmdlet'}
+Get-Command | Where-Object {$_.CommandType -ne 'cmdlet'}
