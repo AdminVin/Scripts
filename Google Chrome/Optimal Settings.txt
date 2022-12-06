@@ -1,0 +1,9 @@
+chrome://flags
+
+# Disable Sleeping
+Reduce User-Agent request header
+Disabled
+
+# Disable Image Preview of Tab
+Tab Hover Card Images
+Disabled
