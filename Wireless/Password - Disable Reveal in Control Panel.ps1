@@ -2,21 +2,8 @@
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) { Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs; exit }
 #endregion
 
-#region Load HKEY_CLASSES_ROOT
-New-PSDrive -PSProvider Registry -Root HKEY_CLASSES_ROOT -Name HKCR
-#endregion 
-
-
-
 #region Functions
 function Take-Permissions {
-    # Developed for PowerShell v4.0
-    # Required Admin privileges
-    # Links:
-    #   http://shrekpoint.blogspot.ru/2012/08/taking-ownership-of-dcom-registry.html
-    #   http://www.remkoweijnen.nl/blog/2012/01/16/take-ownership-of-a-registry-key-in-powershell/
-    #   https://powertoe.wordpress.com/2010/08/28/controlling-registry-acl-permissions-with-powershell/
-
     param($rootKey, $key, [System.Security.Principal.SecurityIdentifier]$sid = 'S-1-5-32-545', $recurse = $true)
 
     switch -regex ($rootKey) {
@@ -26,9 +13,6 @@ function Take-Permissions {
         'HKCC|HKEY_CURRENT_CONFIG'  { $rootKey = 'CurrentConfig' }
         'HKU|HKEY_USERS'            { $rootKey = 'Users' }
     }
-
-    ### Step 1 - escalate current process's privilege
-    # get SeTakeOwnership, SeBackup and SeRestore privileges before executes next lines, script needs Admin privilege
     $import = '[DllImport("ntdll.dll")] public static extern int RtlAdjustPrivilege(ulong a, bool b, bool c, ref bool d);'
     $ntdll = Add-Type -Member $import -Name NtDll -PassThru
     $privileges = @{ SeTakeOwnership = 9; SeBackup =  17; SeRestore = 18 }
@@ -39,18 +23,14 @@ function Take-Permissions {
     function Take-KeyPermissions {
         param($rootKey, $key, $sid, $recurse, $recurseLevel = 0)
 
-        ### Step 2 - get ownerships of key - it works only for current key
         $regKey = [Microsoft.Win32.Registry]::$rootKey.OpenSubKey($key, 'ReadWriteSubTree', 'TakeOwnership')
         $acl = New-Object System.Security.AccessControl.RegistrySecurity
         $acl.SetOwner($sid)
         $regKey.SetAccessControl($acl)
 
-        ### Step 3 - enable inheritance of permissions (not ownership) for current key from parent
         $acl.SetAccessRuleProtection($false, $false)
         $regKey.SetAccessControl($acl)
 
-        ### Step 4 - only for top-level key, change permissions for current key and propagate it for subkeys
-        # to enable propagations for subkeys, it needs to execute Steps 2-3 for each subkey (Step 5)
         if ($recurseLevel -eq 0) {
             $regKey = $regKey.OpenSubKey('', 'ReadWriteSubTree', 'ChangePermissions')
             $rule = New-Object System.Security.AccessControl.RegistryAccessRule($sid, 'FullControl', 'ContainerInherit', 'None', 'Allow')
@@ -58,45 +38,44 @@ function Take-Permissions {
             $regKey.SetAccessControl($acl)
         }
 
-        ### Step 5 - recursively repeat steps 2-5 for subkeys
         if ($recurse) {
             foreach($subKey in $regKey.OpenSubKey('').GetSubKeyNames()) {
                 Take-KeyPermissions $rootKey ($key+'\'+$subKey) $sid $recurse ($recurseLevel+1)
             }
         }
     }
-
     Take-KeyPermissions $rootKey $key $sid $recurse
 }
 #endregion
 
-
-
-#region Take Ownership (to read the registry key)
-Take-Permissions $RegistryPathRoot $RegistryPathSub "S-1-1-0"
-#endregion
-
-
-
-#region Permissions -  Domain Admins - Full Access
-
-# Registry Key Path
-$RegistryPathFull = "HKCR:\AppID\{86F80216-5DD6-4F43-953B-35EF40A35AEE}"
+#region Load Registry Key
+New-PSDrive -PSProvider "Registry" -Root "HKEY_CLASSES_ROOT" -Name "HKCR"
 $RegistryPathRoot = "HKCR"
 $RegistryPathSub = "AppID\{86F80216-5DD6-4F43-953B-35EF40A35AEE}"
+$RegistryPathFull = "HKCR:\AppID\{86F80216-5DD6-4F43-953B-35EF40A35AEE}"
+#endregion 
 
-# Registry Key
+
+#region Commit Changes
+# Take Ownership
+Take-Permissions $RegistryPathRoot $RegistryPathSub $recurse
+#Permissions - Domain Admins - Full Access
 $ACL = Get-Acl $RegistryPathFull
-
-# Domain Account or Group
+# Account or Group ("DOMAIN\Domain Admins", "BUILTIN\Administrators", or "PCNAME\LOCALUSERACCOUNT")
 $Identity = [System.Security.Principal.NTAccount]("DOMAIN\Domain Admins")
-
-# New Permissions
+# New Permissions (FullControl, ReadKey, WriteKey, or TakeOwnership)
 $AccessRights = [System.Security.AccessControl.RegistryRights]::FullControl
 
-# Inheritance
+<# Propagation/Inheritance Access Chart
+╔═════════════╦═════════════╦═══════════════════════════════╦════════════════════════╦══════════════════╦═══════════════════════╦═════════════╦═════════════╗
+║             ║ folder only ║ folder, sub-folders and files ║ folder and sub-folders ║ folder and files ║ sub-folders and files ║ sub-folders ║    files    ║
+╠═════════════╬═════════════╬═══════════════════════════════╬════════════════════════╬══════════════════╬═══════════════════════╬═════════════╬═════════════╣
+║ Propagation ║ none        ║ none                          ║ none                   ║ none             ║ InheritOnly           ║ InheritOnly ║ InheritOnly ║
+║ Inheritance ║ none        ║ Container|Object              ║ Container              ║ Object           ║ Container|Object      ║ Container   ║ Object      ║
+╚═════════════╩═════════════╩═══════════════════════════════╩════════════════════════╩══════════════════╩═══════════════════════╩═════════════╩═════════════╝
+#>
+# Inheritance of permissions from root folder (InheritOnly, None, NoPropagateInherit)
 $InheritanceFlags = [System.Security.AccessControl.InheritanceFlags]::None
-
 # Propgation to Child Items
 $PropagationFlags = [System.Security.AccessControl.PropagationFlags]::None
 
