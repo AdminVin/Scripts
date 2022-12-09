@@ -66,27 +66,66 @@ function Take-Permissions {
 
 
 #region Commit Changes
-# Load Registry Key
+# Load PSDrive/Registry Key
 New-PSDrive -PSProvider "Registry" -Root "HKEY_CLASSES_ROOT" -Name "HKCR"
 $RegistryPathRoot = "HKCR"
 $RegistryPathSub = "AppID\{86F80216-5DD6-4F43-953B-35EF40A35AEE}"
 $RegistryPathFull = "HKCR:\AppID\{86F80216-5DD6-4F43-953B-35EF40A35AEE}"
 
-# Take Ownership to Everyone Group
-Take-Permissions $RegistryPathRoot $RegistryPathSub "S-1-1-0" $recurse
+# Local Administrators - Take Ownership
+Take-Permissions $RegistryPathRoot $RegistryPathSub "S-1-5-32-544" $recurse
 
-# Local Administrator - Permission Update
+# Local Administrators Group - Permission Update (Full Access)
 $ACL = Get-Acl $RegistryPathFull
-$Identity = [System.Security.Principal.NTAccount]("$env:COMPUTERNAME\Administrator")
+$Identity = [System.Security.Principal.NTAccount]("$env:COMPUTERNAME\Administrators")
 $AccessRights = [System.Security.AccessControl.RegistryRights]::FullControl
 $InheritanceFlags = [System.Security.AccessControl.InheritanceFlags]::None
 $PropagationFlags = [System.Security.AccessControl.PropagationFlags]::InheritOnly
 $AccessBasedEnumeration = [System.Security.AccessControl.AccessControlType]::Allow
 $Rule = New-Object System.Security.AccessControl.RegistryAccessRule ($Identity, $AccessRights, $InheritanceFlags, $PropagationFlags, $AccessBasedEnumeration)
-# Add to existing permissions
-#$ACL.AddAccessRule($Rule)
 # Overwrite all existing permissions
 $ACL.SetAccessRule($Rule)
 # Commit changes to registry key
-$ACL | Set-Acl -Path $RegistryPath
+$ACL | Set-Acl -Path $RegistryPathFull
+
+# Local Administrator - Permission Update (Full Access)
+$ACL = Get-Acl $RegistryPathFull
+$Identity = [System.Security.Principal.NTAccount]("$env:COMPUTERNAME\Administrator")
+$AccessRights = [System.Security.AccessControl.RegistryRights]::FullControl
+$InheritanceFlags = [System.Security.AccessControl.InheritanceFlags]::None
+$PropagationFlags = [System.Security.AccessControl.PropagationFlags]::None
+$AccessBasedEnumeration = [System.Security.AccessControl.AccessControlType]::Allow
+$Rule = New-Object System.Security.AccessControl.RegistryAccessRule ($Identity, $AccessRights, $InheritanceFlags, $PropagationFlags, $AccessBasedEnumeration)
+# Overwrite all existing permissions
+$ACL.SetAccessRule($Rule)
+# Commit changes to registry key
+$ACL | Set-Acl -Path $RegistryPathFull
+
+# Local Users - Permission Update (None)
+$ACL = Get-Acl $RegistryPathFull
+$Identity = [System.Security.Principal.NTAccount]("$env:COMPUTERNAME\Users")
+$AccessRights = [System.Security.AccessControl.RegistryRights]::Deny
+$InheritanceFlags = [System.Security.AccessControl.InheritanceFlags]::None
+$PropagationFlags = [System.Security.AccessControl.PropagationFlags]::None
+$AccessBasedEnumeration = [System.Security.AccessControl.AccessControlType]::Allow
+$Rule = New-Object System.Security.AccessControl.RegistryAccessRule ($Identity, $AccessRights, $InheritanceFlags, $PropagationFlags, $AccessBasedEnumeration)
+# Add to existing permissions
+$ACL.AddAccessRule($Rule)
+# Commit changes to registry key
+$ACL | Set-Acl -Path $RegistryPathFull
+
+Domain Users - Permission Update (None)
+$ACL = Get-Acl $RegistryPathFull
+$Identity = [System.Security.Principal.NTAccount]("EBNET\DomainUsers")
+$AccessRights = [System.Security.AccessControl.RegistryRights]::Deny
+$InheritanceFlags = [System.Security.AccessControl.InheritanceFlags]::None
+$PropagationFlags = [System.Security.AccessControl.PropagationFlags]::None
+$AccessBasedEnumeration = [System.Security.AccessControl.AccessControlType]::Allow
+$Rule = New-Object System.Security.AccessControl.RegistryAccessRule ($Identity, $AccessRights, $InheritanceFlags, $PropagationFlags, $AccessBasedEnumeration)
+# Add to existing permissions
+$ACL.AddAccessRule($Rule)
+$ACL | Set-Acl -Path $RegistryPathFull
+
+# Remove PSDrive/Registry Key
+Remove-PSDrive -Name HKCR
 #endregion
