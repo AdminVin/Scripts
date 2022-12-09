@@ -1,9 +1,5 @@
 Notes: Remove items from Right Clicking Mouse Menu
-Windows: 7
-Description: 
-Start > Run > regedit
 
 HKEY_CLASSES_ROOT\*\shellex\ContextMenuHandlers
 
--Remove folders in directory
-
+-Backup before removing directories to modify menu items

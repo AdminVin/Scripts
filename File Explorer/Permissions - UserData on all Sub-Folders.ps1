@@ -1,4 +1,4 @@
-## Notice: If you are running this on a UserData that has messed up permissions, run the "Take Ownership" script on the root first, then this one.
+## Notice: If you are running this on a UserData(Desktops/Documents) that has messed up permissions, run "Take Ownership" under the Administrator account FIRST, and then run then this one.
 
 # Set Local Domain
 $domain = "DOMAIN.local"
