@@ -4,17 +4,17 @@ Source: https://renenyffenegger.ch/notes/Windows/security/SID/index
 # SID Reference Chart #
 #######################
 
-S-1-0-0	The null/nobody SID (used when SID is unknown)	Everyone (German: Jeder)
-S-1-1-0	World, which is the group that all (except anonymous) users belong to.	
-S-1-2-0	Local	LOCAL
-S-1-2-1	Console Logon	CONSOLE LOGON (German: KONSOLENANMELDUNG)
-S-1-3-0	Creator owner id	CREATOR OWNER
-S-1-3-1	Creator group id	CREATOR GROUP
-S-1-3-2	Creator owner server id	CREATOR OWNER SERVER
-S-1-3-3	Creator owner group id	CREATOR GROUP SERVER
-S-1-3-4	Owner rights	OWNER RIGHTS
-S-1-5-1	Dialup	DIALUP
-S-1-5-2	The Network group, which represents users who have logged on to a machine from the network.	NETWORK
+S-1-0-0	                            The null/nobody SID (used when SID is unknown)	Everyone (German: Jeder)
+S-1-1-0	                            World, which is the group that all (except anonymous) users belong to.	
+S-1-2-0	Local	                    LOCAL
+S-1-2-1	Console Logon	            CONSOLE LOGON (German: KONSOLENANMELDUNG)
+S-1-3-0	Creator owner id	        CREATOR OWNER
+S-1-3-1	Creator group id	        CREATOR GROUP
+S-1-3-2	Creator owner server id	    CREATOR OWNER SERVER
+S-1-3-3	Creator owner group id	    CREATOR GROUP SERVER
+S-1-3-4	Owner rights	            OWNER RIGHTS
+S-1-5-1	Dialup	                    DIALUP
+S-1-5-2	                    The Network group, which represents users who have logged on to a machine from the network.	NETWORK
 S-1-5-3	Batch	BATCH
 S-1-5-4	Interactive	NT AUTHORITY\INTERACTIVE (german: NT AUTORITÄT\INTERAKTIV)
 S-1-5-5-x-y	is a logon SID which identifies logon session. This SID can be queried using whoami.exe /logonid	
