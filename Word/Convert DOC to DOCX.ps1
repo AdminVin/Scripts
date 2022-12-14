@@ -1,10 +1,14 @@
+##########################################
+### WORK IN PROGRESS (Not Working ATM) ###
+##########################################
+
 # Convert Microsoft Word .DOC files to .DOCX
 #
 # If you need to save the .DOC file to .PDF modify line 15 to this
 # $document.SaveAs([ref] $docx_filename, [ref]17)
 #
 # Set Path of Existing Documents
-$path = "C:\Users\VINCENT\Downloads\Test DOC Files" 
+$path = "C:\Test DOC Files" 
 $word_app = New-Object -ComObject Word.Application
 
 $Format = [Microsoft.Office.Interop.Word.WdSaveFormat]::wdFormatXMLDocument
