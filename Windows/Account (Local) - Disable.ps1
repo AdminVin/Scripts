@@ -1,0 +1,1 @@
+net user YOUR_ACCOUNT_NAME /active:no
