@@ -1,1 +1,1 @@
-net user YOUR_ACCOUNT_NAME /active:no
+net user "YourAdminAccount" /active:no
