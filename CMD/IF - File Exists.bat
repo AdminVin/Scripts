@@ -3,9 +3,9 @@
 ::::::::::::
 
 IF EXIST "filename" (
-  REM Do one thing
+  ECHO "File detected.  No additional changes needed!"
 ) ELSE (
-  REM Do another thing
+  ECHO " File NOT detected.  Installing!"
 )
 
 :::::::::::::
