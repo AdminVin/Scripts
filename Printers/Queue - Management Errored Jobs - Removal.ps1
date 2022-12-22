@@ -1,5 +1,5 @@
 # Print Server
-$PrintServer = "EBPRINT1"
+$PrintServer = "SERVER_NAME"
 # Jobs expire in five days
 $ExpiredPrintJobs = (Get-Date).AddDays(-5)
 # Print Spooler must be running from the system this is being run from.
