@@ -13,4 +13,4 @@ Get-Printer -ComputerName $PrintServer | Get-Printjob | Where-Object {$_.Submitt
 # Remove Expired Print Jobs
 Get-Printer -ComputerName $PrintServer | Get-Printjob | Where-Object {$_.SubmittedTime -le $ExpiredPrintJobs } | Remove-PrintJob
 # Restart Print Spooler/Papercut
-Invoke-Command -ComputerName EBPRINT1 -Scriptblock {Stop-Service "Spooler" -Force;Stop-Service "PCPrintProvider";Start-Sleep 5;Start-Service "Spooler";Start-Service "PCPrintProvider"}
+Invoke-Command -ComputerName $PrintServer -Scriptblock {Stop-Service "Spooler" -Force;Stop-Service "PCPrintProvider";Start-Sleep 5;Start-Service "Spooler";Start-Service "PCPrintProvider"}
