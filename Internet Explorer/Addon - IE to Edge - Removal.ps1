@@ -1,7 +1,7 @@
 $IEAddon = Get-ScheduledTask | Where-Object {$_.TaskName -like "Internet Explorer - IEtoEDGE Removal"}
 
 if($IEAddon) {
-    Write-Host "Task Exists"
+   Write-Host "Task Exists. Skipping!"
  } else {
     $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "Get-ChildItem -Path 'C:\Program Files (x86)\Microsoft\Edge\Application' -Recurse -Filter 'BHO' | Remove-Item -Force -Recurse"
     $trigger =  New-ScheduledTaskTrigger -AtLogOn
