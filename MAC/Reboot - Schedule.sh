@@ -25,3 +25,6 @@ pmset repeat restart MTWRFSU 05:00:00
 # F = Friday
 # S = Saturday
 # U = Sunday
+
+# Cancel all reboot schedule
+sudo pmset repeat cancel
