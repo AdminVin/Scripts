@@ -1,5 +1,6 @@
 # ExchangeOnlineManagement
-if(((Get-InstalledModule | Where-Object {($_.Name -eq "ExchangeOnlineManagement") -AND ($_.Version -ge "3.1.0")} -eq "$null")))
+$EOM_Version = Get-InstalledModule | Where-Object {($_.Name -eq "ExchangeOnlineManagement") -AND ($_.Version -ge "3.1.0")}
+if((($EOM_Version -eq "$null")))
 {
     Write-Host "Install Updated Module"
     Uninstall-Module -Name "ExchangeOnlineManagement"
@@ -15,4 +16,6 @@ else
 
 
 
-#Get-InstalledModule | Where-Object {($_.Name -eq "ExchangeOnlineManagement") -AND ($_.Version -ge "3.1.0")} -eq "$null"
+
+#| Select-Object Name
+#-eq "$null"
