@@ -5,7 +5,7 @@
 IF EXIST "filename" (
   ECHO "File detected.  No additional changes needed!"
 ) ELSE (
-  ECHO " File NOT detected.  Installing!"
+  ECHO "File NOT detected.  Installing!"
 )
 
 :::::::::::::
