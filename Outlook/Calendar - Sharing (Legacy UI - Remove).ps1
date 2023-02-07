@@ -1,0 +1,1 @@
+Remove-ItemProperty -LiteralPath "HKCU:\Software\Microsoft\Office\16.0\Outlook\Options\Calendar\" -Name "ShowLegacySharingUX" -Force -ErrorAction SilentlyContinue
