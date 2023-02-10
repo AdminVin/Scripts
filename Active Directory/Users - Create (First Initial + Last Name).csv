@@ -1,0 +1,8 @@
+FirstName,MiddleInitial,LastName,Password,CompanyName,JobTitle,StreetAddress,City,State,Zip,DirectLine,Cell,Fax
+John,,White,SecurePassword1,AdminVin,,,,,,,,
+Jessica,,Johnson,SecurePassword2,AdminVin,,,,,,,,
+Jake,,Weeks,SecurePassword3,AdminVin,,,,,,,,
+Fernando,,Marez,SecurePassword4,AdminVin,,,,,,,,
+Joe,,Smith,SecurePassword5,AdminVin,,,,,,,,
+James,,Allen,SecurePassword6,AdminVin,,,,,,,,
+Ryan,,Anderson,SecurePassword7,AdminVin,,,,,,,,
