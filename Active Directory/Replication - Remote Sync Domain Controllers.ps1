@@ -12,10 +12,6 @@ Flags Definition
 #>
 #endregion
 
-#region Process Sync - Local
+#region Process Sync
 repadmin /syncall /AdeP
-#endregion
-
-#region Process Sync - Remote
-Invoke-Command -ComputerName SERVERNAME -ScriptBlock {repadmin /syncall /AdeP}
 #endregion
