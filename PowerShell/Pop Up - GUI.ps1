@@ -4,7 +4,7 @@
 
 ## Yes or No
 # Example 1: Concept
-$result = [System.Windows.Forms.MessageBox]::Show("Do you want to proceed?", "Confirm", [System.Windows.Forms.MessageBoxButtons]::YesNo)
+$result = [System.Windows.Forms.MessageBox]::Show("Do you want to proceed?`nNext Line`n`nTwo Lines Next", "Confirm", [System.Windows.Forms.MessageBoxButtons]::YesNo)
 
 if ($result -eq [System.Windows.Forms.DialogResult]::Yes) {
     Write-Host "User clicked Yes."
