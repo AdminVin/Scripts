@@ -30,3 +30,6 @@ New-ComplianceSearchAction -SearchName "SearchID" -Purge -PurgeType SoftDelete
 New-ComplianceSearchAction -SearchName "SearchID" -Purge -PurgeType HardDelete
 # Check Status of all searches
 Get-ComplianceSearch
+
+# Stop Search
+Stop-ComplianceSearch "SearchID"
