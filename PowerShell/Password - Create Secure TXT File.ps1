@@ -1,1 +1,0 @@
-Read-Host -Prompt "Enter your password be encrypted" -AsSecureString | ConvertFrom-SecureString | Out-File "C:\Users\$env:Username\$env:UserName.txt"
