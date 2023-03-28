@@ -12,31 +12,34 @@ For this example we will deploying a scheduled task that removes the Internet Ex
 
 2. Create a sub directory for your task, and name it "Internet Explorer - IEtoEdge Addon Removal".
 
-3. Export the desired task from Task Scheduler.
-    - You can export this task from your computer, after running [Scripts > Internet Explorer > Addon - IE to Edge - Removal.ps1]
-
-4. Create a new file called "Register-ScheduledTask.ps1"
+3. Create a new file called "Register-ScheduledTask.ps1"
     - Edit the file to include the following:
 
-# Create directory for install detection (InTune)
-New-Item -Path "C:\ProgramData\AdminVin\Internet Explorer\" -ItemType Directory -Force 
-# Create file for install detection (InTune)
-New-Item -Path "C:\ProgramData\AdminVin\Internet Explorer\" -Name "IEtoEDGERemoval v1.txt" -Force 
-Unregister-ScheduledTask -Taskname "Internet Explorer - IEtoEDGE Removal" -Confirm:$false # Remove ol
-Register-ScheduledTask -xml (Get-Content '.\InternetExplorer-IEtoEDGERemoval.xml' | Out-String) -TaskName "Internet Explorer - IEtoEDGE Removal" -Force
+# File Detection Setup
+$Dir = "C:\ProgramData\CompanyName\Internet Explorer\"
+$File = "IEtoEDGEAddonRemoval v1.txt"
+New-Item -Path $Dir -ItemType Directory -Force | Out-Null
+New-Item -Path $Dir -Name $File -Force | Out-Null
+Set-Content $Dir$File -Value "Synced and installed at $(Get-Date -Format 'M-d-yyyy_HHmm')"
+# Remove OLD Scheduled Task (Clean Install)
+Unregister-ScheduledTask -Taskname "Internet Explorer - IEtoEDGE Addon Removal" -Confirm:$false
+# Create NEW Scheduled Task
+$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "Get-ChildItem -Path 'C:\Program Files (x86)\Microsoft\Edge\Application' -Recurse -Filter 'BHO' | Remove-Item -Force -Recurse"
+$trigger = New-ScheduledTaskTrigger -AtLogOn
+$STPrin = New-ScheduledTaskPrincipal -UserId "SYSTEM" -LogonType ServiceAccount
+Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "Internet Explorer - IEtoEDGE Addon Removal" -Description "Removes the Internet Explorer Addon IEtoEDGE.  This will permit the use of Internet Explorer." -Principal $STPrin
 
-5. Create another new file called "Unregister-ScheduledTask.ps1"
+4. Create another new file called "Unregister-ScheduledTask.ps1"
     - Edit the file to include the following:
 
-Unregister-ScheduledTask -Taskname "Internet Explorer - IEtoEDGE Removal" -Confirm:$false
+Unregister-ScheduledTask -Taskname "Internet Explorer - IEtoEDGE Addon Removal" -Confirm:$false
 
-6. Create a second sub directory and name the folder "output"
+5. Create a second sub directory and name the folder "Output"
 
 Directory structure should resemble the following.
 
 C:/IntuneTemp/Internet Explorer - IEtoEdge Addon Removal/Register-ScheduledTask.ps1
 C:/IntuneTemp/Internet Explorer - IEtoEdge Addon Removal/Unregister-ScheduledTask.ps1
-C:/IntuneTemp/Internet Explorer - IEtoEdge Addon Removal/InternetExplorer-IEtoEDGERemoval.xml
 C:/IntuneTemp/Output
 C:/IntuneTemp/App - IntuneWinAppUtil.exe
 
@@ -63,17 +66,21 @@ Register-ScheduledTask.intunewin is created in the output folder (C:/IntuneTemp/
 1. Navigate to https://endpoint.microsoft.com/ > Apps > All Apps > Add > Dropdown & select 'Windows app (Win32)
     Select the file created Register-ScheduledTask.intunewin
     Enter in Name, Description, and Publisher
-    Next
+    
 2. Commands
     Install Command:
-    powershell.exe -executionpolicy unrestricted .\Register-ScheduledTask.ps1
+    Powershell.exe -ExecutionPolicy Unrestricted .\Register-ScheduledTask.ps1
+
     Uninstall Command:
-    powershell.exe -executionpolicy unrestricted .\Unegister-ScheduledTask.ps1
+    Powershell.exe -ExecutionPolicy Unrestricted .\Unegister-ScheduledTask.ps1
+    
     Install Behavior:
     Select "System"
+
 3. Requirements:
     Architecture: 32/64
-    Version: Windows 10 1607 to target all Windows 10 PCs
+    Version: Windows 10 1607 to target all Windows 10/11 Computers
+
 4. Detection Rules:
     Rule Format > Manually configure detection rules > Add
     Rule Type
@@ -82,5 +89,5 @@ Register-ScheduledTask.intunewin is created in the output folder (C:/IntuneTemp/
         Detection method: File or folder exists
         Ok
 
-    Scope to the devices in your enviroment and deploy.
+    Set Scope/Group to the devices in your enviroment and deploy.
 #>

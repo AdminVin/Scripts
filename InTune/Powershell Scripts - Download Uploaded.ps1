@@ -1,14 +1,14 @@
 # This script needs to be ran in PowerShell ISE (as Admin) to function correctly.
 
 #Get Graph API Intune Module
-Install-Module NuGet
-Install-Module -Name Microsoft.Graph.Intune
+Install-Module -Name NuGet -Scope CurrentUser
+Install-Module -Name Microsoft.Graph.Intune -Scope CurrentUser
 Import-Module Microsoft.Graph.Intune -Global
  
 #The path where the scripts will be saved
-$Date = Get-Date -UFormat %m-%d-%Y
-New-Item -Path "C:\InTune - PowerShell Scripts ($Date)" -ItemType Directory
-$Path = "C:\InTune - PowerShell Scripts ($Date)"
+$Date = 
+New-Item -Path "C:\InTune - PowerShell Scripts ($(Get-Date -UFormat %m-%d-%Y))" -ItemType Directory -Force
+$Path = "C:\InTune - PowerShell Scripts ($(Get-Date -UFormat %m-%d-%Y))"
 Write-Host ""
 Write-Host "PowerShell Scripts will be downloaded to $Path" -ForegroundColor Yellow
 Write-Host ""
