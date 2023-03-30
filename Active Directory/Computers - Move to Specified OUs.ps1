@@ -1,8 +1,8 @@
-#region Modules
+#region Settings
+# Modules
 Import-Module ActiveDirectory
-#endregion
-
-#region Varibles
+# Varibles
+$Date = Get-Date -UFormat "%Y/%m/%d"
 # Default computer OU
 $defaultlocation = "CN=Computers,DC=DOMAIN,DC=Local"
 
