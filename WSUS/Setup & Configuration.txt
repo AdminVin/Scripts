@@ -1,0 +1,42 @@
+OS
+1. Install OS
+2. Process all Windows Updates
+3. Configure Static IP Address
+4. Join to Domain
+5. Enable RDP (Optional)
+6. Reboot
+
+WSUS 2019
+1. Create folder for WSUS Updates to download to, folder will be large in size over time. (C:\WSUS)
+
+2. Install Role
+- Servier Manager > Add Role > WSUS
+
+3. Initial Configuration
+- Launch "Windows Server Update Services" from Administrative Tools
+- Uncheck "Yes, I would like to join the Microsoft Update Improvement Program" > Next
+- Synchronize from Micrsooft Update > Next
+- Specify Proxy Server (if needed) > Next
+- Start Connecting (process can take a bit) > Next
+- Select Languages > Next
+- Select Products > Next
+--  Office 2019/Office 365 
+--- Under "Office"
+--- Select "Microsoft 365 Apps/Office 2019/Office LTSC"
+-- Windows 10
+--- Under "Windows"
+---- Select "Windows 10 Feature On Demand"
+---- Select "Windows 10, version 1903 and later"
+---- Select "Windows 10"
+-- Windows 11
+--- Under "Windows"
+---- Select "Windows 11"
+- Select Classifications > Next
+-- Check "Updates" for latest build releases (Build 21H2 > 22H2)
+-- Check "Upgrades" for latest OS releases (Win 10 > Win 11)
+- Configure Sync Schedule > Specify Time > Next
+- Check "Begin initial synchronization" > Next > Finish
+
+4. Post Configuration (Best Practices)
+- Install SQL Server Management Studio
+-- Version 19.0.2 - https://learn.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver16
