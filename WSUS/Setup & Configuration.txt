@@ -38,5 +38,11 @@ WSUS 2019
 - Check "Begin initial synchronization" > Next > Finish
 
 4. Post Configuration (Best Practices)
+- Install "Report Viewer 2012" & "SQLSysClrTypes"
+-- Report Viewer 2012: https://www.microsoft.com/en-us/download/confirmation.aspx?id=35747
+-- SQLSysClrTypes: https://www.microsoft.com/en-us/download/details.aspx?id=100451
+- Enable Automatic Approval rule for Critical, Security, and Definition Updates
+- Create 'Update' views for Office, Update and Upgrade in WSUS Console
+-- Right Click 'Update' > New Update View > Check "Choose Products in a specific Classification" > Uncheck "All Classifications" > Select "Update" > Name > Ok
 - Install SQL Server Management Studio
 -- Version 19.0.2 - https://learn.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver16
