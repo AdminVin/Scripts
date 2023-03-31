@@ -1,0 +1,5 @@
+This is connection setup to connect to a WSUS database from SQL Management Studio
+
+- Launch SQL Management as Admin
+- Server Name: np:\\.\pipe\MICROSOFT##WID\tsql\query
+- Authentication: Windows Authentication
