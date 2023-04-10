@@ -1,18 +1,18 @@
 # Window Animations
 # Disable
-defaults write NSGlobalDomain NSAutomaticWindowAnimationsEnabled -bool false
+sudo defaults write NSGlobalDomain NSAutomaticWindowAnimationsEnabled -bool false
 # Restore to Default
 #defaults write NSGlobalDomain NSAutomaticWindowAnimationsEnabled -bool true
 
 # Animation Time
 # Reduce to Minimum
-defaults write NSGlobalDomain NSWindowResizeTime -float 0.001
+sudo defaults write NSGlobalDomain NSWindowResizeTime -float 0.001
 # Restore to Default
 #defaults write NSGlobalDomain NSWindowResizeTime -float 0.2
 
 # Quick Look
 # Disable
-defaults write -g QLPanelAnimationDuration -float 0
+sudo defaults write -g QLPanelAnimationDuration -float 0
 # Restore to Default
 #defaults delete -g QLPanelAnimationDuration
 
