@@ -26,7 +26,7 @@ pmset repeat restart MTWRFSU 05:00:00
 # U = Sunday
 
 # View existing schedule
-pmset -g shed
+pmset -g sched
 
 # Cancel all reboot schedule
 sudo pmset repeat cancel
