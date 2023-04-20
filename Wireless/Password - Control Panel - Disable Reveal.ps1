@@ -1,5 +1,5 @@
 #region Functions
-function Take-Permissions {
+function Update-Permissions {
     param($rootKey, $key, [System.Security.Principal.SecurityIdentifier]$sid = 'S-1-5-32-545', $recurse = $true)
 
     switch -regex ($rootKey) {
@@ -17,7 +17,7 @@ function Take-Permissions {
         $null = $ntdll::RtlAdjustPrivilege($i, 1, 0, [ref]0)
     }
 
-    function Take-KeyPermissions {
+    function Update-KeyPermissions {
         param($rootKey, $key, $sid, $recurse, $recurseLevel = 0)
 
         $regKey = [Microsoft.Win32.Registry]::$rootKey.OpenSubKey($key, 'ReadWriteSubTree', 'TakeOwnership')
@@ -36,12 +36,12 @@ function Take-Permissions {
         }
         if ($recurse) {
             foreach($subKey in $regKey.OpenSubKey('').GetSubKeyNames()) {
-                Take-KeyPermissions $rootKey ($key+'\'+$subKey) $sid $recurse ($recurseLevel+1)
+                Update-KeyPermissions $rootKey ($key+'\'+$subKey) $sid $recurse ($recurseLevel+1)
             }
         }
     }
 
-    Take-KeyPermissions $rootKey $key $sid $recurse
+    Update-KeyPermissions $rootKey $key $sid $recurse
 }
 #endregion
 
@@ -52,7 +52,7 @@ $RegistryPathRoot = "HKCR"
 $RegistryPathSub = "AppID\{86F80216-5DD6-4F43-953B-35EF40A35AEE}"
 $RegistryPathFull = $RegistryPathRoot + ":\" + $RegistryPathSub
 # Local Administrators - Take Ownership
-Take-Permissions $RegistryPathRoot $RegistryPathSub "S-1-5-32-544" $recurse
+Update-Permissions $RegistryPathRoot $RegistryPathSub "S-1-5-32-544" $recurse
 # Remove Existing Key
 Remove-Item -LiteralPath $RegistryPathFull -Force
 # Create New Key (Reset Permissions)
