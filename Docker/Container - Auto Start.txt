@@ -1,0 +1,5 @@
+# List all containers with ID
+docker ps -a
+
+# Set Container to auto start
+docker update --restart=always <container_name_or_id>
