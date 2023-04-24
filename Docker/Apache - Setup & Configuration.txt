@@ -1,0 +1,9 @@
+# This will setup an Apache web container, with Port 80, and set HTDOCS to mount with the directory of the webserver
+# Replace /Volumes/External/Website/ with your web directory
+
+
+# Setup and create container
+docker run -dit --name Apache -p 80:80 -v /Volumes/External/Website/:/usr/local/apache2/htdocs/ httpd:2.4
+
+# Set container to auto turn on after host reboots
+docker update --restart=always Apache
