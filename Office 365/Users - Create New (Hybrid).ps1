@@ -9,4 +9,4 @@ Connect Exchange Office 365 Powershell
 
 Connect to Local Exchange Powershell
 3. Enable-RemoteMailbox "Display Name" -RemoteRoutingAddress "username@DOMAIN.mail.onmicrosoft.com"
-4. Set-RemoteMailbox username -ExchangeGuid <use ID gathered from Office 365> 
+4. Set-RemoteMailbox username -ExchangeGuid <use ID gathered from Office 365>
