@@ -7,7 +7,5 @@ Get-MsolUser -ReturnDeletedUsers
 # User - Delete
 Remove-MsolUser -UserPrincipalName USER@DOMAIN.COM
 
-# User - Delete and remove from Recycle Bin
+# User - Delete specific user from Recycle Bin
 Remove-MsolUser -UserPrincipalName USER@DOMAIN.COM -RemoveFromRecycleBin
-
-
