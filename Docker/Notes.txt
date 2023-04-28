@@ -1,0 +1,10 @@
+HOST Mode
+docker network create --driver=bridge --attachable --internal --opt com.docker.network.bridge.host_binding_ipv4=192.168.103.2 PrimaryNetwork
+
+MACVLAN
+docker network create --driver=macvlan --subnet=192.168.103.0/24 --gateway=192.168.103.1 -o parent=eth0 PrimaryNetwork
+
+Connect Network to Container
+docker network connect bridge mycontainer
+docker network disconnect bridge mycontainer
+docker network remove PrimaryNetwork
