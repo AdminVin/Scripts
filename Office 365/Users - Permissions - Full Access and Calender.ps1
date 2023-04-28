@@ -9,4 +9,4 @@ Add-MailboxPermission "MailboxGrantingAccessTo@DOMAIN.com" -User "UserReceivingA
 
 # View - All calendars the user has access to
 $user = user@DOMAIN.com
-Get-Mailbox | % { Get-MailboxFolderPermission (($_.PrimarySmtpAddress.ToString())+”:\Calendar”) -User $user -ErrorAction SilentlyContinue} | select Identity,User,AccessRights
+Get-Mailbox | ForEach-Object{Get-MailboxFolderPermission (($_.PrimarySmtpAddress.ToString())+”:\Calendar”) -User $user -ErrorAction SilentlyContinue} | Select-Object Identity,User,AccessRights

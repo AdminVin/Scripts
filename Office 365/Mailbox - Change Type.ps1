@@ -1,5 +1,5 @@
 # Connect to Office 365
-# -Type Paramater should be either "Regular" for User Mailbox, "Room" for resource mailbox, "Equipment", or "Shared"
+# -Type parameter should be "Regular" for User Mailbox, "Room" for resource mailbox, "Equipment", or "Shared" for Shared mailbox.
 
 # Regular (with license and login credentials)
 Get-Mailbox -Identity ActiveUser@DOMAIN.com | Set-Mailbox -Type Regular

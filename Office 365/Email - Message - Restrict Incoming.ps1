@@ -13,6 +13,8 @@ AcceptMessagesOnlyFrom
 {Admin}
 
 #>
+# Set Restrictions
+Set-Mailbox USER@DOMAIN.COM -AcceptMessagesOnlyFrom administrator@DOMAIN.COM
 
 # Clear Restrictions
 Set-Mailbox USER@DOMAIN.COM -AcceptMessagesOnlyFrom $Null
