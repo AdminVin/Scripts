@@ -1,0 +1,7 @@
+# Source: http://www.phatpenguin.com/2018/12/hassio-via-docker-on-mac.html
+
+# Setup and Create Container
+docker run -d --name="home-assistant" -v ~/Files/HomeAssistant:/config -e "TZ=America/NewYork" -p 8123:8123 homeassistant/home-assistant
+
+# Set container to auto turn on after host reboots
+docker update --restart=always home-assistant
