@@ -9,6 +9,9 @@ $recipientEmail = "recipient_email@example.com"
 # Define the SMTP port (587 for TLS, 465 for SSL)
 $smtpPort = 587
 
+# Define the keywords to search for
+$keywords = "Geek", "City"
+
 # Create a function to check for updates on the web page
 function CheckForUpdates {
     $response = Invoke-WebRequest -Uri $webPageUrl
@@ -25,11 +28,16 @@ function CheckForUpdates {
 
     # Compare the current content with the last known content
     if ($currentContent -ne $lastKnownContent) {
-        # Content has changed, send an email
-        $smtpServer = "smtp.gmail.com"
-        $smtpCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $senderEmail, (ConvertTo-SecureString -String $senderPassword -AsPlainText -Force)
-        Send-MailMessage -From $senderEmail -To $recipientEmail -Subject "Web page update detected" -Body "The web page at $webPageUrl has been updated." -SmtpServer $smtpServer -Credential $smtpCredential -Port $smtpPort -UseSsl
-        
+        # Content has changed, check for keywords
+        foreach ($keyword in $keywords) {
+            if ($currentContent -match $keyword) {
+                # Keyword found, send an email
+                $smtpServer = "smtp.gmail.com"
+                $smtpCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $senderEmail, (ConvertTo-SecureString -String $senderPassword -AsPlainText -Force)
+                Send-MailMessage -From $senderEmail -To $recipientEmail -Subject "Keyword Alert: '$keyword' found" -Body "The keyword '$keyword' was found on the web page at $webPageUrl." -SmtpServer $smtpServer -Credential $smtpCredential -Port $smtpPort -UseSsl
+            }
+        }
+
         # Update the last known content with the current content
         $currentContent | Out-File -FilePath $contentFile -Force
     }
