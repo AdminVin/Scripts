@@ -1,0 +1,6 @@
+docker run -d \
+  --name Plex-Image-Cleanup \
+  -e TZ=America/New_York \
+  -v ~/Files/Plex\ Image\ Cleanup:/config \
+  -v ~/Library/Application\ Support/Plex\ Media\ Server:/plex \
+  meisnate12/plex-image-cleanup
