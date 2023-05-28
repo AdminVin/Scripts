@@ -25,7 +25,7 @@ function show_progress_bar() {
 
 while true; do
     ## Domain
-    domain="DOMAIN.COM"                         # Google Domain being updated (example: domain="MyDomain.com")
+    domain="MyDomain.COM"                       # Google Domain being updated (example: domain="MyDomain.com")
     host="@"                                    # @ being A Record for DOMAIN.com
     # API Credentials
     apiUserID="XXXXX"                           # Google Domains - API Username
@@ -38,7 +38,7 @@ while true; do
               --silent \
               --show-error)
     # Display Results
-    echo "$domain: $response"                   # Example Output: DOMAIN.com: nochg 1.2.3.4
+    echo "$domain: $response"                   # Example Output: MyDomain.com: nochg 1.2.3.4
     # Sleep 30 Minutes
     show_progress_bar 1800
 done
