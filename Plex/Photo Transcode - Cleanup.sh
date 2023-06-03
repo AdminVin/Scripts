@@ -1,0 +1,1 @@
+find "/Users/USERNAME/Library/Caches/PlexMediaServer/PhotoTranscoder" -name "*.jpg" -type f -mtime +5 -delete 
