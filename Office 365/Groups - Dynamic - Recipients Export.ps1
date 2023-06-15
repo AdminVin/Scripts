@@ -1,5 +1,6 @@
-# Declare Dynamic Distribution Group
-$group = Get-DynamicDistributionGroup -Identity "DynamicGroupName@DOMAIN.com"
+## Primary Method
+Get-DistributionGroupMember -Identity "DynamicGroupName@DOMAIN.com" -ResultSize Unlimited | Export-CSV Export.csv
 
-# Export all recipients to CSV File
+## Alternative Method
+$group = Get-DynamicDistributionGroup -Identity "DynamicGroupName@DOMAIN.com"
 Get-Recipient -RecipientPreviewFilter $group.RecipientFilter | Export-CSV Export.csv
