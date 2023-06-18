@@ -1,0 +1,1 @@
+Set-DynamicDistributionGroup -Identity "DynamicGroupName@DOMAIN.com" -ForceMembershipRefresh
