@@ -1,5 +1,5 @@
 ## Primary Method
-Get-DistributionGroupMember -Identity "DynamicGroupName@DOMAIN.com" -ResultSize Unlimited | Export-CSV Export.csv
+Get-DynamicDistributionGroupMember -Identity "DynamicGroupName@DOMAIN.com" -ResultSize Unlimited | Export-CSV Export.csv
 
 ## Alternative Method
 $group = Get-DynamicDistributionGroup -Identity "DynamicGroupName@DOMAIN.com"
