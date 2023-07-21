@@ -4,6 +4,6 @@ docker run -d \
   -e TZ=US/Eastern \
   -e PORT=5055 `#optional` \
   -p 5055:5055 \
-  -v /Users/USERNAME/Files/Overseer:/app/config \
+  -v /Users/*USERNAME*/Files/Overseerr:/app/config \
   --restart unless-stopped \
   sctx/overseerr
