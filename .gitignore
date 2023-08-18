@@ -1,2 +1,3 @@
 git rm -r --cached FOLDER_NAME/
 FOLDER_NAME/
+.DS_Store
