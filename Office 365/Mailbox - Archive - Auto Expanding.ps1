@@ -13,3 +13,6 @@ Start-ManagedFolderAssistant -Identity USER@DOMAIN.com
 
 # Verify Auto Expanding Archive is Enabled
 Get-Mailbox USER@DOMAIN.com | Format-List AutoExpandingArchiveEnabled
+
+# Force Start Archiving
+Start-ManagedFolderAssistant USER@DOMAIN.com -FullCrawl
