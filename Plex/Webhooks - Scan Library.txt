@@ -1,0 +1,28 @@
+# List All Plex Libraries
+http://192.168.103.73:32400/library/sections/all?X-Plex-Token=YOURPLEXSERVERTOKEN
+
+# Output
+<MediaContainer size="4" allowSync="0" title1="Plex Library">
+<Directory allowSync="1" art="/:/resources/movie-fanart.jpg" composite="/library/sections/10/composite/1693232976" filters="1" refreshing="0" thumb="/:/resources/movie.png" key="10" type="movie" title="Movies" agent="tv.plex.agents.movie" scanner="Plex Movie" language="en-US" uuid="66282221-18cb-421a-9add-72ab940ac8e5" updatedAt="1690024818" createdAt="1674168529" scannedAt="1693232976" content="1" directory="1" contentChangedAt="3279767" hidden="0">
+<Location id="25" path="/Volumes/Media/Movies"/>
+</Directory>
+<Directory allowSync="1" art="/:/resources/movie-fanart.jpg" composite="/library/sections/15/composite/1693233096" filters="1" refreshing="0" thumb="/:/resources/movie.png" key="15" type="movie" title="Movies (4K)" agent="tv.plex.agents.movie" scanner="Plex Movie" language="en-US" uuid="1dcd87db-1045-420d-a359-223a289ec7b3" updatedAt="1691180409" createdAt="1691109743" scannedAt="1693233096" content="1" directory="1" contentChangedAt="3020176" hidden="0">
+<Location id="26" path="/Volumes/Media/Movies (4K)"/>
+</Directory>
+<Directory allowSync="1" art="/:/resources/show-fanart.jpg" composite="/library/sections/11/composite/1693232974" filters="1" refreshing="0" thumb="/:/resources/show.png" key="11" type="show" title="TV Shows" agent="tv.plex.agents.series" scanner="Plex TV Series" language="en-US" uuid="b86bc4fc-deff-416f-81d7-efafef723d78" updatedAt="1690036750" createdAt="1674172573" scannedAt="1693232974" content="1" directory="1" contentChangedAt="3271485" hidden="0">
+<Location id="23" path="/Volumes/Media/TV"/>
+</Directory>
+<Directory allowSync="1" art="/:/resources/artist-fanart.jpg" composite="/library/sections/12/composite/1693232712" filters="1" refreshing="0" thumb="/:/resources/artist.png" key="12" type="artist" title="Music" agent="tv.plex.agents.music" scanner="Plex Music" language="en-US" uuid="8e009cdf-b736-4ea6-92d9-0e7656707760" updatedAt="1690024757" createdAt="1674187393" scannedAt="1693232712" content="1" directory="1" contentChangedAt="3247775" hidden="0">
+<Location id="24" path="/Volumes/Media/Music"/>
+</Directory>
+</MediaContainer>
+
+# Takeaway
+key="10" type="movie" title="Movies" <- The library "Movies" is #10
+key="15" type="movie" title="Movies (4K)" <- The library "Movies (4K)" is 15
+key="11" type="show" title="TV Shows" <- The library "TV" is 11
+key="12" type="artist" title="Music" <- The library "Music" is 12
+
+# Library Scan
+# Change number between "/sections/" and "/refresh" to target library
+http://192.168.103.73:32400/library/sections/11/refresh?X-Plex-Token=YOURPLEXSERVERTOKEN
