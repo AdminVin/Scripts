@@ -1,3 +1,0 @@
-# Visual Theme: One Dark Pro
-# Marketplace: https://marketplace.visualstudio.com/items?itemName=zhuangtongfa.Material-theme
-Control+P > ext install zhuangtongfa.Material-theme

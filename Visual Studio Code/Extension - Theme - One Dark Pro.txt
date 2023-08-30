@@ -1,0 +1,5 @@
+# Install
+Control+P > ext install zhuangtongfa.Material-theme
+
+# Marketplace:
+https://marketplace.visualstudio.com/items?itemName=zhuangtongfa.Material-theme
