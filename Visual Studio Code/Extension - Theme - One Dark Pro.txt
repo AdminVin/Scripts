@@ -1,3 +1,9 @@
+# Name
+One Dark Pro
+
+# Type
+Visual/Color Scheme
+
 # Install
 Control+P > ext install zhuangtongfa.Material-theme
 

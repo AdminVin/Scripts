@@ -1,3 +1,9 @@
+# Name
+Pitch Black
+
+# Type
+Visual/Color Scheme
+
 # Install
 Control+P > ext install viktorqvarfordt.vscode-pitch-black-theme
 
