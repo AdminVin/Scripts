@@ -25,7 +25,7 @@ IF($upn_licenses -ne '') {
 }
 
 # Pull all SkuId/Names for tenant
-Get-MgSubscribedSku | Select-Object SkuPartNumber,SkuId,ConsumedUnits
+Get-MgSubscribedSku | Select-Object CapabilityStatus,SkuPartNumber,SkuId,ConsumedUnits
 
 <# Expected Output:
 SkuPartNumber                               SkuId                                ConsumedUnits
