@@ -1,10 +1,9 @@
-# Notes
-# This is for Active Directory accounts synced to Office 365.
+# Notes: This is for Active Directory accounts synced to Office 365.
 
 # Modules
 Connect-ExchangeOnline
 
-# Active Directory - Check all enabled users with "Staff" in ExtensionAttribute1
+# Active Directory - Check all enabled users
 $ActiveUsers = Get-ADUser -Filter {Enabled -eq $true}
 
 # Initialize an array to store user data
