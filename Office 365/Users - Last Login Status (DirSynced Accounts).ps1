@@ -5,8 +5,8 @@
 Connect-ExchangeOnline
 
 ## Varibles
-# Active Directory - Pull all enabled users with "Staff" in ExtensionAttribute1
-$ActiveUsers = Get-ADUser -Filter {Enabled -eq $true -and extensionattribute1 -eq "Staff"}
+# Active Directory - Pull all enabled users.
+$ActiveUsers = Get-ADUser -Filter {Enabled -eq $true}
 $TotalUsers = $ActiveUsers.Count
 # Array for all accounts
 $UserData = @()
