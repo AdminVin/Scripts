@@ -1,18 +1,29 @@
-# Notes: This is for Active Directory accounts synced to Office 365.
+## Notes:
+# This is for Active Directory accounts synced to Office 365.
 
-# Modules
+## Modules
 Connect-ExchangeOnline
 
-# Active Directory - Check all enabled users
-$ActiveUsers = Get-ADUser -Filter {Enabled -eq $true}
-
-# Initialize an array to store user data
+## Varibles
+# Active Directory - Pull all enabled users with "Staff" in ExtensionAttribute1
+$ActiveUsers = Get-ADUser -Filter {Enabled -eq $true -and extensionattribute1 -eq "Staff"}
+$TotalUsers = $ActiveUsers.Count
+# Array for all accounts
 $UserData = @()
+# CSV Export Location
+$CsvFilePath = "C:\Users - Last Login Status $(Get-Date -Format "MM/dd/yyyy").csv"
+# Counter
+$CountNumber = "0"
 
-# Office 365 - Check Last Interaction Time
+## Process Accounts
+# Office 365 - Check LastInteractionTime
 foreach ($O365user in $ActiveUsers) {
+  $CountNumber = [int]$CountNumber
+  $CountNumber++
+  $CountNumber = $CountNumber.ToString()
   $O365userUPN = $O365user.UserPrincipalName
-  Write-Host "Checking $O365userUPN"
+  Write-Host "Checking $O365userUPN ($CountNumber of $TotalUsers)"
+  
   $O365Status = Get-MailboxStatistics $O365user.UserPrincipalName | Select-Object LastInteractionTime
   $UserDataRow = New-Object PSObject -Property @{
     "User" = $O365user.Name
@@ -22,11 +33,7 @@ foreach ($O365user in $ActiveUsers) {
   $UserData += $UserDataRow
 }
 
-# Define the CSV file path
-$CsvFilePath = "C:\Users - Last Login Status.csv"
 
-# Export the data to a CSV file
+## Export Data / Notify
 $UserData | Export-Csv -Path $CsvFilePath -NoTypeInformation
-
-# Notify
 Write-Host "User data has been exported to $CsvFilePath"
