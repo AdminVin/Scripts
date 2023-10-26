@@ -1,0 +1,4 @@
+- Login as the user that desires/approved for local admin on the laptop
+- Login as Local Admin account.
+- Run CMD as Admin
+- Run > net localgroup administrators AzureAD\USERFIRST.LAST@DOMAIN.COM /add
