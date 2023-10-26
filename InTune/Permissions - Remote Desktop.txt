@@ -1,5 +1,5 @@
 [>] Host Machine
-- Login as the user that desires/approved for Remote Desktop on the laptop.
+- Login as the user that desires/approved for Remote Desktop on the laptop > Logout
 - Login as Local Admin account.
 - Run CMD as Admin
 - Run > net localgroup "Remote Desktop Users" AzureAD\USERFIRST.LAST@DOMAIN.COM /add
