@@ -1,0 +1,15 @@
+[>] Host Machine
+- Login as the user that desires/approved for Remote Desktop on the laptop.
+- Login as Local Admin account.
+- Run CMD as Admin
+- Run > net localgroup "Remote Desktop Users" AzureAD\USERFIRST.LAST@DOMAIN.COM /add
+- Enable RDP (Start > Run > sysdm.cpl > Remote (tab) > Allow remote connections to this computer > Uncheck "Allow connections only from running RD with NLA")
+
+[>] Remote Machine
+- Start > Run > mstsc
+- Enter in computer name or IP address > Username should be "AzureAD\USERFIRST.LAST@DOMAIN.COM" (without quotes) and save RDP file to desktop.
+- Right click RDP file and with notepad
+- Add the two lines below to the end of the file > Save
+enablecredsspsupport:i:0
+authentication level:i:2
+- Test RDPing into device.
