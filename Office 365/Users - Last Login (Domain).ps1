@@ -1,4 +1,4 @@
-## Notes:
+## Notes
 # This is for Active Directory accounts synced to Office 365.
 
 ## Modules

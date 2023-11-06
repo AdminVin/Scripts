@@ -1,9 +1,5 @@
-####################
-# WORK IN PROGRESS #
-####################
-
-## Notes:
-# This is for Office 365 serviceless /cloud accounts only.
+## Notes
+# This is for Office 365 serviceless/cloud accounts only.
 
 ## Modules
 IF(!(Get-Module -Name ExchangeOnlineManagement -ListAvailable)){Install-Module -Name ExchangeOnlineManagement -Scope CurrentUser -Force;Import-Module ExchangeOnlineManagement;Write-Host "ExchangeOnlineManagement";Connect-ExchangeOnline} ELSE {Import-Module ExchangeOnlineManagement;Write-Host "ExchangeOnlineManagement";Connect-ExchangeOnline}
@@ -16,7 +12,7 @@ IF(!(Get-Module -Name ExchangeOnlineManagement -ListAvailable)){Install-Module -
 # CSV Import Location
 $AllUsers = Import-Csv -Path "C:\users_11_6_2023 7_58_56 PM.csv"
 #$ActiveUsers = $AllUsers | Where-Object { $_."Licenses" -ne $null } | Select-Object "User principal name"
-$ActiveUsers = $AllUsers | Where-Object { $_."Licenses" -ne $null } | Select-Object @{Name="UserPrincipleName"; Expression={$_."User principal name"}}
+$ActiveUsers = $AllUsers | Where-Object { $_."Licenses" -ne $null } | Select-Object @{Name="UserPrincipalName"; Expression={$_."User principal name"}}
 
 $TotalUsers = $ActiveUsers.Count
 # Array for all accounts
@@ -32,10 +28,10 @@ foreach ($O365user in $ActiveUsers) {
   $CountNumber = [int]$CountNumber
   $CountNumber++
   $CountNumber = $CountNumber.ToString()
-  $O365userUPN = $O365user
-  Write-Host "Checking $O365user ($CountNumber of $TotalUsers)"
+  $O365userUPN = $O365user.UserPrincipalName
+  Write-Host "Checking $O365userUPN ($CountNumber of $TotalUsers)"
   
-  $O365Status = Get-MailboxStatistics $O365user.UserPrincipalName | Select-Object LastInteractionTime, LastUserActionTime
+  $O365Status = Get-MailboxStatistics $O365user.UserPrincipalName | Select-Object LastUserActionTime
   $UserDataRow = New-Object PSObject -Property @{
     "User" = $O365user.Name
     "UserPrincipalName" = $O365user.UserPrincipalName
