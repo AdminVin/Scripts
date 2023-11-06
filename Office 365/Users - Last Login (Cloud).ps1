@@ -13,13 +13,12 @@ IF(!(Get-Module -Name ExchangeOnlineManagement -ListAvailable)){Install-Module -
 $AllUsers = Import-Csv -Path "C:\users_11_6_2023 7_58_56 PM.csv"
 #$ActiveUsers = $AllUsers | Where-Object { $_."Licenses" -ne $null } | Select-Object "User principal name"
 $ActiveUsers = $AllUsers | Where-Object { $_."Licenses" -ne $null } | Select-Object @{Name="UserPrincipalName"; Expression={$_."User principal name"}}
-
-$TotalUsers = $ActiveUsers.Count
 # Array for all accounts
 $UserData = @()
 # CSV Export Location
 $CsvFilePath = "C:\Users - Last Login Status $(Get-Date -Format "MM-dd-yyyy").csv"
 # Counter
+$TotalUsers = $ActiveUsers.Count
 $CountNumber = "0"
 
 ## Process Accounts
@@ -33,7 +32,6 @@ foreach ($O365user in $ActiveUsers) {
   
   $O365Status = Get-MailboxStatistics $O365user.UserPrincipalName | Select-Object LastUserActionTime
   $UserDataRow = New-Object PSObject -Property @{
-    "User" = $O365user.Name
     "UserPrincipalName" = $O365user.UserPrincipalName
     "LastUserActionTime" = $O365Status.LastUserActionTime
   }
@@ -42,7 +40,7 @@ foreach ($O365user in $ActiveUsers) {
 
 
 ## Export Data / Notify
-$UserData | Select-Object "User", "UserPrincipalName", "LastUserActionTime" | Export-Csv -Path $CsvFilePath -NoTypeInformation
+$UserData | Select-Object "UserPrincipalName", "LastUserActionTime" | Export-Csv -Path $CsvFilePath -NoTypeInformation
 Write-Host "User data has been exported to $CsvFilePath"
 
 

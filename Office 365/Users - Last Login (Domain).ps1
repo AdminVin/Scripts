@@ -7,12 +7,12 @@ IF(!(Get-Module -Name ExchangeOnlineManagement -ListAvailable)){Install-Module -
 ## Varibles
 # Active Directory - Pull all enabled users.
 $ActiveUsers = Get-ADUser -Filter {Enabled -eq $true}
-$TotalUsers = $ActiveUsers.Count
 # Array for all accounts
 $UserData = @()
 # CSV Export Location
 $CsvFilePath = "C:\Users - Last Login Status $(Get-Date -Format "MM-dd-yyyy").csv"
 # Counter
+$TotalUsers = $ActiveUsers.Count
 $CountNumber = "0"
 
 ## Process Accounts
