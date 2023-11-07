@@ -1,6 +1,7 @@
 ## Notes
 # This is for Office 365 serviceless/cloud accounts only.
 
+
 ## Modules
 IF(!(Get-Module -Name ExchangeOnlineManagement -ListAvailable)){Install-Module -Name ExchangeOnlineManagement -Scope CurrentUser -Force;Import-Module ExchangeOnlineManagement;Write-Host "ExchangeOnlineManagement";Connect-ExchangeOnline} ELSE {Import-Module ExchangeOnlineManagement;Write-Host "ExchangeOnlineManagement";Connect-ExchangeOnline}
 
@@ -9,15 +10,16 @@ IF(!(Get-Module -Name ExchangeOnlineManagement -ListAvailable)){Install-Module -
 
 
 ## Varibles
-# CSV Import Location
+# CSV Import
 $AllUsers = Import-Csv -Path "C:\users_11_6_2023 7_58_56 PM.csv"
 $ActiveUsers = $AllUsers | Where-Object { $_."Licenses" -ne $null } | Select-Object @{Name="UserPrincipalName"; Expression={$_."User principal name"}} # Select only accounts with licensing assigned.
 $UserData = @()
-# CSV Export Location
+# CSV Export
 $CsvFilePath = "C:\Users - Last Login Status $(Get-Date -Format "MM-dd-yyyy").csv"
 # Counter
 $TotalUsers = $ActiveUsers.Count
 $CountNumber = "0"
+
 
 ## Process Accounts
 # Office 365 - Check LastUserActionTime
