@@ -1,8 +1,10 @@
 ## Notes
 # This is for Active Directory accounts synced to Office 365.
 
+
 ## Modules
 IF(!(Get-Module -Name ExchangeOnlineManagement -ListAvailable)){Install-Module -Name ExchangeOnlineManagement -Scope CurrentUser -Force;Import-Module ExchangeOnlineManagement;Write-Host "ExchangeOnlineManagement";Connect-ExchangeOnline} ELSE {Import-Module ExchangeOnlineManagement;Write-Host "ExchangeOnlineManagement";Connect-ExchangeOnline}
+
 
 ## Varibles
 # Active Directory - Pull all enabled users.
@@ -13,6 +15,7 @@ $CsvFilePath = "C:\Users - Last Login Status $(Get-Date -Format "MM-dd-yyyy").cs
 # Counter
 $TotalUsers = $ActiveUsers.Count
 $CountNumber = "0"
+
 
 ## Process Accounts
 # Office 365 - Check LastUserActionTime
