@@ -6,7 +6,9 @@
 IF(!(Get-Module -Name ExchangeOnlineManagement -ListAvailable)){Install-Module -Name ExchangeOnlineManagement -Scope CurrentUser -Force;Import-Module ExchangeOnlineManagement;Write-Host "ExchangeOnlineManagement";Connect-ExchangeOnline} ELSE {Import-Module ExchangeOnlineManagement;Write-Host "ExchangeOnlineManagement";Connect-ExchangeOnline}
 
 ## User Accounts - Export all users to CSV.
-# https://admin.microsoft.com/ > Active Users > Export Users
+# https://admin.microsoft.com/ > Active Users > Export Users > Save CSV
+# 
+# Then update line 16 with the full disk path of the file.
 
 
 ## Varibles
