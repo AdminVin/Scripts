@@ -6,7 +6,7 @@
 IF(!(Get-Module -Name ExchangeOnlineManagement -ListAvailable)){Install-Module -Name ExchangeOnlineManagement -Scope CurrentUser -Force;Import-Module ExchangeOnlineManagement;Write-Host "ExchangeOnlineManagement";Connect-ExchangeOnline} ELSE {Import-Module ExchangeOnlineManagement;Write-Host "ExchangeOnlineManagement";Connect-ExchangeOnline}
 
 ## User Accounts - Export all users to CSV.
-# https://admin.microsoft.com/ > Active Users > Export Users > Save CSV
+# Login to https://admin.microsoft.com/ > Active Users > Export Users > Save CSV
 # 
 # Then update line 16 with the full disk path of the file.
 
@@ -14,7 +14,7 @@ IF(!(Get-Module -Name ExchangeOnlineManagement -ListAvailable)){Install-Module -
 ## Varibles
 # CSV Import
 $AllUsers = Import-Csv -Path "C:\users_11_6_2023 7_58_56 PM.csv"
-$ActiveUsers = $AllUsers | Where-Object { $_."Licenses" -ne $null } | Select-Object @{Name="UserPrincipalName"; Expression={$_."User principal name"}} # Select only accounts with licensing assigned.
+$ActiveUsers = $AllUsers | Where-Object { $_."Licenses" -ne $null } | Select-Object @{Name="UserPrincipalName"; Expression={$_."User principal name"}} # Select accounts with licensing assigned.
 $UserData = @()
 # CSV Export
 $CsvFilePath = "C:\Users - Last Login Status $(Get-Date -Format "MM-dd-yyyy").csv"
