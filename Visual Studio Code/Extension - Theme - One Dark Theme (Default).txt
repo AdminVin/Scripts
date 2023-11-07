@@ -1,0 +1,11 @@
+# Name
+One Dark Theme
+
+# Type
+Visual/Color Scheme
+
+# Install
+Control+P > ext install theme-onedark
+
+# Marketplace:
+https://marketplace.visualstudio.com/items?itemName=azemoh.theme-onedark
