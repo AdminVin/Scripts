@@ -1,0 +1,8 @@
+# Configure and Install
+docker run -d \
+  --name=Tautulli \
+  --restart=unless-stopped \
+  -v ~/Files/Tautulli:/config \
+  -e TZ=US/Eastern \
+  -p 8181:8181 \
+  ghcr.io/tautulli/tautulli
