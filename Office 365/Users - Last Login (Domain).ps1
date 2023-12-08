@@ -8,7 +8,7 @@ IF(!(Get-Module -Name ExchangeOnlineManagement -ListAvailable)){Install-Module -
 
 ## Varibles
 # Active Directory - Pull all enabled users.
-$ActiveUsers = Get-ADUser -Filter {Enabled -eq $true}
+$ActiveUsers = Get-ADUser -Filter {Enabled -eq $true} -Properties GivenName, Surname, Title
 $UserData = @()
 # CSV Export Location
 $CsvFilePath = "C:\Users - Last Login Status $(Get-Date -Format "MM-dd-yyyy").csv"
@@ -28,8 +28,10 @@ foreach ($O365user in $ActiveUsers) {
   
   $O365Status = Get-MailboxStatistics $O365user.UserPrincipalName | Select-Object LastInteractionTime, LastUserActionTime
   $UserDataRow = New-Object PSObject -Property @{
-    "User" = $O365user.Name
-    "UserPrincipalName" = $O365user.UserPrincipalName
+    "First Name" = $O365user.GivenName
+    "Last Name" = $O365user.Surname
+    "Title" = $O365user.Title
+    "Email" = $O365user.UserPrincipalName
     "LastUserActionTime" = $O365Status.LastUserActionTime
   }
   $UserData += $UserDataRow
@@ -37,7 +39,7 @@ foreach ($O365user in $ActiveUsers) {
 
 
 ## Export Data / Notify
-$UserData | Select-Object "User", "UserPrincipalName", "LastUserActionTime" | Export-Csv -Path $CsvFilePath -NoTypeInformation
+$UserData | Select-Object "First Name", "Last Name", "Title", "Email", "LastUserActionTime" | Export-Csv -Path $CsvFilePath -NoTypeInformation
 Write-Host "User data has been exported to $CsvFilePath"
 
 
