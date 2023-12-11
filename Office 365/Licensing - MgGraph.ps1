@@ -10,7 +10,7 @@ $upn = USER@DOMAIN.com
 
 # Set User's Usage Location
 Update-MgUser -UserId $upn -UsageLocation "US"
-Start-Sleep 30 # Delay is needed for propagation for Microsoft Data Centers, before you can assign licensing.
+Start-Sleep 60 # Delay is needed for propagation for Microsoft Data Centers, before you can assign licensing.
 
 # Remove any existing licensing attached to user
 $upn_licenses = ''
