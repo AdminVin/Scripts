@@ -10,9 +10,9 @@ docker run --rm -it -v "~/Files/Plex Meta Manager:/config:rw" --name="Plex-Meta-
 
 
 docker run -d \
-  --name=PlexMetaManager \
+  --name=Plex-Meta-Manager \
   -e TZ=TZ=America/New_York \
   -e PMM_TIME=06:00,12:00,18:00 \
-  -v "~/Files/Plex Meta Manager:/config:rw" \
+  -v "/Users/vbriffa/Files/Plex Meta Manager:/config:rw" \
   --restart unless-stopped \
   lscr.io/linuxserver/plex-meta-manager:latest
