@@ -1,4 +1,4 @@
-# Run on Schedule at 5 AM Daily in Container
+# Run on Schedule at 12 AM Daily in Container
 docker run -dit -v "~/Files/Plex Meta Manager:/config:rw" --name="Plex-Meta-Manager" meisnate12/plex-meta-manager
 
 # Auto Restart
@@ -6,3 +6,13 @@ docker update --restart=always Plex-Meta-Manager
 
 # Run Instantly
 docker run --rm -it -v "~/Files/Plex Meta Manager:/config:rw" --name="Plex-Meta-Manager" meisnate12/plex-meta-manager --run
+
+
+
+docker run -d \
+  --name=PlexMetaManager \
+  -e TZ=TZ=America/New_York \
+  -e PMM_TIME=06:00,12:00,18:00 \
+  -v "~/Files/Plex Meta Manager:/config:rw" \
+  --restart unless-stopped \
+  lscr.io/linuxserver/plex-meta-manager:latest
