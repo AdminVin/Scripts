@@ -37,6 +37,7 @@ netsh advfirewall firewall add rule name="Adobe - Premiere 2023" dir=in action=b
 netsh advfirewall firewall add rule name="Adobe - Premiere 2023" dir=out action=block program="C:\Program Files\Adobe\Adobe Premiere Pro 2023\Adobe Premiere Pro.exe" enable=yes
 
 ## Creative Cloud - Disable
+
 # Disable Auto Start
 Remove-ItemProperty -Path "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Run" -Name "Adobe CCXProcess" -Force -ErrorAction SilentlyContinue | Out-Null
 # Stop Process & Rename
