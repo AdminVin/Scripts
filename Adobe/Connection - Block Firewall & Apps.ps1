@@ -1,4 +1,4 @@
-## Block Adobe Apps from connecting to the Internet
+## Firewall - Block Connection
 
 # Creative Cloud
 netsh advfirewall firewall add rule name="Adobe - Creative Cloud" dir=in action=block program="C:\Program Files\Adobe\Adobe Creative Cloud Experience\CCXProcess.exe" enable=yes
@@ -35,3 +35,10 @@ netsh advfirewall firewall add rule name="Adobe - Photoshop 2023" dir=out action
 # Premiere
 netsh advfirewall firewall add rule name="Adobe - Premiere 2023" dir=in action=block program="C:\Program Files\Adobe\Adobe Premiere Pro 2023\Adobe Premiere Pro.exe" enable=yes
 netsh advfirewall firewall add rule name="Adobe - Premiere 2023" dir=out action=block program="C:\Program Files\Adobe\Adobe Premiere Pro 2023\Adobe Premiere Pro.exe" enable=yes
+
+## Creative Cloud - Disable
+# Disable Auto Start
+Remove-ItemProperty -Path "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Run" -Name "Adobe CCXProcess" -Force -ErrorAction SilentlyContinue | Out-Null
+# Stop Process & Rename
+Stop-Process -Name "CCXProcess" -ErrorAction SilentlyContinue | Out-Null
+Rename-Item -Path "C:\Program Files (x86)\Adobe\Adobe Creative Cloud Experience\CCXProcess.exe" -NewName "C:\Program Files (x86)\Adobe\Adobe Creative Cloud Experience\CCXProcess.exe.old" -ErrorAction SilentlyContinue | Out-Null
