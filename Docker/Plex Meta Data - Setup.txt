@@ -1,5 +1,5 @@
 # Run - Instantly
-docker run --rm -it -v "/Users/*USERNAME*/Files/Plex Meta Manager:/config:rw" --name="Plex-Meta-Manager" meisnate12/plex-meta-manager --run
+docker run --rm -it -v "/Users/*USERNAME*/Files/Plex Meta Manager:/config:rw" --name="PMM" meisnate12/plex-meta-manager --run
 
 
 # Run - Schedule (Daily: 12 AM EST Daily)
