@@ -1,0 +1,17 @@
+# CONFIG_DIR - Where you settings are saved
+CONFIG_DIR=/config
+
+# LIBRARY_DIR - The location/locations of your library
+LIBRARY_DIR=/library
+
+# CACHE_DIR - A tmpfs or and folder for temporary conversion files
+CACHE_DIR=/tmp/unmanic
+
+docker run -ti --rm \
+    --name Unmanic \
+    -p 8888:8888 \
+    -v ~/Files/Unmanic:/config \
+    -v /Volumes/Media/Movies:/movies \
+    -v /Volumes/Media/TV:/tv \
+    -v ~/Downloads/_transcode-cache:/tmp/unmanic \
+    josh5/unmanic:latest
