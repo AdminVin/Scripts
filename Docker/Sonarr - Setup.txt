@@ -1,0 +1,9 @@
+# Configure and Install
+docker run -d \
+  --name Sonarr \
+  --restart=unless-stopped \
+  -p 8989:8989 \
+  -v ~/Files/Sonarr:/config \
+  -v /Volumes/Media/TV:/tv \
+  -v ~/Downloads/_Complete:/Downloads \
+  linuxserver/sonarr
