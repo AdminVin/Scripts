@@ -1,0 +1,45 @@
+###########################################
+## Part 1 - Create Cloud Flare API Token ##
+###########################################
+# Source: https://github.com/oznu/docker-cloudflare-ddns
+
+1. Go to https://dash.cloudflare.com/profile/api-tokens
+
+2. Create API Token
+- Name: cloudflare-ddns
+- Permissions
+Zone - Zone Settings - Read
+Zone - Zone - Read
+Zone - DNS - Edit
+Set the zone resources to:
+Include - All zones
+
+3. Save & Copy the API Token 
+
+
+#############################################################
+## Part 2 - Setup Cloud Flare as DDNS Provider on Synology ##
+#############################################################
+# Source: https://github.com/mrikirill/SynologyDDNSCloudflareMultidomain?tab=readme-ov-file#how-to-install
+
+1. Enable SSH & Connect.
+
+2. Run: 
+sudo wget https://raw.githubusercontent.com/mrikirill/SynologyDDNSCloudflareMultidomain/master/cloudflare.php -O /usr/syno/bin/ddns/cloudflare.php && sudo chmod 755 /usr/syno/bin/ddns/cloudflare.php
+
+3. Edit DDNS provider configuration file.
+- sudo vim /etc.defaults/ddns_provider.conf
+- Press I to enter edit mode, page down to go to the bottom, and paste the CloudFlare configuration below the existing text.
+
+[Cloudflare]
+  modulepath=/usr/syno/bin/ddns/cloudflare.php
+  queryurl=https://www.cloudflare.com/
+
+- Press Escape twice, and type ":wq" (without quotes) to quit and save.
+
+4. Login to Synology web interface > Control Panel > Network > DDNS > Add
+- Hostname: Domain.com
+- Username/Email: null
+- Password/Key: CloudFlare API Token
+
+5. Test Connection > Save
