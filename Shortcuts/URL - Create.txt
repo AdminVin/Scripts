@@ -1,0 +1,12 @@
+## Information
+- Use a text editor (Notepad or Notepad++) and use the syntax below to create a .URL file with an icon from an icon library files (.ICL)
+
+## Syntax
+[InternetShortcut]
+URL=https://CompanyPortal.com
+IconFile=C:\Program Files\WebShortcuts\Icons.icl
+IconIndex=32
+
+## Notes
+- Use "icofx" to view contents of your .ICL file and identify 'Index' # 
+- https://icofx.ro/
