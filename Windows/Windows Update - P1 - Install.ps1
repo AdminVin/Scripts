@@ -31,6 +31,7 @@ if (-not $module) {
 Get-WindowsUpdate
 # Install
 Install-WindowsUpdate -AcceptAll -Confirm:$false -IgnoreReboot
+usoclient startinteractivescan                                      # Refresh 'Windows Update' Metro GUI
 
 
 ## Email
