@@ -1,0 +1,18 @@
+Windows Registry Editor Version 5.00
+;
+; This will re-add "Run as Administrator" in the right click context menu if it was removed by mistake.
+;
+[HKEY_CLASSES_ROOT\*\shell\runas]
+@="Run as administrator"
+"HasLUAShield"=""
+
+[HKEY_CLASSES_ROOT\*\shell\runas\command]
+@="cmd.exe /c takeown /f \"%1\" && icacls \"%1\" /grant administrators:F && \"%1\""
+
+; Add 'Run as administrator' context menu for MSI packages
+[HKEY_CLASSES_ROOT\Msi.Package\shell\runas]
+@="Run as administrator"
+"HasLUAShield"=""
+
+[HKEY_CLASSES_ROOT\Msi.Package\shell\runas\command]
+@="cmd.exe /c takeown /f \"%1\" && icacls \"%1\" /grant administrators:F && msiexec /i \"%1\""
