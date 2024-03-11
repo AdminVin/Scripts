@@ -1,35 +1,21 @@
-### Office 365
-# Connect
-Connect-EXOPSSession
-Connect-IPPSSession -UserPrincipalName GlobalAdministrator@DOMAIN.com
-
-# Office 365 (Alternative Method)
+### Connect
 Import-Module ExchangeOnlineManagement
 Connect-ExchangeOnline
+# Requires role "Organization Management" role in Office 365 (Exchange Admin > Roles > Admin Roles > Organization Management > Assigned > Add > Search by display name)
 Connect-IPPSSession -UserPrincipalName GlobalAdministrator@DOMAIN.com
 
-### Exchange 2016
-# Create Search (with single word)
-New-ComplianceSearch -Name "SearchID" -ExchangeLocation All -ContentMatchQuery "'SearchTerm'"
-
-# Create Search (with two words, searching for either word in the message)
-New-ComplianceSearch -Name “SearchID” -ExchangeLocation All -ContentMatchQuery '“SearchTerm" OR "SearchTerm2”'
-
-# Create Search (with two words, searching for both in the message)
-New-ComplianceSearch -Name “SearchID” -ExchangeLocation All -ContentMatchQuery '“SearchTerm" AND "SearchTerm2”'
-
-# Start Search
-Start-ComplianceSearch -Identity "SearchID"
-# View Results
-Get-ComplianceSearch -Identity "SearchID" | Format-List
+## Create
+# Create search and paramaters at https://compliance.microsoft.com/contentsearchv2?viewid=search
 
 ### Purge
+## Delete
 #SoftDelete (Recovereable)
 New-ComplianceSearchAction -SearchName "SearchID" -Purge -PurgeType SoftDelete
 # HardDelete (Not Recoverable)
 New-ComplianceSearchAction -SearchName "SearchID" -Purge -PurgeType HardDelete
+
+## Misc
 # Check Status of all searches
 Get-ComplianceSearch
-
 # Stop Search
 Stop-ComplianceSearch "SearchID"
