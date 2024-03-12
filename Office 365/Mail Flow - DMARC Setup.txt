@@ -1,5 +1,6 @@
 # Source: https://lazyadmin.nl/office-365/office-365-dmarc/
 
+# Setup & Configuration
 Navigate to your public DNS records > Add new TXT record
 - Type: TXT
 - Hostname: _dmarc
