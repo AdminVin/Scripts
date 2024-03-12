@@ -1,0 +1,25 @@
+# Source: https://lazyadmin.nl/office-365/office-365-dmarc/
+
+Navigate to your public DNS records > Add new TXT record
+- Type: TXT
+- Hostname: _dmarc
+- Value: v=DMARC1; p=quarantine; fo=1; rua=mailto:DMARC_Reports@DOMAIN.com; ruf=mailto:DMARC_Reports@DOMAIN.com
+
+Breakdown
+v=DMARC1;
+p=quarantine;
+    # Policy Options: 
+    p=none; (Monitoring only, all messages failing DMARC check will be sent)
+    p=quarantine; (Messages failing DMARC check, will be sent to users quarantine/spam folder)
+    p=reject; (Messages failing DMARC check, will be rejected.)
+fo=1
+    # Forensic Reporting Options
+    0 - Generate report when both SPF and DKIM check fail.
+    1 - Generate report when SPF or DKIM check fails.
+    d - Generate report only when DKIM check fails.
+    s - Generate report only when SPF check fails.
+rua=mailto:DMARC_Reports@DOMAIN.com
+    # Destination for reports.
+ruf=mailto:DMARC_Reports@DOMAIN.com
+    # Destination for forensic reports to be sent to.
+    # Forensic reports include detailed information about individual email messages that fail DMARC authentication.

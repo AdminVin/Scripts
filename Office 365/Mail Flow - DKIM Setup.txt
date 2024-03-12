@@ -1,0 +1,17 @@
+# Source: https://lazyadmin.nl/office-365/configure-dkim-office-365/
+
+1. Navigate to Microsoft Defender > Policies & Rules > Threat Policies > Email Authentic settings (As of 2024/03/12)
+    - https://security.microsoft.com/dkimv2 > Select domain > Switch from disabled to enabled
+- Popup will display public DNS records that need to be created.
+ - Example Records
+    Record #1
+        Type: CNAME
+        Name: selector1._domainkey
+        Value: selector1-YOURDOMAIN._domainkey.YOURONMSDOMAIN.onmicrosoft.com
+    Record #2
+        Type: CNAME
+        Name: selector2._domainkey
+        Value: selector2-YOURDOMAIN._domainkey.YOURONMSDOMAIN.onmicrosoft.com
+
+2. After records have had time to propagate, switch from disabled to enabled.
+    - A success message will popup with "It may take several minutes to synchronize the status change."
