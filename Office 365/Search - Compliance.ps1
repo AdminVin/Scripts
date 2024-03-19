@@ -1,3 +1,9 @@
+<# Notes
+Compliance Permissions Needed:
+Navigate to https://compliance.microsoft.com/ > Permissions > Microsoft Purview Solutions, select "Roles" > select "eDiscovery Manager" > Add User
+#>
+
+
 ### Connect
 Import-Module ExchangeOnlineManagement
 Connect-ExchangeOnline
