@@ -1,2 +1,2 @@
 # Scripts
-PowerShell business orientated scripts to help get you through the week.
+Primarily PowerShell, with a dash of BAT and VBS sripts.
