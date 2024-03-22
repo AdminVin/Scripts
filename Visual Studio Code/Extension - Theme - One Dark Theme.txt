@@ -2,7 +2,7 @@
 One Dark Theme
 
 # Type
-Visual/Color Scheme
+Application Theme
 
 # Install
 Control+P > ext install theme-onedark

@@ -1,0 +1,8 @@
+# Name
+Theme
+
+# Type
+Application Theme
+
+# Market Place
+https://marketplace.visualstudio.com/items?itemName=tal7aouy.theme

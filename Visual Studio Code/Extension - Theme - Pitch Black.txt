@@ -2,7 +2,7 @@
 Pitch Black
 
 # Type
-Visual/Color Scheme
+Application Theme
 
 # Install
 Control+P > ext install viktorqvarfordt.vscode-pitch-black-theme
