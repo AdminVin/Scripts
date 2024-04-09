@@ -1,0 +1,94 @@
+####################
+# Library Settings #
+####################
+libraries:                                          # This is called out once within the config.yml file
+############
+## Movies ##
+############
+  Movies:
+    overlay_path:
+    - remove_overlays: false                        # Set this to true to remove all overlays added by Plex Meta Manager / false is default.
+    #- pmm: resolution                              # Resolution (Default position Top Left)
+    - pmm: ratings                                  # Ratings with custom fonts matched to the style of the rating, font_size, and on the right in 'square' format
+      template_variables:
+        rating1: audience
+        rating1_image: rt_popcorn
+        rating1_font: config/overlays/fonts/Mobsters.ttf
+        rating1_font_size: 80
+        rating_alignment: horizontal               # horizontal / vertical (default if not declared)
+        horizontal_position: right
+        vertical_position: bottom
+        horizontal_offset: 15
+        vertical_offset: 15
+        back_color: "#000000" # Black
+    - pmm: streaming
+      template_variables:
+        horizontal_align: left
+        vertical_align: bottom
+        vertical_offset: 15
+        horizontal_offset: 15
+        use_Crunchyroll: true
+        use_youtube: true
+        use_discovery: true
+        use_crave: false
+        use_now: false
+        use_all4: false
+        use_britbox: false
+        use_bet: false
+        use_hayu: false
+        back_color: "#000000" # Black
+    metadata_path:                                  # Create Plex catergories for movies in the same francise.
+    - pmm: franchise
+      template_variables:
+        collection_order: release
+        build_collection: true
+
+##############
+## TV Shows ##
+##############
+  TV Shows:
+    overlay_path:
+    - remove_overlays: false                        # Set this to true to remove all overlays added by Plex Meta Manager / false is default.
+    - pmm: status
+      template_variables:    
+        horizontal_align: center
+        vertical_align: top
+        vertical_offset: 0
+        horizontal_offset: 0
+        back_height: 80
+        back_width: 1100
+        font: config/overlays/fonts/Mobsters.ttf
+        font_size: 100
+        back_color_airing: "#016920"                # Green
+        back_color_returning: "#000847"             # Blue
+        back_color_canceled: "#ed1f1f"              # Red
+        back_color_ended: "#ed1f1f"                 # Red
+    #- pmm: resolution                              # Resolution (Default position Top Left)
+    - pmm: ratings                                  # Ratings with custom fonts matched to the style of the rating, font_size, and on the right in 'square' format
+      template_variables:
+        rating1: audience
+        rating1_image: rt_popcorn
+        rating1_font: config/overlays/fonts/Mobsters.ttf
+        rating1_font_size: 80
+        rating_alignment: horizontal               # horizontal / vertical (default if not declared)
+        horizontal_position: right
+        vertical_position: bottom
+        horizontal_offset: 15
+        vertical_offset: 15
+        back_color: "#000000" # Black
+    - pmm: streaming
+      template_variables:
+        horizontal_align: left
+        vertical_align: bottom
+        vertical_offset: 15
+        horizontal_offset: 15
+        use_Crunchyroll: true
+        use_youtube: true
+        use_discovery: true
+        use_crave: false
+        use_now: false
+        use_all4: false
+        use_britbox: false
+        use_bet: false
+        use_hayu: false
+        back_color: "#000000" # Black
