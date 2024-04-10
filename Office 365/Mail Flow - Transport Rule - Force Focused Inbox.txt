@@ -1,0 +1,7 @@
+# Force messages to "Focused Inbox"
+
+- Setup new transport rule
+- Apply rule if critera is met (Sender is this domain/email address)
+- Do the following
+ - Set the spam confidence level (SCL) to '-1'
+ - Set message header to "X-MS-Exchange-Organization-BypassFocusedInbox" and value to "true"
