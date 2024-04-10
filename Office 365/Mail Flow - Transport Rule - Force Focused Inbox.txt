@@ -4,4 +4,4 @@
 - Apply rule if critera is met (Sender is this domain/email address)
 - Do the following
  - Set the spam confidence level (SCL) to '-1'
- - Set message header to "X-MS-Exchange-Organization-BypassFocusedInbox" and value to "true"
+ - Set message header to "X-MS-Exchange-Organization-BypassFocusedInbox" (without quotes) and value to "true" (without quotes)
