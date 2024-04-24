@@ -10,8 +10,8 @@ docker run -d \
   ghcr.io/tautulli/tautulli
 
 
-# Update Tautulli
+# Update Version
 docker stop Tautulli
 docker rm Tautulli
 docker pull ghcr.io/tautulli/tautulli
-Run docker creation above.
+Run docker creation commands above.

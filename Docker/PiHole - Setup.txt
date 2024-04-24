@@ -1,5 +1,29 @@
-# Setup & Configure
-docker run -d --name Pihole -e ServerIP=192.168.103.73 -e TZ=America/New_York -e WEBPASSWORD=YOURPASSWORD -e DNS1=1.1.1.1 -e DNS2=1.0.0.1 -p 8008:80 -p 53:53/tcp -p 53:53/udp -p 443:443 -v ~/Files/Pihole/:/etc/pihole/ --dns=127.0.0.1 --dns=1.1.1.1 --cap-add=NET_ADMIN --restart=unless-stopped pihole/pihole:latest
+# Docker Image: https://hub.docker.com/r/pihole/pihole
 
-# Note: 
+# Setup & Configure
+docker run -d \
+  --name Pihole \
+  -e ServerIP=192.168.103.73 \
+  -e TZ=America/New_York \
+  -e WEBPASSWORD=YOURPASSWORD \
+  -e DNS1=1.1.1.1 \
+  -e DNS2=1.0.0.1 \
+  -p 8008:80 \
+  -p 53:53/tcp \
+  -p 53:53/udp \
+  -p 443:443 \
+  -v ~/Files/Pihole/:/etc/pihole/ \
+  --dns=127.0.0.1 \
+  --dns=1.1.1.1 \
+  --cap-add=NET_ADMIN \
+  --restart=unless-stopped \
+  pihole/pihole:latest
+
+# Update Version
+docker stop Pihole
+docker rm Pihole
+docker pull pihole/pihole
+Run docker creation commands above.
+
+# Note:
 MacOS docker installations, need to edit the file "~/Library/Group/Containers/group.com.docker/settings.json" > Change "kernelForUDP": true" to "kernelForUDP": false"

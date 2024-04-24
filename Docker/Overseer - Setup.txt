@@ -1,3 +1,6 @@
+# Docker Image: https://hub.docker.com/r/sctx/overseerr
+
+# Configure / Install
 docker run -d \
   --name Overseerr \
   -e LOG_LEVEL=debug \
@@ -7,3 +10,9 @@ docker run -d \
   -v ~/Files/Overseerr:/app/config \
   --restart unless-stopped \
   sctx/overseerr
+
+# Update Version
+docker stop Overseerr
+docker rm Overseerr
+docker pull sctx/overseerr
+Run docker creation commands above.

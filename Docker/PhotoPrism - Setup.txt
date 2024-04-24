@@ -1,5 +1,5 @@
-# Setup Container
-# Update Line 11 to point to your Pictures Path
+# Configure / Install
+## Update Line 11 to point to your Pictures Path ##
 docker run -d \
   --name PhotoPrism \
   --security-opt seccomp=unconfined \
@@ -10,4 +10,3 @@ docker run -d \
   -v /photoprism/storage \
   -v /Volumes/External/Media/Pictures:/photoprism/originals \
   photoprism/photoprism
-
