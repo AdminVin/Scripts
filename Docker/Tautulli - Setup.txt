@@ -1,4 +1,6 @@
-# Configure and Install
+# Docker Image: https://hub.docker.com/r/tautulli/tautulli
+
+# Configure / Install
 docker run -d \
   --name=Tautulli \
   --restart=unless-stopped \
@@ -6,3 +8,10 @@ docker run -d \
   -e TZ=US/Eastern \
   -p 8181:8181 \
   ghcr.io/tautulli/tautulli
+
+
+# Update Tautulli
+docker stop Tautulli
+docker rm Tautulli
+docker pull ghcr.io/tautulli/tautulli
+Run docker creation above.
