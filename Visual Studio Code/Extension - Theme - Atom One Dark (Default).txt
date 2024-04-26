@@ -1,0 +1,8 @@
+# Name
+One Dark Pro
+
+# Type
+Application Theme
+
+# Marketplace:
+https://marketplace.visualstudio.com/items?itemName=akamud.vscode-theme-onedark
