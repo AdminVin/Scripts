@@ -1,5 +1,5 @@
 # Set the path to ExifTool executable
-$exifToolPath = "C:\Users\vincent\Downloads\exiftool-12.84\exiftool.exe"
+$exifToolPath = "C:\Users\Vincent\Documents\GitHub\Scripts\ExifTool\exiftool.exe"
 
 # Set the path to your picture folder
 $folderPath = "C:\Pics"
