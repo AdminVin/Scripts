@@ -1,17 +1,13 @@
 # Run - Instantly
-docker run --rm -it -v "/Users/*USERNAME*/Files/Plex Meta Manager:/config:rw" --name="PMM" meisnate12/plex-meta-manager --run
+# Docker Image - Latest Nightly Release
+docker run --rm -it -v "/Users/USERNAME/Files/Plex Meta Manager:/config:rw" --name="PMM" linuxserver/kometa:nightly --run
 
-
-# Run - Schedule (Daily: 12 AM EST Daily)
-docker run -dit -v "/Users/*USERNAME*/Files/Plex Meta Manager:/config:rw" --name="Plex-Meta-Manager" lscr.io/linuxserver/plex-meta-manager:latest
-docker update --restart=always Plex-Meta-Manager
-
-
-# Run - Schedule (Daily: 6 AM, 12 PM, 6 PM, 12 AM)
+# Run - Schedule (Daily: 4 AM, 4 PM)
+# Docker Image - Latest Public Release
 docker run -d \
   --name=Plex-Meta-Manager \
   -e TZ=America/New_York \
-  -e PMM_TIME=06:00,12:00,18:00,00:00 \
-  -v "/Users/*USERNAME*/Files/Plex Meta Manager:/config:rw" \
+  -e PMM_TIME=04:00,16:00 \
+  -v "/Users/USERNAME/Files/Plex Meta Manager:/config:rw" \
   --restart unless-stopped \
-  lscr.io/linuxserver/plex-meta-manager:latest
+  linuxserver/kometa
