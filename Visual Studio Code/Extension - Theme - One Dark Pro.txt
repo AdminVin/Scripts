@@ -2,7 +2,7 @@
 One Dark Pro
 
 # Type
-Application Theme
+Application Skin
 
 # Install
 Control+P > ext install zhuangtongfa.Material-theme

@@ -2,7 +2,7 @@
 Material Icon Theme
 
 # Type
-Folder Icons
+File/Folder Icons
 
 # Market Place
 https://marketplace.visualstudio.com/items?itemName=PKief.material-icon-theme
