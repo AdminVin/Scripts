@@ -1,0 +1,12 @@
+# Configure and Install
+docker run -d \
+  --name=Bazarr \
+  -e PUID=1000 \
+  -e PGID=1000 \
+  -e TZ=America/New_York \
+  -p 6767:6767 \
+  -v ~/Files/Bazarr:/config \
+  -v /Volumes/Media/Movies:/movies `#optional` \
+  -v /Volumes/Media/TV:/tv `#optional` \
+  --restart unless-stopped \
+  lscr.io/linuxserver/bazarr:latest
