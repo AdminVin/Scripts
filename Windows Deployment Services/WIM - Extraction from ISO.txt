@@ -1,0 +1,13 @@
+# Source: https://www.itechguides.com/windows-deployment-services-2019/
+
+Step 1: Download Windows 10/11 ISO from Windows Media Creator
+
+Step 2: Extract contents of ISO
+
+Step 3: Run PowerShell/CMD as Administrator, and navigate to extracted folder "Sources"
+
+Step 4: View all versions of Windows and identify the correct "Source Index" to utilize in the command below
+ - Command: dism /Get-WimInfo /WimFile:install.esd
+
+Step 5: Extract .WIM file
+ - Command: dism /export-image /SourceImageFile:install.esd /SourceIndex:4 /DestinationImageFile:install.wim /Compress:max /CheckIntegrity
