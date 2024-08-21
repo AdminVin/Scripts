@@ -1,4 +1,4 @@
-$domain = "DC=EBNET,DC=local"
+$domain = "DC=DOMAIN,DC=local"
 $results = @()
 $users = Get-ADUser -Filter {ProxyAddresses -like "*smtp:*"} -SearchBase $domain -Property ProxyAddresses, DistinguishedName
 
