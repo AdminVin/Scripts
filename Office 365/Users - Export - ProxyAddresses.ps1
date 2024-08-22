@@ -14,7 +14,7 @@ foreach ($user in $users) {
             OU              = $user.DistinguishedName
         }
 
-        $userDetails | FL
+        $userDetails | Format-List
         $results += $userDetails
     }
 }
