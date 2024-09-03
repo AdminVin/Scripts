@@ -6,7 +6,7 @@
 # Both users have the message "Testing Sending" message in their "Sent" folder.
 
 # Send As Permissions
-Set-Mailbox USER1@DOMAIN.com -MessageCopyForSentAsEnabled $True
+Set-Mailbox "USER2@DOMAIN.com" -MessageCopyForSentAsEnabled $True
 
 # Send on Behalf Permissions
-Set-Mailbox USER1@DOMAIN.com -MessageCopyForSendOnBehalfEnabled $True
+Set-Mailbox "USER2@DOMAIN.com" -MessageCopyForSendOnBehalfEnabled $True
