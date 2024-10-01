@@ -70,3 +70,8 @@ $EmailFrom = $SMTPUsername
 $EmailTo = "ITADMINS@DOMAIN.COM"
 # Send Email
 if (!($WUHistoryRaw -eq '')) {Send-MailMessage -SmtpServer $SMTPServer -Port $SMTPPort -From $EmailFrom -To $EmailTo -Subject $EmailSubject -Body $WUHistoryHtml -Credential $SMTPCredential -UseSsl -BodyAsHtml}
+
+
+### Notes
+# Hide update that continually fails/not needed
+# Hide-WindowsUpdate -Title "KYOCERA Document Solutions Inc. - Printer - 6/6/2013 12:00:00 AM - 10.0.171..."
