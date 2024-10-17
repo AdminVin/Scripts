@@ -19,6 +19,6 @@ Set-Mailbox USER@DOMAIN.COM -DeliverToMailboxAndForward $False -ForwardingAddres
 # Verify - Forwarding Status
 Get-Mailbox USER@DOMAIN.COM | Select-Object UserPrincipalName,ForwardingSmtpAddress,DeliverToMailboxAndForward
 
-# Forwarding Bug: Turn on, and then turn off
+# Forwarding Bug (Stuck ON): Turn on, and then turn off
 Set-Mailbox USER@DOMAIN.COM -DeliverToMailboxAndForward $true -ForwardingSMTPAddress "ForwardedUSER@DOMAIN.COM"
 Set-Mailbox USER@DOMAIN.COM -DeliverToMailboxAndForward $False -ForwardingAddress $Null
