@@ -9,8 +9,8 @@ Connect-ExchangeOnline
 Connect-IPPSSession
 
 $name      = (Read-Host "Compliance Search Name").Trim()
-$fromemail = (Read-Host "Enter email address this came from(wildcard: *domain.com also works").Trim()
-$subject   = (Read-Host "Enter the subject line of the email (wildcard: Reset Your password for* also works").Trim()
+$fromemail = (Read-Host "Enter email address this came from(wildcard: *domain.com)").Trim()
+$subject   = (Read-Host "Enter the subject line of the email (wildcard: Reset Your password for*)").Trim()
 
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
@@ -34,7 +34,6 @@ $form.AcceptButton = $OKButton
 $form.Controls.Add($OKButton)
 
 $form.Topmost = $true
-
 
 $StartResult = $null
 While ($StartResult -ne [System.Windows.Forms.DialogResult]::OK)
@@ -70,21 +69,23 @@ while ((Get-ComplianceSearch $name).status -ne "completed")
 Write-Host ""
 Write-Host "Search completed!"
 
-$search = Get-ComplianceSearch $name
+$search = Get-ComplianceSearch -Identity $name
 
 # Item Count
-$items = $search.items
+$items = $search.Items
 
 # Mailboxes
 $results = $search.SuccessResults
-$mailboxes = @();
-$lines = $results -split '[\r\n]+';
-foreach ($line in $lines)
-{
-   if ($line -match 'Location: (\S+),.+Item count: (\d+)' -and $matches[2] -gt 0)
-   {
-       $mailboxes += $matches[1];
-   }
+$mailboxes = @()
+if ($results -is [string] -and $results -ne "") {
+    $lines = $results -split '[\r\n]+'
+    foreach ($line in $lines)
+    {
+       if ($line -match 'Location: (\S+),.+Item count: (\d+)' -and $matches[2] -gt 0)
+       {
+           $mailboxes += $matches[1]
+       }
+    }
 }
 
 Write-Host "Found '$items' items"
