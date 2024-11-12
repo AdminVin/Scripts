@@ -9,8 +9,15 @@ Connect-ExchangeOnline
 Connect-IPPSSession
 
 $name      = (Read-Host "Compliance Search Name").Trim()
-$fromemail = (Read-Host "Enter email address this came from(wildcard: *domain.com)").Trim()
-$subject   = (Read-Host "Enter the subject line of the email (wildcard: Reset Your password for*)").Trim()
+$fromemail = (Read-Host "Sender Email Address (WILDCARD: *domain.com)").Trim()
+
+# Select search field (subject or body)
+$searchField = ""
+while ($searchField -notmatch "^(subject|body)$") {
+    $searchField = (Read-Host "Search by 'subject' or 'body'?").Trim().ToLower()
+}
+
+$searchTerm = (Read-Host "Search term for the $searchField (WILDCARD: *Spam Term*)").Trim()
 
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
@@ -51,23 +58,32 @@ While  ($EndResult -ne [System.Windows.Forms.DialogResult]::OK)
     $Enddate = $calendar.SelectionStart.tostring("MM/dd/yyyy")
 }
 
+# Build the content match query based on user input
+$query = "(sent>=$Startdate) AND (sent<=$Enddate) AND (From:`"$fromemail`") AND (${searchField}:`"$searchTerm`")"
+
 # Search - Create
 Write-Host "Creating ComplianceSearch: $name"
-New-ComplianceSearch -Name $name -ExchangeLocation "All" -ContentMatchQuery "(sent>=$Startdate) AND (sent<=$Enddate) AND (From:`"$fromemail`") AND (subject:`"$subject`")" | Out-Null
+New-ComplianceSearch -Name $name -ExchangeLocation "All" -ContentMatchQuery $query | Out-Null
 
 # Search - Start
 Write-Host "Starting ComplianceSearch: $name"
 Start-ComplianceSearch -Identity $name
 
-# Search - Run
+# Search - Run with elapsed time
 Write-Host "Searching..."
+$stopwatch = [System.Diagnostics.Stopwatch]::StartNew()  # Start the stopwatch
+
 while ((Get-ComplianceSearch $name).status -ne "completed")
-    {
-    Write-host "." -nonewline 
+{
+    Write-Host "." -NoNewline 
     Start-Sleep -Seconds 1
-    }
-Write-Host ""
-Write-Host "Search completed!"
+}
+$stopwatch.Stop()  # Stop the stopwatch
+
+# Display total search time
+$totalTime = "{0:00}:{1:00}" -f $stopwatch.Elapsed.Hours, $stopwatch.Elapsed.Minutes
+Write-Host "`nSearch completed! (Search Time: $totalTime)"
+
 
 $search = Get-ComplianceSearch -Identity $name
 
@@ -96,5 +112,15 @@ $mailboxes
 # Purge - Confirm/Skip
 $purge = Read-Host "Type the word 'purge' to purge these items. If you are not purging, you can just hit enter to end."
 if ($purge -eq "purge"){ New-ComplianceSearchAction -SearchName $name -Purge -PurgeType SoftDelete }
+
+# Prompt to delete the compliance search
+$deleteSearch = Read-Host "Do you want to delete the compliance search '$name'? Type 'Y' to confirm or 'N' to skip."
+if ($deleteSearch -eq "Y") {
+    Write-Host "Deleting ComplianceSearch: $name"
+    Remove-ComplianceSearch -Identity $name | Out-Null
+    Write-Host "ComplianceSearch '$name' has been deleted."
+} else {
+    Write-Host "ComplianceSearch '$name' was not deleted."
+}
 
 Get-PSSession | Remove-PSSession | Out-Null
