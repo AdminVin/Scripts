@@ -1,7 +1,4 @@
-# Temporary Files
-# Temp - User
-Remove-Item -Path "$env:TEMP\*" -Recurse -Force
-# Temp - Windows
+## Functions
 function Remove-ItemRecursively {
     param (
         [string]$Path
@@ -10,12 +7,18 @@ function Remove-ItemRecursively {
     Get-ChildItem -Path $Path -Recurse -Force | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
     Remove-Item -Path $Path -Recurse -Force -ErrorAction SilentlyContinue
 }
+
+## Temporary Files
+# Temp - User
+Remove-ItemRecursively -Path "$env:TEMP\*" -Recurse -Force
+# Temp - Windows
 Remove-ItemRecursively -Path "C:\Windows\Temp\*"
 
+## Windows Update
 # SoftwareDistribution
 Stop-Service -Name wuauserv
 Rename-Item -Path "C:\Windows\SoftwareDistribution" -NewName "SoftwareDistribution.old"
-Remove-Item -Path "C:\Windows\SoftwareDistribution.old" -Recurse -Force -Confirm:$false
+Remove-ItemRecursively -Path "C:\Windows\SoftwareDistribution.old" -Recurse -Force -Confirm:$false
 Start-Service -Name wuauserv
 # WinSxS
 # Service Pack Files

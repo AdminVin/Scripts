@@ -20,13 +20,13 @@ Connect-IPPSSession
 
 ## Compliance Search - Parameters
 $name      = (Read-Host "Compliance Search Name").Trim()
-$fromemail = (Read-Host "Sender Email Address (WILDCARD: *domain.com)").Trim()
+$fromemail = (Read-Host "Sender Email Address [WILDCARD: jacksmith* | *domain.com | * (for any/all senders)]").Trim()
 # Select search field (subject or body)
 $searchField = ""
 while ($searchField -notmatch "^(subject|body)$") {
-    $searchField = (Read-Host "Search by 'subject' or 'body'?").Trim().ToLower()
+    $searchField = (Read-Host "Search by 'subject' or 'body'?").Trim().ToUpper()
 }
-$searchTerm = (Read-Host "Search term for the $searchField (WILDCARD: *Spam Term*)").Trim()
+$searchTerm = (Read-Host "Search term for the $searchField [WILDCARD: *Spam Term* | Bitcoin Hack* | *Account Ending in]").Trim()
 
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
