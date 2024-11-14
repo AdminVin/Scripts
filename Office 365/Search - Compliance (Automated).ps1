@@ -17,9 +17,15 @@ Function Start-SleepProgress {
 ## Install/Connect to Exchange/Compliance
 if (!(Get-Command -Name Connect-ExchangeOnline -ErrorAction SilentlyContinue)) {
     Install-Module -Name ExchangeOnlineManagement -Scope CurrentUser -Force
+    Connect-ExchangeOnline
+} ELSE {
+    Connect-ExchangeOnline
 }
 if (!(Get-Command -Name Connect-IPPSSession -ErrorAction SilentlyContinue)) {
     Install-Module -Name ExchangeOnlineComplianceManagement -Scope CurrentUser -Force
+    Connect-IPPSSession
+} ELSE {
+    Connect-IPPSSession
 }
 
 
@@ -121,16 +127,15 @@ $mailboxes
 
 ## Compliance Search - Purge Results
 $purge = Read-Host "Type the word 'purge' to purge these items. If you are not purging, you can just hit enter to end."
-if ($purge -eq "purge"){ New-ComplianceSearchAction -SearchName $name -Purge -PurgeType SoftDelete }
+if ($purge -eq "purge"){
+    $deleteSearch = Read-Host "Do you want to delete the compliance search '$name' after purging? Type 'Y' to DELETE or 'N' to KEEP."
+    New-ComplianceSearchAction -SearchName $name -Purge -PurgeType SoftDelete
+    Start-SleepProgress -Num 300
+}
 
-# Delay five minutes for purge to complete
-Start-SleepProgress -Num 300
-
-## Compliance Search - Delete Search
-$deleteSearch = Read-Host "Do you want to delete the compliance search '$name'? Type 'Y' to confirm or 'N' to skip."
 if ($deleteSearch -eq "Y") {
     Write-Host "Deleting ComplianceSearch: $name"
-    Remove-ComplianceSearch -Identity $name | Out-Null
+    Remove-ComplianceSearch -Identity $name -Confirm:$false | Out-Null
     Write-Host "ComplianceSearch '$name' has been deleted."
 } else {
     Write-Host "ComplianceSearch '$name' was not deleted."
