@@ -130,6 +130,7 @@ $purge = Read-Host "Type the word 'purge' to purge these items. If you are not p
 if ($purge -eq "purge"){
     $deleteSearch = Read-Host "Do you want to delete the compliance search '$name' after purging? Type 'Y' to DELETE or 'N' to KEEP."
     New-ComplianceSearchAction -SearchName $name -Purge -PurgeType SoftDelete
+    Write-Host "Sleeping for five minutes to process purge/deletion." -ForegroundColor DarkYellow
     Start-SleepProgress -Num 300
 }
 
