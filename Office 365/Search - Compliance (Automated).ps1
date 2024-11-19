@@ -34,7 +34,12 @@ $name      = (Read-Host "Compliance Search Name").Trim()
 # Search - Sender
 $fromemail = (Read-Host "Sender Email Address [* for any sender - WILDCARD: vincent*]").Trim()
 # Search - Term
-$searchTerm = (Read-Host "Search term for the SUBJECT [WILDCARD: Spam Message*]").Trim()
+$searchScope = (Read-Host "Search Term in Subject or Body? [Enter 'subject' or 'body']").Trim().ToLower()
+while ($searchScope -notin @("subject", "body")) {
+    Write-Host "Invalid input. Please type 'subject' or 'body'." -ForegroundColor Red
+    $searchScope = (Read-Host "Search Term in Subject or Body? [Enter 'subject' or 'body']").Trim().ToLower()
+}
+$searchTerm = (Read-Host "Search term for the $searchScope [WILDCARD: Spam Message*]").Trim()
 ## Remove unsupported use of */wildcard at the beginning (not supported by compliance search)
 if ($searchTerm -match '^\*') {
     $searchTerm = $searchTerm.TrimStart('*')
@@ -66,29 +71,45 @@ $StartResult = $null
 While ($StartResult -ne [System.Windows.Forms.DialogResult]::OK) {
     $OKButton.Text = 'Select START Date'
     $StartResult = $form.ShowDialog()
-    $Startdate = $calendar.SelectionStart.ToString("yyyy-MM-dd")
+    $StartDate = $calendar.SelectionStart.ToString("yyyy-MM-dd")
 }
 
 $EndResult = $null
 While  ($EndResult -ne [System.Windows.Forms.DialogResult]::OK) {
     $OKButton.Text = 'Select END Date'
     $EndResult = $form.ShowDialog()
-    $Enddate = $calendar.SelectionStart.ToString("yyyy-MM-dd")
+    $EndDate = $calendar.SelectionStart.ToString("yyyy-MM-dd")
 }
-Write-Host "Start Date: $Startdate"
-Write-Host "End Date: $Enddate`n"
+Write-Host "Start Date: $StartDate"
+Write-Host "End Date: $EndDate"
 
 # # Search - Query - Construct the search query based on wildcard logic
-if ($fromemail -eq "*") {
-    $query = "$searchTerm (date=$Startdate..$Enddate)"
-} elseif ($fromemail -match '\*') {
-    $query = "$searchTerm (From:$fromemail)(date=$Startdate..$Enddate)"
-} else {
-    $query = "$searchTerm (From:$fromemail)(date=$Startdate..$Enddate)"
+if ($searchScope -eq "subject") {
+    if ($fromemail -eq "*") {
+        # Any Sender
+        $query = "(Subject:$searchTerm) (date=$StartDate..$EndDate)"
+    } elseif ($fromemail -match '\*') {
+        # Specified\Wildcard Sender
+        $query = "(Subject:$searchTerm) (From:$fromemail)(date=$StartDate..$EndDate)"
+    } else {
+        # Specified Sender
+        $query = "(Subject:$searchTerm) (From:$fromemail)(date=$StartDate..$EndDate)"
+    }
+} elseif ($searchScope -eq "body") {
+    if ($fromemail -eq "*") {
+        # Any Sender
+        $query = "$searchTerm (date=$StartDate..$EndDate)"
+    } elseif ($fromemail -match '\*') {
+        # Specified\Wildcard Sender
+        $query = "$searchTerm (From:$fromemail)(date=$StartDate..$EndDate)"
+    } else {
+        # Specified Sender
+        $query = "$searchTerm (From:$fromemail)(date=$StartDate..$EndDate)"
+    }
 }
 
 # Search - Notify User
-Write-Host "Search Query: $query`n" -ForegroundColor DarkYellow
+Write-Host "Search Query: $query" -ForegroundColor DarkYellow
 
 # Search - Create
 Write-Host "Creating ComplianceSearch: $name"
@@ -102,7 +123,7 @@ Start-ComplianceSearch -Identity $name
 Write-Host "Searching..."
 $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 
-while ((Get-ComplianceSearch $name).status -ne "completed") {
+while ((Get-ComplianceSearch $name -ErrorAction SilentlyContinue).status -ne "completed") {
     Write-Host "." -NoNewline 
     Start-Sleep -Seconds 1
 }
@@ -112,7 +133,12 @@ $totalTime = "{0:00}:{1:00}" -f $stopwatch.Elapsed.Hours, $stopwatch.Elapsed.Min
 Write-Host "`nSearch completed! (Search Time: $totalTime)`n" -ForegroundColor Green
 
 ## Results - Mailboxes
-$search = Get-ComplianceSearch -Identity $name
+$search = Get-ComplianceSearch -Identity $name -ErrorAction SilentlyContinue
+if ($null -eq $search) {
+    Write-Host "Error: Unable to retrieve compliance search details. Please verify the search name." -ForegroundColor Red
+    exit
+}
+
 $items = $search.Items
 $results = $search.SuccessResults
 $mailboxes = @()
@@ -134,8 +160,8 @@ $mailboxes
 $purge = Read-Host "`nType the word 'purge' to purge these items.`nIf you are not purging, you can just hit enter to end."
 if ($purge -eq "purge"){
     Write-Host "`nDo you want to delete the compliance search '$name' after purging?`n"-ForegroundColor Red
-    $deleteSearch = Read-Host "Type 'Y' to DELETE or 'N' to KEEP."
-    New-ComplianceSearchAction -SearchName $name -Purge -PurgeType SoftDelete
+    $deleteSearch = Read-Host "Type 'Y' to DELETE or 'N' to KEEP"
+    New-ComplianceSearchAction -SearchName $name -Purge -PurgeType SoftDelete -Confirm:$false
     Write-Host "Sleeping for five minutes to process purge/deletion." -ForegroundColor DarkYellow
     Start-SleepProgress -Num 300
 }
