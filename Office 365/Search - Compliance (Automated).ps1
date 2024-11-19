@@ -1,6 +1,6 @@
 <# Notes
 Compliance Permissions Needed:
-Navigate to https://compliance.microsoft.com/ > Permissions > Microsoft Purview Solutions, select "Roles" > select "eDiscovery Manager" > Add User
+Navigate to https://compliance.microsoft.com/ > Microsoft Purview Solutions (New Portal) > Settings > Roles and Scopes > Role Groups > Select "eDiscovery Manager" > Add User
 
 Source: https://docs.microsoft.com/en-us/exchange/policy-and-compliance/ediscovery/compliance-search
 #>
@@ -28,24 +28,18 @@ if (!(Get-Command -Name Connect-IPPSSession -ErrorAction SilentlyContinue)) {
     Connect-IPPSSession
 }
 
-
 ## Compliance Search - Parameters
 Write-Host ("Compliance search started at " + (Get-Date -Format "MM/dd/yyyy hh:mm tt")) -ForegroundColor Green
 $name      = (Read-Host "Compliance Search Name").Trim()
-$fromemail = (Read-Host "Sender Email Address [WILDCARD: * (for any/all senders) - vincent* - Multiple addresses with commas (jacksmith*,*smith@domain.com)]").Trim()
-
-# Process multiple email addresses by splitting, trimming, and joining with " OR "
-$fromemail = ($fromemail -split "," | ForEach-Object { $_.Trim() }) -join " OR "
-
-# Select search field (subject or body)
-$searchField = ""
-while ($searchField -notmatch "^(subject|body)$") {
-    $searchField = (Read-Host "Search by 'subject' or 'body'?").Trim().ToUpper()
+# Search - Sender
+$fromemail = (Read-Host "Sender Email Address [* for any sender - WILDCARD: vincent*]").Trim()
+# Search - Term
+$searchTerm = (Read-Host "Search term for the SUBJECT [WILDCARD: Spam Message*]").Trim()
+## Remove unsupported use of */wildcard at the beginning (not supported by compliance search)
+if ($searchTerm -match '^\*') {
+    $searchTerm = $searchTerm.TrimStart('*')
 }
-
-# Get search term, allowing wildcard usage for all messages
-$searchTerm = (Read-Host "Search term for the $searchField [WILDCARD: *Spam Term* - Bitcoin Hack* - *Account Ending in - * for any messages]").Trim()
-
+# Search - Date 
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
@@ -72,18 +66,29 @@ $StartResult = $null
 While ($StartResult -ne [System.Windows.Forms.DialogResult]::OK) {
     $OKButton.Text = 'Select START Date'
     $StartResult = $form.ShowDialog()
-    $Startdate = $calendar.SelectionStart.ToString("MM/dd/yyyy")
+    $Startdate = $calendar.SelectionStart.ToString("yyyy-MM-dd")
 }
 
 $EndResult = $null
 While  ($EndResult -ne [System.Windows.Forms.DialogResult]::OK) {
     $OKButton.Text = 'Select END Date'
     $EndResult = $form.ShowDialog()
-    $Enddate = $calendar.SelectionStart.ToString("MM/dd/yyyy")
+    $Enddate = $calendar.SelectionStart.ToString("yyyy-MM-dd")
+}
+Write-Host "Start Date: $Startdate"
+Write-Host "End Date: $Enddate`n"
+
+# # Search - Query - Construct the search query based on wildcard logic
+if ($fromemail -eq "*") {
+    $query = "$searchTerm (date=$Startdate..$Enddate)"
+} elseif ($fromemail -match '\*') {
+    $query = "$searchTerm (From:$fromemail)(date=$Startdate..$Enddate)"
+} else {
+    $query = "$searchTerm (From:$fromemail)(date=$Startdate..$Enddate)"
 }
 
-# Build the content match query based on user input
-$query = "(sent>=$Startdate) AND (sent<=$Enddate) AND (From:($fromemail)) AND (${searchField}:`"$searchTerm`")"
+# Search - Notify User
+Write-Host "Search Query: $query`n" -ForegroundColor DarkYellow
 
 # Search - Create
 Write-Host "Creating ComplianceSearch: $name"
@@ -93,18 +98,18 @@ New-ComplianceSearch -Name $name -ExchangeLocation "All" -ContentMatchQuery $que
 Write-Host "Starting ComplianceSearch: $name"
 Start-ComplianceSearch -Identity $name
 
-# Search - Run with elapsed time
+# Search - Start Timer
 Write-Host "Searching..."
-$stopwatch = [System.Diagnostics.Stopwatch]::StartNew()  # Start the stopwatch
+$stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 
 while ((Get-ComplianceSearch $name).status -ne "completed") {
     Write-Host "." -NoNewline 
     Start-Sleep -Seconds 1
 }
-$stopwatch.Stop()  # Stop the stopwatch
+$stopwatch.Stop()
 
 $totalTime = "{0:00}:{1:00}" -f $stopwatch.Elapsed.Hours, $stopwatch.Elapsed.Minutes
-Write-Host "`nSearch completed! (Search Time: $totalTime)"
+Write-Host "`nSearch completed! (Search Time: $totalTime)`n" -ForegroundColor Green
 
 ## Results - Mailboxes
 $search = Get-ComplianceSearch -Identity $name
@@ -112,7 +117,7 @@ $items = $search.Items
 $results = $search.SuccessResults
 $mailboxes = @()
 if ($results -is [string] -and $results -ne "") {
-    $lines = $results -split '[\r\n]+'
+    $lines = $results -split '[\r\n]+' 
     foreach ($line in $lines) {
        if ($line -match 'Location: (\S+),.+Item count: (\d+)' -and $matches[2] -gt 0) {
            $mailboxes += $matches[1]
@@ -122,24 +127,25 @@ if ($results -is [string] -and $results -ne "") {
 
 Write-Host "Found '$items' items"
 Write-Host ""
-Write-Host "In mailboxes:"
+Write-Host "In mailboxes:" 
 $mailboxes
 
 ## Compliance Search - Purge Results
-$purge = Read-Host "Type the word 'purge' to purge these items. If you are not purging, you can just hit enter to end."
+$purge = Read-Host "`nType the word 'purge' to purge these items.`nIf you are not purging, you can just hit enter to end."
 if ($purge -eq "purge"){
-    $deleteSearch = Read-Host "Do you want to delete the compliance search '$name' after purging? Type 'Y' to DELETE or 'N' to KEEP."
+    Write-Host "`nDo you want to delete the compliance search '$name' after purging?`n"-ForegroundColor Red
+    $deleteSearch = Read-Host "Type 'Y' to DELETE or 'N' to KEEP."
     New-ComplianceSearchAction -SearchName $name -Purge -PurgeType SoftDelete
     Write-Host "Sleeping for five minutes to process purge/deletion." -ForegroundColor DarkYellow
     Start-SleepProgress -Num 300
 }
 
 if ($deleteSearch -eq "Y") {
-    Write-Host "Deleting ComplianceSearch: $name"
+    Write-Host "`nDeleting ComplianceSearch: $name" -ForegroundColor Gray
     Remove-ComplianceSearch -Identity $name -Confirm:$false | Out-Null
-    Write-Host "ComplianceSearch '$name' has been deleted."
+    Write-Host "`nComplianceSearch '$name' has been deleted." -ForegroundColor Yellow
 } else {
-    Write-Host "ComplianceSearch '$name' was not deleted."
+    Write-Host "`nComplianceSearch '$name' was not deleted." -ForegroundColor Yellow
 }
-
+# Clear Session
 Get-PSSession | Remove-PSSession | Out-Null
