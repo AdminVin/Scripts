@@ -7,6 +7,14 @@ Source: https://docs.microsoft.com/en-us/exchange/policy-and-compliance/ediscove
 Requirements: Powershell 7
 #>
 
+
+## PowerShell 7 - Check
+if ($PSVersionTable.PSVersion.Major -lt 7) {
+    Write-Host "This script requires PowerShell 7." -ForegroundColor Red
+    break; exit
+}
+
+
 ## Functions
 Function Start-SleepProgress {
     param([int]$Num)
@@ -15,6 +23,7 @@ Function Start-SleepProgress {
     }
     Write-Progress -Activity "Sleeping for $Num seconds" -Completed
 }
+
 
 ## Install/Connect to Exchange/Compliance
 if (!(Get-Command -Name Connect-ExchangeOnline -ErrorAction SilentlyContinue)) {
@@ -29,6 +38,7 @@ if (!(Get-Command -Name Connect-IPPSSession -ErrorAction SilentlyContinue)) {
 } ELSE {
     Connect-IPPSSession
 }
+
 
 ## Compliance Search - Parameters
 Write-Host ("Compliance search started at " + (Get-Date -Format "MM/dd/yyyy hh:mm tt")) -ForegroundColor Green
@@ -47,7 +57,7 @@ if ($searchScope -eq "subject") {
     $searchTerm = (Read-Host "Search term for the $searchScope [WILDCARD: Spam Message*]").Trim()
 }
 
-## Remove unsupported use of */wildcard at the beginning (not supported by compliance search)
+# Search - Remove unsupported use of */wildcard at the beginning (not supported by compliance search)
 if ($searchTerm -match '^\*') {
     $searchTerm = $searchTerm.TrimStart('*')
 }
@@ -90,7 +100,7 @@ While  ($EndResult -ne [System.Windows.Forms.DialogResult]::OK) {
 Write-Host "Start Date: $StartDate"
 Write-Host "End Date: $EndDate"
 
-# # Search - Query - Construct the search query based on wildcard logic
+# Search - Query - Construct the search query based on wildcard logic
 if ($searchTerm -eq "*") {
     $searchTerm = $null
 }
@@ -112,7 +122,6 @@ if ($searchScope -eq "subject") {
         $query = $searchTerm ? "$searchTerm (From:$fromemail)(date=$StartDate..$EndDate)" : "(From:$fromemail)(date=$StartDate..$EndDate)"
     }
 }
-
 
 # Search - Notify User
 Write-Host "`nSearch Query: $query`n" -ForegroundColor DarkYellow
