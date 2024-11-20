@@ -3,6 +3,8 @@ Compliance Permissions Needed:
 Navigate to https://compliance.microsoft.com/ > Microsoft Purview Solutions (New Portal) > Settings > Roles and Scopes > Role Groups > Select "eDiscovery Manager" > Add User
 
 Source: https://docs.microsoft.com/en-us/exchange/policy-and-compliance/ediscovery/compliance-search
+
+Requirements: Powershell 7
 #>
 
 ## Functions
@@ -34,12 +36,17 @@ $name      = (Read-Host "Compliance Search Name").Trim()
 # Search - Sender
 $fromemail = (Read-Host "Sender Email Address [* for any sender - WILDCARD: vincent*]").Trim()
 # Search - Term
-$searchScope = (Read-Host "Search Term in Subject or Body? [Enter 'subject' or 'body']").Trim().ToLower()
+$searchScope = (Read-Host "Search term in SUBJECT or BODY? [Enter 'subject' or 'body']").Trim().ToUpper()
 while ($searchScope -notin @("subject", "body")) {
     Write-Host "Invalid input. Please type 'subject' or 'body'." -ForegroundColor Red
-    $searchScope = (Read-Host "Search Term in Subject or Body? [Enter 'subject' or 'body']").Trim().ToLower()
+    $searchScope = (Read-Host "Search Term in SUBJECT or BODY? [Enter 'subject' or 'body']").Trim().ToUpper()
 }
-$searchTerm = (Read-Host "Search term for the $searchScope [WILDCARD: Spam Message*]").Trim()
+if ($searchScope -eq "subject") {
+    $searchTerm = (Read-Host "Search term for the $searchScope [* for all messages - WILDCARD: Spam Message* -]").Trim()
+} elseif ($searchScope -eq "body") {
+    $searchTerm = (Read-Host "Search term for the $searchScope [WILDCARD: Spam Message*]").Trim()
+}
+
 ## Remove unsupported use of */wildcard at the beginning (not supported by compliance search)
 if ($searchTerm -match '^\*') {
     $searchTerm = $searchTerm.TrimStart('*')
@@ -84,32 +91,31 @@ Write-Host "Start Date: $StartDate"
 Write-Host "End Date: $EndDate"
 
 # # Search - Query - Construct the search query based on wildcard logic
+if ($searchTerm -eq "*") {
+    $searchTerm = $null
+}
+
 if ($searchScope -eq "subject") {
     if ($fromemail -eq "*") {
-        # Any Sender
-        $query = "(Subject:$searchTerm) (date=$StartDate..$EndDate)"
+        $query = $searchTerm ? "(Subject:$searchTerm) (date=$StartDate..$EndDate)" : "(date=$StartDate..$EndDate)"
     } elseif ($fromemail -match '\*') {
-        # Specified\Wildcard Sender
-        $query = "(Subject:$searchTerm) (From:$fromemail)(date=$StartDate..$EndDate)"
+        $query = $searchTerm ? "(Subject:$searchTerm) (From:$fromemail)(date=$StartDate..$EndDate)" : "(From:$fromemail)(date=$StartDate..$EndDate)"
     } else {
-        # Specified Sender
-        $query = "(Subject:$searchTerm) (From:$fromemail)(date=$StartDate..$EndDate)"
+        $query = $searchTerm ? "(Subject:$searchTerm) (From:$fromemail)(date=$StartDate..$EndDate)" : "(From:$fromemail)(date=$StartDate..$EndDate)"
     }
 } elseif ($searchScope -eq "body") {
     if ($fromemail -eq "*") {
-        # Any Sender
-        $query = "$searchTerm (date=$StartDate..$EndDate)"
+        $query = $searchTerm ? "$searchTerm (date=$StartDate..$EndDate)" : "(date=$StartDate..$EndDate)"
     } elseif ($fromemail -match '\*') {
-        # Specified\Wildcard Sender
-        $query = "$searchTerm (From:$fromemail)(date=$StartDate..$EndDate)"
+        $query = $searchTerm ? "$searchTerm (From:$fromemail)(date=$StartDate..$EndDate)" : "(From:$fromemail)(date=$StartDate..$EndDate)"
     } else {
-        # Specified Sender
-        $query = "$searchTerm (From:$fromemail)(date=$StartDate..$EndDate)"
+        $query = $searchTerm ? "$searchTerm (From:$fromemail)(date=$StartDate..$EndDate)" : "(From:$fromemail)(date=$StartDate..$EndDate)"
     }
 }
 
+
 # Search - Notify User
-Write-Host "Search Query: $query" -ForegroundColor DarkYellow
+Write-Host "`nSearch Query: $query`n" -ForegroundColor DarkYellow
 
 # Search - Create
 Write-Host "Creating ComplianceSearch: $name"
