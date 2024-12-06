@@ -1,3 +1,7 @@
+## Capture free space before cleanup
+$FreeSpaceBefore = (Get-PSDrive -Name C).Free / 1GB
+Write-Host "Disk Space Free (before): $("{0:N2} GB" -f $FreeSpaceBefore)" -ForegroundColor Green
+
 ## Functions
 function Remove-ItemRecursively {
     param (
@@ -8,10 +12,6 @@ function Remove-ItemRecursively {
     Remove-Item -Path $Path -Recurse -Force -ErrorAction SilentlyContinue
 }
 
-## Capture free space before cleanup
-$FreeSpaceBefore = (Get-PSDrive -Name C).Free / 1GB
-Write-Host "Disk Space Free (before): $("{0:N2} GB" -f $FreeSpaceBefore)" -ForegroundColor Green
-
 ## Temporary Files
 # Temp - User
 Remove-ItemRecursively -Path "$env:TEMP\*" -Recurse -Force
@@ -21,8 +21,14 @@ Remove-ItemRecursively -Path "C:\Windows\Temp\*"
 ## Windows Update
 # SoftwareDistribution
 Stop-Service -Name wuauserv
+if (Test-Path "C:\Windows\SoftwareDistribution.old") {
+    Remove-Item -Path "C:\Windows\SoftwareDistribution.old" -Recurse -Force -ErrorAction SilentlyContinue
+    if (Test-Path "C:\Windows\SoftwareDistribution.old") {
+        Write-Host "Forcing removal of SoftwareDistribution.old via system process..."
+        cmd.exe /c rd /s /q "C:\Windows\SoftwareDistribution.old"
+    }
+}
 Rename-Item -Path "C:\Windows\SoftwareDistribution" -NewName "SoftwareDistribution.old"
-Remove-ItemRecursively -Path "C:\Windows\SoftwareDistribution.old" -Recurse -Force -Confirm:$false
 Start-Service -Name wuauserv
 # WinSxS
 # Service Pack Backups / Superseded Updates / Replaced Componets
