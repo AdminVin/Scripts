@@ -8,5 +8,5 @@ docker run -d \
   meisnate12/plex-image-cleanup
 
 
-  # Auto Restart
-  docker update --restart=always Plex-Image-Cleanup
+# Auto Restart
+docker update --restart=always Plex-Image-Cleanup

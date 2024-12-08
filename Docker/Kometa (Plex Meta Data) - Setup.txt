@@ -5,9 +5,9 @@ docker run --rm -it -v "/Users/USERNAME/Files/Plex Meta Manager:/config:rw" --na
 # Run - Schedule (Daily: 4 AM, 4 PM)
 # Docker Image - Latest Public Release
 docker run -d \
-  --name=Plex-Meta-Manager \
+  --name=Kometa \
   -e TZ=America/New_York \
   -e PMM_TIME=04:00,16:00 \
-  -v "/Users/USERNAME/Files/Plex Meta Manager:/config:rw" \
+  -v "/Users/USERNAME/Files/Kometa:/config:rw" \
   --restart unless-stopped \
   linuxserver/kometa
