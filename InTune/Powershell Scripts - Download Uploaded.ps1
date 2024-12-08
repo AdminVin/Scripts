@@ -1,4 +1,6 @@
-# This script needs to be ran in PowerShell ISE (as Admin) to function correctly.
+###################################################################################
+# This script needs to be ran in PowerShell ISE (as Admin) to function correctly. #
+###################################################################################
 
 #Get Graph API Intune Module
 Install-Module -Name NuGet -Scope CurrentUser
