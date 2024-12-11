@@ -1,6 +1,6 @@
 <# Notes
 Compliance Permissions Needed:
-Navigate to https://compliance.microsoft.com/ > Microsoft Purview Solutions (New Portal) > Settings > Roles and Scopes > Role Groups > Select "eDiscovery Manager" > Add User
+Navigate to https://purview.microsoft.com/ (New Portal) > Settings > Roles and Scopes > Role Groups > Select "eDiscovery Manager" > Add User to "eDiscovery Administrator"
 
 Source: https://docs.microsoft.com/en-us/exchange/policy-and-compliance/ediscovery/compliance-search
 
