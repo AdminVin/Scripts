@@ -172,7 +172,9 @@ Write-Host "In mailboxes:"
 $mailboxes
 
 ## Compliance Search - Purge Results
-$purge = Read-Host "`nType the word 'purge' to purge these items.`nIf you are not purging, you can just hit enter to end."
+Write-Host "`nType the word 'purge' to purge/delete these items." -ForegroundColor Yellow
+Write-Host "If you are not purging, press enter to end." -ForegroundColor Yellow
+$purge = Read-Host "`nType 'purge' or press enter to continue"
 if ($purge -eq "purge"){
     Write-Host "`nDo you want to delete the compliance search '$name' after purging?`n"-ForegroundColor Red
     $deleteSearch = Read-Host "Type 'Y' to DELETE or 'N' to KEEP"
