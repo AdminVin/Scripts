@@ -40,7 +40,7 @@ foreach ($O365user in $ActiveUsers) {
 
 ## Export Data / Notify
 $UserData | Select-Object "First Name", "Last Name", "Title", "Email", "LastUserActionTime" | Export-Csv -Path $CsvFilePath -NoTypeInformation
-Write-Host "User data has been exported to $CsvFilePath"
+Write-Host "`nUser data has been exported to $CsvFilePath" -ForegroundColor Green
 
 
 ## Notes
@@ -70,7 +70,7 @@ LastUserActionWorkLoadAggregateTime gets updated by comparing all workloads like
 This attribute doesn’t indicate the user’s action. That being said, some attributes alone get updated in real time, remaining attributes get updated in a certain interval.  LastUserActionUpdateTime shows when the mailbox was last accessed to get the value for non-real time attributes like LastEmailTime, LastContactsTime, LastCalendarTime, LastTaskTime, LastProfileTime, LastModernGroupTime, and LastUserActionTime. So, you couldn’t see any non-real time attributes value later than this value. It’s like a schedule time to retrieve non-real time attributes value.  LastUserAccessTime and LastLoggedOnUserAccount value are empty for all object when I checked in my tenant. 
  
 - LastUserActionTime: 
-Finally, LastUserActionTime. As the name implies, LastUserActionTime gets updated based on the user’s real actions. This attribute includes all user actions like login to the mailbox, when sending mail, and when reading a mail, etc. Unlike other attributes, its value will not be updated by a background task or process. So, user’s inactivity can be retrieved from LastUserActionTime. (LastUserActionTime doesn’t show up-to-date data. There will be some delay like a day or two. You can refer LastUserActionUpdateTime which indicates when the LastUserActionTime was updated.)
+Finally, LastUserActionTime. As the name implies, LastUserActionTime gets updated based on the user’s real actions. This attribute includes all user actions like login to the mailbox, when sending mail, and when reading a mail, etc. Unlike other attributes, its value will not be updated by a background task or process. So, user’s inactivity can be retrieved from LastUserActionTime. (LastUserActionTime doesn’t show up-to-date data. There will be some delay like a day or two.
  
 Conclusion:
 Getting inactive mailboxes is the most needed task as it involves regaining unused licenses, archiving mailboxes, etc. Hence, the attribute used to get inactive mailbox must be more accurate. From the research, we found that getting inactive mailboxes using LastUserActionTime is the best solution.
