@@ -9,4 +9,4 @@ Disable-ADSyncExportDeletionThreshold
 
 # Enable Delete Protection
 Enable-ADSyncExportDeletionThreshold -DeletionThreshold 500
-# 500 is the default object limit
+# 500 is the default object limit set by Microsoft.
