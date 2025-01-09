@@ -6,7 +6,7 @@ Step 2: Extract contents of ISO
 
 Step 3: Run PowerShell/CMD as Administrator > Navigate to extracted folder "ISO_ROOT/Sources"
 
-Step 4: View all versions of Windows and identify the correct "Source Index" to utilize in the command below
+Step 4: View all versions of Windows and identify the correct "Source Index" to utilize in Step 5
  - Command: dism /Get-WimInfo /WimFile:install.esd
 
 Step 5: Extract .WIM file
