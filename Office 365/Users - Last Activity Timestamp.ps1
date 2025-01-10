@@ -6,7 +6,7 @@ Get-MailboxStatistics USER@DOMAIN.com | Select-Object LastUserActionTime
 
 <#
 Output Example:
-PS C:\Users\vincent> Get-MailboxStatistics USER@DOMAIN.com | Select-Object LastUserActionTime
+PS C:\Users\AdminVin> Get-MailboxStatistics USER@DOMAIN.com | Select-Object LastUserActionTime
 
 LastUserActionTime
 ------------------
