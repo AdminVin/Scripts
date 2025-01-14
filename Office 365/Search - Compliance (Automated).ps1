@@ -47,7 +47,7 @@ $name      = (Read-Host "Compliance Search Name").Trim()
 $fromemail = (Read-Host "Sender Email Address [* for any sender - WILDCARD: vincent*]").Trim()
 # Search - Term
 Write-Host "Search term in SUBJECT or BODY?"
-Write-Host "Note: Use SUBJECT and * for searching all messages." -ForegroundColor Yellow
+Write-Host " - Note: Use SUBJECT and * for searching all messages."
 $searchScope = (Read-Host "[Enter 'subject' or 'body']").Trim().ToUpper()
 while ($searchScope -notin @("subject", "body")) {
     Write-Host "Invalid input. Please type 'subject' or 'body'." -ForegroundColor Red
