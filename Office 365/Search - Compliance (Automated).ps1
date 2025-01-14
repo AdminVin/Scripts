@@ -46,10 +46,12 @@ $name      = (Read-Host "Compliance Search Name").Trim()
 # Search - Sender
 $fromemail = (Read-Host "Sender Email Address [* for any sender - WILDCARD: vincent*]").Trim()
 # Search - Term
-$searchScope = (Read-Host "Search term in SUBJECT or BODY? [Enter 'subject' or 'body']").Trim().ToUpper()
+Write-Host "Search term in SUBJECT or BODY?"
+Write-Host "Note: Use SUBJECT and * for searching all messages." -ForegroundColor Yellow
+$searchScope = (Read-Host "[Enter 'subject' or 'body']").Trim().ToUpper()
 while ($searchScope -notin @("subject", "body")) {
     Write-Host "Invalid input. Please type 'subject' or 'body'." -ForegroundColor Red
-    $searchScope = (Read-Host "Search Term in SUBJECT or BODY? [Enter 'subject' or 'body']").Trim().ToUpper()
+    $searchScope = (Read-Host "[Enter 'subject' or 'body']").Trim().ToUpper()
 }
 if ($searchScope -eq "subject") {
     $searchTerm = (Read-Host "Search term for the $searchScope [* for all messages - WILDCARD: Spam Message* -]").Trim()
@@ -135,7 +137,7 @@ Write-Host "Starting ComplianceSearch: $name"
 Start-ComplianceSearch -Identity $name
 
 # Search - Start Timer
-Write-Host "Searching..."
+Write-Host "Searching:"
 $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 
 while ((Get-ComplianceSearch $name -ErrorAction SilentlyContinue).status -ne "completed") {
