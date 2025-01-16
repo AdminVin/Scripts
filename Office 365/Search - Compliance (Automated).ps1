@@ -42,21 +42,21 @@ if (!(Get-Command -Name Connect-IPPSSession -ErrorAction SilentlyContinue)) {
 
 ## Compliance Search - Parameters
 Write-Host ("Compliance search started at " + (Get-Date -Format "MM/dd/yyyy hh:mm tt")) -ForegroundColor Green
-$name      = (Read-Host "Compliance Search Name").Trim()
+$name      = (Read-Host "[Step 1/6] Compliance Search Name").Trim()
 # Search - Sender
-$fromemail = (Read-Host "Sender Email Address [* for any sender - WILDCARD: vincent*]").Trim()
+$fromemail = (Read-Host "[Step 2/6] Sender Email Address [* for any sender - WILDCARD: vincent*]").Trim()
 # Search - Term
 Write-Host "Search term in SUBJECT or BODY?"
 Write-Host " - Note: Use SUBJECT and * for searching all messages."
-$searchScope = (Read-Host "[Enter 'subject' or 'body']").Trim().ToUpper()
+$searchScope = (Read-Host "[Step 3/6] Enter 'subject' or 'body'").Trim().ToUpper()
 while ($searchScope -notin @("subject", "body")) {
     Write-Host "Invalid input. Please type 'subject' or 'body'." -ForegroundColor Red
     $searchScope = (Read-Host "[Enter 'subject' or 'body']").Trim().ToUpper()
 }
 if ($searchScope -eq "subject") {
-    $searchTerm = (Read-Host "Search term for the $searchScope [* for all messages - WILDCARD: Spam Message* -]").Trim()
+    $searchTerm = (Read-Host "[Step 4/6] Search term for the $searchScope [* for all messages - WILDCARD: Spam Message* -]").Trim()
 } elseif ($searchScope -eq "body") {
-    $searchTerm = (Read-Host "Search term for the $searchScope [WILDCARD: Spam Message*]").Trim()
+    $searchTerm = (Read-Host "[Step 4/6] Search term for the $searchScope [WILDCARD: Spam Message*]").Trim()
 }
 
 # Search - Remove unsupported use of */wildcard at the beginning (not supported by compliance search)
@@ -92,6 +92,7 @@ While ($StartResult -ne [System.Windows.Forms.DialogResult]::OK) {
     $StartResult = $form.ShowDialog()
     $StartDate = $calendar.SelectionStart.ToString("yyyy-MM-dd")
 }
+Write-Host "[Step 5/6] Start Date: $StartDate"
 
 $EndResult = $null
 While  ($EndResult -ne [System.Windows.Forms.DialogResult]::OK) {
@@ -99,8 +100,7 @@ While  ($EndResult -ne [System.Windows.Forms.DialogResult]::OK) {
     $EndResult = $form.ShowDialog()
     $EndDate = $calendar.SelectionStart.ToString("yyyy-MM-dd")
 }
-Write-Host "Start Date: $StartDate"
-Write-Host "End Date: $EndDate"
+Write-Host "[Step 6/6] End Date: $EndDate"
 
 # Search - Query - Construct the search query based on wildcard logic
 if ($searchTerm -eq "*") {
