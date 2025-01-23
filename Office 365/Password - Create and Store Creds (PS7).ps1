@@ -20,3 +20,11 @@ if (Test-Path $Credentials) {
 }
 
 Connect-ExchangeOnline -Credential $credential
+
+
+
+<# View Stored Credentials
+$SecurePassword = Get-Content -Path $Credentials | ConvertTo-SecureString
+$PlainPassword = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecurePassword))
+Write-Host "The password is: $PlainPassword"
+#>
