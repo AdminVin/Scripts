@@ -2,7 +2,7 @@ $CredentialsDir = "C:\ProgramData\AV\Credentials"
 # Prompt for email to autenticate with
 #$email = Read-Host -Prompt "Enter the EMAIL ADDRESS you are authenticating with"
 # Set email to authenticate with
-$email = "vincent@gmail.com"
+$email = "EMAIL@DOMAIN.COM"
 $Credentials = "$CredentialsDir\$email.txt"
 
 if (-not (Test-Path $CredentialsDir)) {

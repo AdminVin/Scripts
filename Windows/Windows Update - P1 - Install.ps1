@@ -2,38 +2,46 @@
 # Login to server > Scheduled Tasks > Create New Task (not basic)
 # Schedule:  Weds @ 6 PM 
 # Action > New
-#       Program/Script: Point to PS7 (C:\Program Files\PowerShell\7\pwsh.exe)
+#       Program/Script: Point to PS7 (C:\Program Files\PowerShell\7\pwsh.exe or 'pwsh.exe')
 #         Argument: -ExecutionPolicy Bypass -File "UNC or Local Path to this PS Script."
-#
-# NOTE: Script will need to be run once manually to enter in password for Office 365 account.
-
-
-## PowerShell - Modules
-# NuGet
-if (-not (Get-PackageSource -Name 'NuGet' -ErrorAction SilentlyContinue)) {
-    Install-PackageProvider -Name NuGet -Force
-    Register-PackageSource -Name NuGet -ProviderName NuGet -Location https://www.nuget.org/api/v2 -Force
+## Functions
+Function Start-SleepProgress {
+    param([int]$Num)
+    1..$Num | ForEach-Object {
+        Write-Progress -Activity "Sleeping for $Num seconds" -Status "Remaining:$($Num-$_)" -PercentComplete ($_/$Num*100);Start-Sleep 1}
+    Write-Progress -Activity "Sleeping for $Num seconds" -Completed
 }
+
+
+## Modules
 # PSWindowsUpdate
-$minVersion = '2.2.1.4'
-$moduleName = 'PSWindowsUpdate'
-$module = Get-Module -Name $moduleName -ListAvailable | Where-Object { $_.Version -ge $minVersion } | Sort-Object Version -Descending | Select-Object -First 1
-if (-not $module) {
-    Install-Module -Name $moduleName -MinimumVersion $minVersion -Force -Scope CurrentUser
-    Import-Module PSWindowsUpdate
-} else {
-    Import-Module PSWindowsUpdate
+Write-Host "'PSWindowsUpdate' Module" -ForegroundColor Yellow
+if (-not (Get-Module -Name 'PSWindowsUpdate' -ListAvailable)) {
+    Write-Host "- Module not detected, installing."
+    Install-Module -Name 'PSWindowsUpdate' -Force
+    Write-Host "- Importing PSWindowsUpdate"
+    Import-Module 'PSWindowsUpdate'
+} ELSE {
+    Write-Host "- Importing PSWindowsUpdate"
+    Import-Module 'PSWindowsUpdate'
 }
 
 
 ## Process Updates
-# Check/Get
-Get-WindowsUpdate
-# Install
-Install-WindowsUpdate -AcceptAll -Confirm:$false -IgnoreReboot
+Write-Host "Windows Updates - Processing" -ForegroundColor Yellow
+Get-WindowsUpdate                                                   # Check/Get New Updates
+Install-WindowsUpdate -AcceptAll -Confirm:$false -IgnoreReboot      # Install Updates
+usoclient startinteractivescan                                      # Refresh 'Windows Update' Metro GUI
+Write-Host "Delay" -ForegroundColor Yellow
+Start-SleepProgress -Num 900										# Wait fifteen minutes and retry updates (if any)
+Write-Host "Windows Updates - Retrying any potential failed updates" -ForegroundColor Yellow
+Get-WindowsUpdate                                                   # Check/Get New Updates
+Install-WindowsUpdate -AcceptAll -Confirm:$false -IgnoreReboot      # Install Updates
 usoclient startinteractivescan                                      # Refresh 'Windows Update' Metro GUI
 
 
+## Results
+Write-Host "Email - Results" -ForegroundColor Yellow
 ## Email
 # Body
 # Windows Update - All
@@ -49,29 +57,51 @@ IF ($StatusIndicator -eq "SUCCESS") {
 }
 # Subject
 $EmailSubject = "Windows Updates - $env:COMPUTERNAME ($StatusIndicator)"
-# Email Server Settings and Credentials
-$SMTPUsername = "alerts@DOMAIN.COM"
+# Credentials - Password
+$SMTPUsername = "SENDER@DOMAIN.COM"
 $CUfile = $SMTPUsername + ".txt"
-$Directory = "C:\ProgramData\AV\WindowsUpdates"
-# Password
-IF(Test-Path "$Directory\$CUfile") {
-    # Password file exists
+$Directory = "C:\ProgramData\AV\Credentials"
+IF (Test-Path "$Directory\$CUfile") {
+    try {
+        Get-Content -Path "$Directory\$CUfile" | ConvertTo-SecureString -ErrorAction Stop > $null
+    } catch {
+        Remove-Item -Path "$Directory\$CUfile" -Force
+        New-Item -ItemType Directory -Path $Directory -Force | Out-Null
+        $PlainPassword = Read-Host -Prompt "Enter password for $SMTPUsername to be encrypted"
+        $SecurePassword = ConvertTo-SecureString $PlainPassword -Force
+        $SecurePassword | ConvertFrom-SecureString | Out-File -FilePath "$Directory\$CUfile"
+    }
 } ELSE {
     New-Item -ItemType Directory -Path $Directory -Force | Out-Null
-    Read-Host -Prompt "Enter password for $SMTPUsername to be encrypted & used for sending alerts" -AsSecureString | ConvertFrom-SecureString | Out-File -FilePath "$Directory\$CUfile"
+    $PlainPassword = Read-Host -Prompt "Enter password for $SMTPUsername to be encrypted"
+    $SecurePassword = ConvertTo-SecureString $PlainPassword -Force
+    $SecurePassword | ConvertFrom-SecureString | Out-File -FilePath "$Directory\$CUfile"
 }
-$SecureStringContent = Get-Content -Path "$Directory\$CUfile" | ConvertTo-SecureString
-$SMTPPassword = $SecureStringContent
-$SMTPCredential = New-Object System.Management.Automation.PSCredential ($SMTPUsername, $SMTPPassword)
-# SMTP Server Settings
+$SecureStringContent = Get-Content -Path "$Directory\$CUfile" | ConvertTo-SecureString -Force
+$SMTPPassword = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecureStringContent))
+# Server Settings
 $SMTPServer = "smtp.office365.com"
 $SMTPPort = 587
 $EmailFrom = $SMTPUsername
-$EmailTo = "ITADMINS@DOMAIN.COM"
+# Recipients
+$EmailTo = "DESTINATION@DOMAIN.COM"
 # Send Email
-if (!($WUHistoryRaw -eq '')) {Send-MailMessage -SmtpServer $SMTPServer -Port $SMTPPort -From $EmailFrom -To $EmailTo -Subject $EmailSubject -Body $WUHistoryHtml -Credential $SMTPCredential -UseSsl -BodyAsHtml}
+if (!($WUHistoryRaw -eq '')) {
+    $mailMessage = New-Object System.Net.Mail.MailMessage
+    $mailMessage.From = $EmailFrom
+    $mailMessage.To.Add($EmailTo)
+    $mailMessage.Subject = $EmailSubject
+    $mailMessage.IsBodyHtml = $true
+    $mailMessage.Body = $WUHistoryHtml
 
+    $smtpClient = New-Object System.Net.Mail.SmtpClient($SMTPServer, $SMTPPort)
+    $smtpClient.EnableSsl = $true
+    $smtpClient.Credentials = New-Object System.Net.NetworkCredential($SMTPUsername, $SMTPPassword)
 
-### Notes
-# Hide update that continually fails/not needed
-# Hide-WindowsUpdate -Title "KYOCERA Document Solutions Inc. - Printer - 6/6/2013 12:00:00 AM - 10.0.171..."
+    try {
+        $smtpClient.Send($mailMessage)
+        Write-Host "Email sent successfully." -ForegroundColor Green
+    } catch {
+        Write-Host "Failed to send email: $_" -ForegroundColor Red
+    }
+}
