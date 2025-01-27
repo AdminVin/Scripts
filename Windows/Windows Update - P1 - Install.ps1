@@ -33,7 +33,7 @@ Get-WindowsUpdate                                                   # Check/Get 
 Install-WindowsUpdate -AcceptAll -Confirm:$false -IgnoreReboot      # Install Updates
 usoclient startinteractivescan                                      # Refresh 'Windows Update' Metro GUI
 Write-Host "Delay" -ForegroundColor Yellow
-Start-SleepProgress -Num 900										# Wait fifteen minutes and retry updates (if any)
+Start-SleepProgress -Num 1800										# Wait thirty minutes and retry updates (if any)
 Write-Host "Windows Updates - Retrying any potential failed updates" -ForegroundColor Yellow
 Get-WindowsUpdate                                                   # Check/Get New Updates
 Install-WindowsUpdate -AcceptAll -Confirm:$false -IgnoreReboot      # Install Updates
