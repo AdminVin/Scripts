@@ -15,7 +15,7 @@ function Remove-ItemRecursively {
 ## Temporary Files
 # Temp - User
 Remove-ItemRecursively -Path "$env:TEMP\*" -Recurse -Force
-# Temp - Windows
+# Temp - Windowspu
 Remove-ItemRecursively -Path "C:\Windows\Temp\*"
 
 ## Windows Update
