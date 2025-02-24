@@ -44,17 +44,16 @@ if (!(Get-Command -Name Connect-IPPSSession -ErrorAction SilentlyContinue)) {
 Write-Host ("Compliance search started at " + (Get-Date -Format "MM/dd/yyyy hh:mm tt")) -ForegroundColor Green
 $name      = (Read-Host "[Step 1/6] Compliance Search Name").Trim()
 # Search - Sender
-$fromemail = (Read-Host "[Step 2/6] Sender Email Address [* for any sender - WILDCARD: vincent*]").Trim()
+$fromemail = (Read-Host "[Step 2/6] Sender Email Address [Note: Use * for any sender | WILDCARD: vincent*]").Trim()
 # Search - Term
-Write-Host "Search term in SUBJECT or BODY?"
-Write-Host " - Note: Use SUBJECT and * for searching all messages."
+Write-Host "Search term in SUBJECT or BODY? [Note: Use SUBJECT and * for searching all messages.]"
 $searchScope = (Read-Host "[Step 3/6] Enter 'subject' or 'body'").Trim().ToUpper()
 while ($searchScope -notin @("subject", "body")) {
     Write-Host "Invalid input. Please type 'subject' or 'body'." -ForegroundColor Red
     $searchScope = (Read-Host "[Enter 'subject' or 'body']").Trim().ToUpper()
 }
 if ($searchScope -eq "subject") {
-    $searchTerm = (Read-Host "[Step 4/6] Search term for the $searchScope [* for all messages - WILDCARD: Spam Message* -]").Trim()
+    $searchTerm = (Read-Host "[Step 4/6] Search term for the $searchScope [Note: Use * for all messages - WILDCARD: Spam Message* -]").Trim()
 } elseif ($searchScope -eq "body") {
     $searchTerm = (Read-Host "[Step 4/6] Search term for the $searchScope [WILDCARD: Spam Message*]").Trim()
 }
@@ -183,14 +182,23 @@ if ($purge -eq "purge"){
     New-ComplianceSearchAction -SearchName $name -Purge -PurgeType SoftDelete -Confirm:$false
     Write-Host "Sleeping for five minutes to process purge/deletion." -ForegroundColor DarkYellow
     Start-SleepProgress -Num 300
-}
-
-if ($deleteSearch -eq "Y") {
-    Write-Host "`nDeleting ComplianceSearch: $name" -ForegroundColor Gray
-    Remove-ComplianceSearch -Identity $name -Confirm:$false | Out-Null
-    Write-Host "`nComplianceSearch '$name' has been deleted." -ForegroundColor Yellow
-} else {
-    Write-Host "`nComplianceSearch '$name' was not deleted." -ForegroundColor Yellow
+    if ($deleteSearch -eq "Y") {
+        Write-Host "`nDeleting ComplianceSearch: $name" -ForegroundColor Gray
+        Remove-ComplianceSearch -Identity $name -Confirm:$false | Out-Null
+        Write-Host "`nComplianceSearch '$name' has been deleted." -ForegroundColor Yellow
+    } else {
+        Write-Host "`nComplianceSearch '$name' was not deleted." -ForegroundColor Yellow
+    }
+} ELSE {
+    Write-Host "`nDo you want to delete the compliance search '$name'?`n"-ForegroundColor Red
+    $deleteSearch = Read-Host "Type 'Y' to DELETE or 'N' to KEEP"
+    if ($deleteSearch -eq "Y") {
+        Write-Host "`nDeleting ComplianceSearch: $name" -ForegroundColor Gray
+        Remove-ComplianceSearch -Identity $name -Confirm:$false | Out-Null
+        Write-Host "`nComplianceSearch '$name' has been deleted." -ForegroundColor Yellow
+    } else {
+        Write-Host "`nComplianceSearch '$name' was not deleted." -ForegroundColor Yellow
+    }
 }
 # Clear Session
 Get-PSSession | Remove-PSSession | Out-Null
