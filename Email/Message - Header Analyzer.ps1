@@ -84,14 +84,12 @@ $form.Add_Shown({ $txtHeaders.Focus() })
 function Get-ExternalSenderIP {
     param ($headers)
 
-    $matches = [regex]::Matches($headers, "Received: from .*?(?:\[(\d+\.\d+\.\d+\.\d+)\]|(\d+\.\d+\.\d+\.\d+))")
-    $ipList = $matches | ForEach-Object { $_.Groups[1].Value, $_.Groups[2].Value } | Where-Object { $_ -match "^\d+\.\d+\.\d+\.\d+$" }
+    $matches = [regex]::Matches($headers, "Received: from \[?([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)\]?.*")
+    $ipList = $matches.Groups[1].Value | Where-Object { $_ -ne "127.0.0.1" }
 
-    $publicIPs = $ipList | Where-Object { $_ -notmatch "^(10\.|172\.1[6-9]\.|172\.2[0-9]\.|172\.3[0-1]\.|192\.168\.)" }
-    $externalIPs = $publicIPs | Where-Object { $_ -notmatch "^(104\.47\.|2603:10b6:)" }
-
-    return $externalIPs | Select-Object -First 1
+    return if ($ipList) { $ipList[0] } else { "Not found" }
 }
+
 
 function Get-Headers {
     $headers = $txtHeaders.Text
