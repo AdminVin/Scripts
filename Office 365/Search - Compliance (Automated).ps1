@@ -46,7 +46,7 @@ $name      = (Read-Host "[Step 1/6] Compliance Search Name").Trim()
 # Search - Sender
 $fromemail = (Read-Host "[Step 2/6] Sender Email Address [Note: Use * for any sender | WILDCARD: vincent*]").Trim()
 # Search - Term
-Write-Host "Search term in SUBJECT or BODY? [Note: Use SUBJECT and * for searching all messages.]"
+Write-Host "Search term in SUBJECT or BODY? [Note: Use SUBJECT and * for searching all messages.]" -ForegroundColor DarkYellow
 $searchScope = (Read-Host "[Step 3/6] Enter 'subject' or 'body'").Trim().ToUpper()
 while ($searchScope -notin @("subject", "body")) {
     Write-Host "Invalid input. Please type 'subject' or 'body'." -ForegroundColor Red
@@ -125,7 +125,7 @@ if ($searchScope -eq "subject") {
 }
 
 # Search - Notify User
-Write-Host "`nSearch Query: $query`n" -ForegroundColor DarkYellow
+Write-Host "`nSearch Query: $query`n" -ForegroundColor Green
 
 # Search - Create
 Write-Host "Creating ComplianceSearch: $name"
@@ -167,10 +167,9 @@ if ($results -is [string] -and $results -ne "") {
     }
 }
 
-Write-Host "Found '$items' items"
-Write-Host ""
-Write-Host "In mailboxes:" 
+Write-Host "Mailboxes:" 
 $mailboxes
+Write-Host "Total items found '$items'."
 
 ## Compliance Search - Purge Results
 Write-Host "`nType the word 'purge' to purge/delete these items." -ForegroundColor Yellow
