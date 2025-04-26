@@ -18,28 +18,60 @@ Include - All zones
 
 
 #############################################################
-## Part 2 - Setup Cloud Flare as DDNS Provider on Synology ##
+## Part 2 - Scheduled Task on Synology ##
 #############################################################
-# Source: https://github.com/mrikirill/SynologyDDNSCloudflareMultidomain?tab=readme-ov-file#how-to-install
+1. Create Scheduled Task > User Defined Script
+- Name: Cloudflare DDNS
+- User: root
+- Schedule: As needed (hourly recommended)
+- Update 'config' section below
+- Copy script below into "User-defined script"
 
-1. Enable SSH & Connect.
 
-2. Run: 
-sudo wget https://raw.githubusercontent.com/mrikirill/SynologyDDNSCloudflareMultidomain/master/cloudflare.php -O /usr/syno/bin/ddns/cloudflare.php && sudo chmod 755 /usr/syno/bin/ddns/cloudflare.php
+#!/bin/sh
 
-3. Edit DDNS provider configuration file.
-- sudo vim /etc.defaults/ddns_provider.conf
-- Press I to enter edit mode, page down to go to the bottom, and paste the CloudFlare configuration below the existing text.
+# === CONFIG ===
+ZONE_ID="123456789"
+RECORD_NAME="DOMAIN.COM"
+API_TOKEN="API_SECRET_TOKEN"
+LOG_DIR="/volume1/docker/DDNS"
 
-[Cloudflare]
-  modulepath=/usr/syno/bin/ddns/cloudflare.php
-  queryurl=https://www.cloudflare.com/
+# === GET CURRENT PUBLIC IP ===
+IP=$(curl -s https://icanhazip.com)
 
-- Press Escape twice, and type ":wq" (without quotes) to quit and save.
+# === FETCH RECORD ID ===
+RECORD_ID=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records?type=A&name=$RECORD_NAME" \
+  -H "Authorization: Bearer $API_TOKEN" \
+  -H "Content-Type: application/json" | sed -n 's/.*"id":"\([a-z0-9]\{32\}\)".*/\1/p' | head -n 1)
 
-4. Login to Synology web interface > Control Panel > Network > DDNS > Add
-- Hostname: Domain.com
-- Username/Email: null
-- Password/Key: CloudFlare API Token
+# === GET CURRENT DNS VALUE ===
+CURRENT_IP=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records/$RECORD_ID" \
+  -H "Authorization: Bearer $API_TOKEN" \
+  -H "Content-Type: application/json" | sed -n 's/.*"content":"\([^"]*\)".*/\1/p')
 
-5. Test Connection > Save
+# === SKIP IF IP MATCHES ===
+if [ "$IP" = "$CURRENT_IP" ]; then
+  exit 0
+fi
+
+# === PERFORM UPDATE ===
+RESPONSE=$(curl -s -X PUT "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records/$RECORD_ID" \
+  -H "Authorization: Bearer $API_TOKEN" \
+  -H "Content-Type: application/json" \
+  --data "{\"type\":\"A\",\"name\":\"$RECORD_NAME\",\"content\":\"$IP\",\"ttl\":3600,\"proxied\":false}")
+
+# === LOG ONLY IF UPDATED ===
+TIMESTAMP=$(date "+%Y-%m-%d_%H-%M")
+LOG_FILE="$LOG_DIR/${TIMESTAMP}.txt"
+
+mkdir -p "$LOG_DIR"
+{
+  echo "[$(date '+%Y-%m-%d %H:%M')] IP changed"
+  echo "Old IP: $CURRENT_IP"
+  echo "New IP: $IP"
+  echo "Record ID: $RECORD_ID"
+  echo "Cloudflare response: $(echo $RESPONSE | grep -o '\"success\":[^,}]*')"
+} > "$LOG_FILE"
+
+# === CLEANUP OLD LOGS (>365 days) ===
+find "$LOG_DIR" -type f -name "*.txt" -mtime +365 -exec rm {} \;
