@@ -110,17 +110,17 @@ if ($searchScope -eq "subject") {
     if ($fromemail -eq "*") {
         $query = $searchTerm ? "(Subject:$searchTerm) (date=$StartDate..$EndDate)" : "(date=$StartDate..$EndDate)"
     } elseif ($fromemail -match '\*') {
-        $query = $searchTerm ? "(Subject:$searchTerm) (From:$fromemail)(date=$StartDate..$EndDate)" : "(From:$fromemail)(date=$StartDate..$EndDate)"
+        $query = $searchTerm ? "(Subject:$searchTerm) (From:$fromemail OR Participants:$fromemail)(date=$StartDate..$EndDate)" : "(From:$fromemail OR Participants:$fromemail)(date=$StartDate..$EndDate)"
     } else {
-        $query = $searchTerm ? "(Subject:$searchTerm) (From:$fromemail)(date=$StartDate..$EndDate)" : "(From:$fromemail)(date=$StartDate..$EndDate)"
+        $query = $searchTerm ? "(Subject:$searchTerm) (From:$fromemail OR Participants:$fromemail)(date=$StartDate..$EndDate)" : "(From:$fromemail OR Participants:$fromemail)(date=$StartDate..$EndDate)"
     }
 } elseif ($searchScope -eq "body") {
     if ($fromemail -eq "*") {
         $query = $searchTerm ? "$searchTerm (date=$StartDate..$EndDate)" : "(date=$StartDate..$EndDate)"
     } elseif ($fromemail -match '\*') {
-        $query = $searchTerm ? "$searchTerm (From:$fromemail)(date=$StartDate..$EndDate)" : "(From:$fromemail)(date=$StartDate..$EndDate)"
+        $query = $searchTerm ? "$searchTerm (From:$fromemail OR Participants:$fromemail)(date=$StartDate..$EndDate)" : "(From:$fromemail OR Participants:$fromemail)(date=$StartDate..$EndDate)"
     } else {
-        $query = $searchTerm ? "$searchTerm (From:$fromemail)(date=$StartDate..$EndDate)" : "(From:$fromemail)(date=$StartDate..$EndDate)"
+        $query = $searchTerm ? "$searchTerm (From:$fromemail OR Participants:$fromemail)(date=$StartDate..$EndDate)" : "(From:$fromemail OR Participants:$fromemail)(date=$StartDate..$EndDate)"
     }
 }
 
