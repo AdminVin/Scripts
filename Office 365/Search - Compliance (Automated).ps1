@@ -28,16 +28,12 @@ Function Start-SleepProgress {
 ## Install/Connect to Exchange/Compliance
 if (!(Get-Command -Name Connect-ExchangeOnline -ErrorAction SilentlyContinue)) {
     Install-Module -Name ExchangeOnlineManagement -Scope CurrentUser -Force
-    Connect-ExchangeOnline
-} ELSE {
-    Connect-ExchangeOnline
 }
+Connect-ExchangeOnline
 if (!(Get-Command -Name Connect-IPPSSession -ErrorAction SilentlyContinue)) {
     Install-Module -Name ExchangeOnlineComplianceManagement -Scope CurrentUser -Force
-    Connect-IPPSSession
-} ELSE {
-    Connect-IPPSSession
 }
+Connect-IPPSSession
 
 
 ## Compliance Search - Parameters
@@ -141,10 +137,10 @@ $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 
 while ((Get-ComplianceSearch $name -ErrorAction SilentlyContinue).status -ne "completed") {
     Write-Host "." -NoNewline 
-    Start-Sleep -Seconds 1
+    Start-Sleep -Seconds 5
 }
-$stopwatch.Stop()
 
+$stopwatch.Stop()
 $totalTime = "{0:00}:{1:00}" -f $stopwatch.Elapsed.Hours, $stopwatch.Elapsed.Minutes
 Write-Host "`nSearch completed! (Search Time: $totalTime)`n" -ForegroundColor Green
 
