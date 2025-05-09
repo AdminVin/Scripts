@@ -24,6 +24,14 @@ Function Start-SleepProgress {
     Write-Progress -Activity "Sleeping for $Num seconds" -Completed
 }
 
+function Start-SearchSleepProgress {
+    param([int]$Num)
+    1..$Num | ForEach-Object {
+        Write-Progress -Activity "Waiting..." -Status "Next status check in $($Num-$_)s" -PercentComplete ($_/$Num*100)
+        Start-Sleep 1}
+    Write-Progress -Activity "" -Completed
+}
+
 
 ## Install/Connect to Exchange/Compliance
 if (!(Get-Command -Name Connect-ExchangeOnline -ErrorAction SilentlyContinue)) {
@@ -137,7 +145,7 @@ $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 
 while ((Get-ComplianceSearch $name -ErrorAction SilentlyContinue).status -ne "completed") {
     Write-Host "." -NoNewline 
-    Start-Sleep -Seconds 5
+    Start-SearchSleepProgress -Num 60
 }
 
 $stopwatch.Stop()
@@ -195,5 +203,7 @@ if ($purge -eq "purge"){
         Write-Host "`nComplianceSearch '$name' was not deleted." -ForegroundColor Yellow
     }
 }
-# Clear Session
-Get-PSSession | Remove-PSSession | Out-Null
+
+## Cleanup
+# Exchange Online
+Disconnect-ExchangeOnline -Confirm:$false
