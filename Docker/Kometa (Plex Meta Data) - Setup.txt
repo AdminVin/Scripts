@@ -1,6 +1,6 @@
 # Run - Instantly
 # Docker Image - Latest Nightly Release
-docker run --rm -it -v "/Users/USERNAME/Files/Plex Meta Manager:/config:rw" --name="PMM" linuxserver/kometa:nightly --run
+docker run --rm -it -v "/volume1/docker/Kometa:/config:rw" --name="Kometa-Temp" linuxserver/kometa:nightly --run
 
 # Run - Schedule (Daily: 4 AM, 4 PM)
 # Docker Image - Latest Public Release
@@ -8,6 +8,6 @@ docker run -d \
   --name=Kometa \
   -e TZ=America/New_York \
   -e PMM_TIME=04:00,16:00 \
-  -v "/Users/USERNAME/Files/Kometa:/config:rw" \
+  -v "/volume1/docker/Kometa:/config:rw" \
   --restart unless-stopped \
   linuxserver/kometa
