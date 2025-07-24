@@ -1,27 +1,110 @@
 ####################
+# Default Settings #
+####################
+settings:
+  cache: true
+  cache_expiration: 7
+  asset_directory: config/assets
+  asset_folders: true
+  asset_depth: 0
+  create_asset_folders: false
+  prioritize_assets: false
+  dimensional_asset_rename: false
+  download_url_assets: false
+  show_missing_season_assets: false
+  show_missing_episode_assets: false
+  show_asset_not_needed: true
+  sync_mode: append
+  minimum_items: 1
+  delete_below_minimum: true
+  delete_not_scheduled: false
+  run_again_delay: 2
+  missing_only_released: false
+  only_filter_missing: false
+  show_unmanaged: true
+  show_unconfigured: true
+  show_filtered: false
+  show_options: false
+  show_missing: true
+  show_missing_assets: true
+  save_report: false
+  tvdb_language: eng
+  item_refresh_delay: 0
+  playlist_sync_to_user: all
+  playlist_report: false
+  verify_ssl: true
+  check_nightly: false
+  run_order:
+  - operations
+  - metadata
+  - collections
+  - overlays
+  overlay_artwork_filetype: jpg
+  overlay_artwork_quality: 90
+  show_unfiltered: false
+
+##################
+# Webhook Config #
+##################
+  default_collection_order:
+  ignore_ids:
+  ignore_imdb_ids:
+  playlist_exclude_users:
+  custom_repo:
+webhooks:
+  error:
+  version:
+  run_start:
+  run_end:
+  delete:
+
+#############
+# Plex Auth #
+#############
+plex:
+  url: http://192.168.103.40:32400
+  token: XXXXXXXXXXXXXXXXXXXXXXX
+  timeout: 60
+  clean_bundles: true
+  empty_trash: true
+  optimize: true
+
+##############
+# TMDB Auth  #
+##############
+  verify_ssl:
+  db_cache:
+tmdb:
+  apikey: XXXXXXXXXXXXXXXXXXXXXXXXXX
+  language: en
+  cache_expiration: 7
+
+####################
 # Library Settings #
 ####################
-libraries:                                          # This is called out once within the config.yml file
+  region:
+libraries:
+
 ############
 ## Movies ##
 ############
   Movies:
-    overlay_path:
-    - remove_overlays: false                        # Set this to true to remove all overlays added by Plex Meta Manager / false is default.
-    #- pmm: resolution                              # Resolution (Default position Top Left)
-    - pmm: ratings                                  # Ratings with custom fonts matched to the style of the rating, font_size, and on the right in 'square' format
+    reapply_overlays: true
+    remove_overlays: false                             # Set to true to clear all overlays from this library
+    overlay_files:
+    - pmm: ratings                                     # Ratings overlay using Rotten Tomatoes + custom font
       template_variables:
         rating1: audience
         rating1_image: rt_popcorn
-        rating1_font: config/overlays/fonts/Mobsters.ttf
+        rating1_font: /config/overlays/Fonts/Mobsters.ttf      # <-- case-sensitive correction
         rating1_font_size: 80
-        rating_alignment: horizontal               # horizontal / vertical (default if not declared)
+        rating_alignment: horizontal                   # horizontal or vertical (default is vertical)
         horizontal_position: right
         vertical_position: bottom
         horizontal_offset: 15
         vertical_offset: 15
-        back_color: "#000000" # Black
-    - pmm: streaming
+        back_color: '#000000'
+    - pmm: streaming                                   # Streaming service badges (bottom left)
       template_variables:
         horizontal_align: left
         vertical_align: bottom
@@ -30,53 +113,47 @@ libraries:                                          # This is called out once wi
         use_Crunchyroll: true
         use_youtube: true
         use_discovery: true
-        use_crave: false
-        use_now: false
-        use_all4: false
-        use_britbox: false
-        use_bet: false
-        use_hayu: false
-        back_color: "#000000" # Black
-    metadata_path:                                  # Create Plex catergories for movies in the same francise.
-    - pmm: franchise
+        back_color: '#000000'
+    collection_files:
+    - default: franchise                               # Automatically create collections by franchise
       template_variables:
         collection_order: release
         build_collection: true
 
-##############
+################
 ## TV Shows ##
-##############
+################
   TV Shows:
-    overlay_path:
-    - remove_overlays: false                        # Set this to true to remove all overlays added by Plex Meta Manager / false is default.
-    - pmm: status
-      template_variables:    
+    reapply_overlays: true
+    remove_overlays: false                              # Set to true to clear all overlays from this library
+    overlay_files:
+    - pmm: status                                       # Show status (Airing, Ended, etc) on top center
+      template_variables:
         horizontal_align: center
         vertical_align: top
         vertical_offset: 0
         horizontal_offset: 0
         back_height: 80
         back_width: 1100
-        font: config/overlays/fonts/Mobsters.ttf
+        font: /config/overlays/Fonts/Mobsters.ttf         # <-- case-sensitive correction
         font_size: 100
-        back_color_airing: "#016920"                # Green
-        back_color_returning: "#000847"             # Blue
-        back_color_canceled: "#ed1f1f"              # Red
-        back_color_ended: "#ed1f1f"                 # Red
-    #- pmm: resolution                              # Resolution (Default position Top Left)
-    - pmm: ratings                                  # Ratings with custom fonts matched to the style of the rating, font_size, and on the right in 'square' format
+        back_color_airing: '#016920'                       # Green
+        back_color_returning: '#000847'                    # Blue
+        back_color_canceled: '#ed1f1f'                     # Red
+        back_color_ended: '#ed1f1f'                        # Red
+    - pmm: ratings                                       # Ratings overlay using Rotten Tomatoes + custom font
       template_variables:
         rating1: audience
         rating1_image: rt_popcorn
-        rating1_font: config/overlays/fonts/Mobsters.ttf
+        rating1_font: /config/overlays/Fonts/Mobsters.ttf      # <-- case-sensitive correction
         rating1_font_size: 80
-        rating_alignment: horizontal               # horizontal / vertical (default if not declared)
+        rating_alignment: horizontal
         horizontal_position: right
         vertical_position: bottom
         horizontal_offset: 15
         vertical_offset: 15
-        back_color: "#000000" # Black
-    - pmm: streaming
+        back_color: '#000000'
+    - pmm: streaming                                     # Streaming service badges (bottom left)
       template_variables:
         horizontal_align: left
         vertical_align: bottom
@@ -85,10 +162,4 @@ libraries:                                          # This is called out once wi
         use_Crunchyroll: true
         use_youtube: true
         use_discovery: true
-        use_crave: false
-        use_now: false
-        use_all4: false
-        use_britbox: false
-        use_bet: false
-        use_hayu: false
-        back_color: "#000000" # Black
+        back_color: '#000000'
