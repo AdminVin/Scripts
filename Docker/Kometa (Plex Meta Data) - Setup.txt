@@ -1,13 +1,13 @@
-# Run - Instantly
-# Docker Image - Latest Nightly Release
-docker run --rm -it -v "/volume1/docker/Kometa:/config:rw" --name="Kometa-Temp" linuxserver/kometa:nightly --run
-
-# Run - Schedule (Daily: 4 AM, 4 PM)
+# Run - Schedule (Daily: 4 AM)
 # Docker Image - Latest Public Release
 docker run -d \
   --name=Kometa \
   -e TZ=America/New_York \
-  -e PMM_TIME=04:00,16:00 \
-  -v "/volume1/docker/Kometa:/config:rw" \
+  -e PMM_TIME=04:00 \
+  -v /volume1/docker/Kometa:/config \
+  --network host \
   --restart unless-stopped \
-  linuxserver/kometa
+  kometateam/kometa:latest
+
+# Run - Schedule (Instant)
+docker exec -it Kometa python3 -m kometa --config /config/config.yml --run --debug

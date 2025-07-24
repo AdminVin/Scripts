@@ -1,17 +1,13 @@
-# Docker Image: https://hub.docker.com/r/tautulli/tautulli
-
 # Configure / Install
 docker run -d \
   --name=Tautulli \
   --restart=unless-stopped \
-  -v ~/Files/Tautulli:/config \
-  -e TZ=US/Eastern \
-  -p 8181:8181 \
+  -v /volume1/docker/Tautulli:/config \
+  -e TZ=America/New_York \
+  --network=host \
   ghcr.io/tautulli/tautulli
-
 
 # Update Version
 docker stop Tautulli
 docker rm Tautulli
 docker pull ghcr.io/tautulli/tautulli
-Run docker creation commands above.
