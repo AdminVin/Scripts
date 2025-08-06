@@ -9,14 +9,16 @@ $tvDir = "\\192.168.103.40\Media\TV"
 
 # --- CHECK PYTHON ---
 if (-not (Get-Command python -ErrorAction SilentlyContinue)) {
-    Write-Host "Python not installed. Exiting." -ForegroundColor Red
+    Write-Host "Python not installed. Exiting.`n" -ForegroundColor Red
+    Write-Host "Download Python: https://www.python.org/downloads/windows/`n" -ForegroundColor Yellow
     break
     exit
 }
 
 # --- CHECK FFMPEG ---
 if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
-    Write-Host "FFmpeg not installed or not in PATH. Exiting." -ForegroundColor Red
+    Write-Host "FFmpeg not installed or not in PATH. Exiting.`n" -ForegroundColor Red
+    Write-Host "Extract the contents of the 'bin' folder, from 'Media - FFMPEG - 2025-08-04 (Full).7z' to system32. Re-run script.`n" -ForegroundColor Yellow
     break
     exit
 }
