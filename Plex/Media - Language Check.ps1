@@ -7,7 +7,7 @@ $tempWav = "$env:TEMP\lang_temp.wav"
 $movieDir = "\\192.168.103.40\Media\Movies"
 $tvDir = "\\192.168.103.40\Media\TV"
 
-# --- CHECK PYTHON ---
+Write-Host "Step 1: Checking for Python..." -ForegroundColor Cyan
 if (-not (Get-Command python -ErrorAction SilentlyContinue)) {
     Write-Host "Python not installed. Exiting.`n" -ForegroundColor Red
     Write-Host "Download Python: https://www.python.org/downloads/windows/`n" -ForegroundColor Yellow
@@ -15,7 +15,7 @@ if (-not (Get-Command python -ErrorAction SilentlyContinue)) {
     exit
 }
 
-# --- CHECK FFMPEG ---
+Write-Host "Step 2: Checking for FFmpeg..." -ForegroundColor Cyan
 if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
     Write-Host "FFmpeg not installed or not in PATH. Exiting.`n" -ForegroundColor Red
     Write-Host "Extract the contents of the 'bin' folder, from 'Media - FFMPEG - 2025-08-04 (Full).7z' to system32. Re-run script.`n" -ForegroundColor Yellow
@@ -23,21 +23,22 @@ if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
     exit
 }
 
-# --- CREATE FOLDER ---
+Write-Host "Step 3: Creating working directory..." -ForegroundColor Cyan
 if (-not (Test-Path $workingDir)) {
     New-Item -Path $workingDir -ItemType Directory | Out-Null
 }
 
-# --- WRITE requirements.txt ---
+Write-Host "Step 4: Writing requirements.txt..." -ForegroundColor Cyan
 @"
 torch
 openai-whisper
 "@ | Set-Content $requirementsFile -Encoding UTF8
 
-# --- WRITE Detect-Language.py ---
+Write-Host "Step 5: Writing Detect-Language.py..." -ForegroundColor Cyan
 @"
 import sys
 import whisper
+import traceback
 
 language_map = {
     "af": "Afrikaans", "am": "Amharic", "ar": "Arabic", "as": "Assamese", "az": "Azerbaijani",
@@ -66,34 +67,43 @@ file_path = sys.argv[1]
 model = whisper.load_model("base")
 
 try:
-    result = model.transcribe(file_path, language='auto')
-    lang_code = result.get('language', '')
+    audio = whisper.load_audio(file_path)
+    audio = whisper.pad_or_trim(audio)
+    mel = whisper.log_mel_spectrogram(audio).to(model.device)
+
+    _, probs = model.detect_language(mel)
+    lang_code = max(probs, key=probs.get)
+
     full_name = language_map.get(lang_code, 'Unknown')
     print(full_name)
-except:
+except Exception as e:
     print("Unknown")
+    traceback.print_exc()
+
+sys.stdout.flush()
 "@ | Set-Content $pythonScript -Encoding UTF8
 
-# --- INSTALL PYTHON DEPENDENCIES ---
-Write-Host "Installing required Python packages..." -ForegroundColor Cyan
-Start-Process -NoNewWindow -Wait -FilePath "python" -ArgumentList "-m pip install -r `"$requirementsFile`""
+Write-Host "Step 6: Installing required Python packages..." -ForegroundColor Cyan
+& python -m pip install -r $requirementsFile
 
-# --- BUILD FILE LIST ---
+Write-Host "Step 7: Scanning media folders..." -ForegroundColor Cyan
 $allFiles = @()
 $allFiles += Get-ChildItem -Path $movieDir -Recurse -Include *.mkv, *.mp4 -ErrorAction SilentlyContinue
 $allFiles += Get-ChildItem -Path $tvDir -Recurse -Include *.mkv, *.mp4 -ErrorAction SilentlyContinue
+
+Write-Host "Step 8: Found $($allFiles.Count) media files.`n" -ForegroundColor Green
 
 if ($allFiles.Count -eq 0) {
     Write-Host "No media files found. Exiting." -ForegroundColor Yellow
     exit
 }
 
-# --- PREP OUTPUT ---
+Write-Host "Step 9: Preparing CSV output..." -ForegroundColor Cyan
 if (!(Test-Path $outputCSV)) {
     "FilePath,Language" | Out-File $outputCSV -Encoding UTF8
 }
 
-# --- PROCESS FILES ---
+Write-Host "Step 10: Processing media files..." -ForegroundColor Cyan
 $total = $allFiles.Count
 $i = 0
 
@@ -101,16 +111,26 @@ foreach ($file in $allFiles) {
     $i++
 
     Write-Progress -Activity "Detecting Language" -Status "$($file.Name)" -PercentComplete (($i / $total) * 100)
-    Write-Host "[$i of $total] Processing: $($file.FullName)"
+    Write-Host "`n[$i of $total] Processing: $($file.FullName)" -ForegroundColor Cyan
 
-    # Extract audio
-    & ffmpeg -y -i "`"$file.FullName`"" -t 60 -vn -ar 16000 -ac 1 -f wav "`"$tempWav`"" -loglevel quiet
+    Write-Host "  - Extracting audio with ffmpeg..." -ForegroundColor DarkGray
+    & ffmpeg -y -i "$($file.FullName)" -t 60 -vn -ar 16000 -ac 1 -f wav "$tempWav"
+    
+    if (Test-Path $tempWav) {
+        $size = (Get-Item $tempWav).Length
+        Write-Host "  ✓ Audio extracted to $tempWav ($size bytes)" -ForegroundColor Gray
+    } else {
+        Write-Host "  ✗ Audio extraction failed!" -ForegroundColor Red
+        continue
+    }
 
-    # Run Python detection
-    $lang = & python "`"$pythonScript`"" "`"$tempWav`""
+    Write-Host "  - Running Whisper transcription..." -ForegroundColor DarkGray
+    $lang = & python $pythonScript $tempWav
     if ([string]::IsNullOrWhiteSpace($lang)) { $lang = "Unknown" }
+    Write-Host "  ✓ Detected language: $lang" -ForegroundColor Green
 
     '"{0}","{1}"' -f $file.FullName, $lang | Out-File $outputCSV -Append -Encoding UTF8
 }
 
-Write-Host "`nDone. Output saved to: $outputCSV" -ForegroundColor Green
+Write-Host "`nStep 11: All files processed." -ForegroundColor Cyan
+Write-Host "Output saved to: $outputCSV`n" -ForegroundColor Green
