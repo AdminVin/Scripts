@@ -67,15 +67,31 @@ file_path = sys.argv[1]
 model = whisper.load_model("base")
 
 try:
+    import traceback
+
     audio = whisper.load_audio(file_path)
-    audio = whisper.pad_or_trim(audio)
-    mel = whisper.log_mel_spectrogram(audio).to(model.device)
+
+    # Start at 1:00, extract 2 minutes (120 seconds)
+    sample_rate = whisper.audio.SAMPLE_RATE
+    start_time = 60
+    duration = 120
+
+    start_sample = start_time * sample_rate
+    end_sample = start_sample + (duration * sample_rate)
+
+    if len(audio) > end_sample:
+        segment = audio[start_sample:end_sample]
+    else:
+        segment = whisper.pad_or_trim(audio)
+
+    mel = whisper.log_mel_spectrogram(segment).to(model.device)
 
     _, probs = model.detect_language(mel)
     lang_code = max(probs, key=probs.get)
 
     full_name = language_map.get(lang_code, 'Unknown')
     print(full_name)
+
 except Exception as e:
     print("Unknown")
     traceback.print_exc()
