@@ -1,0 +1,6 @@
+### Rename this file to 'ventoy.json' > Remove this line & SAVE > Copy 'ventoy.json' to the root of the ISOs directoy
+{
+    "control": [
+        { "VTOY_WIN11_BYPASS_CHECK": "1" }
+    ]
+}
