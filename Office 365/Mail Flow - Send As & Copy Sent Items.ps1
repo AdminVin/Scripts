@@ -12,4 +12,4 @@ Set-Mailbox "USER2@DOMAIN.com" -MessageCopyForSentAsEnabled $True
 Set-Mailbox "USER2@DOMAIN.com" -MessageCopyForSendOnBehalfEnabled $True
 
 # Verify
-Get-Mailbox "USER2@DOMAIN.com" | Select-Object MessageCopyForSendOnBehalfEnabled, MessageCopyForSentAsEnabled
+Get-Mailbox "USER2@DOMAIN.com" | Select-Object MessageCopyForSentAsEnabled, MessageCopyForSendOnBehalfEnabled
