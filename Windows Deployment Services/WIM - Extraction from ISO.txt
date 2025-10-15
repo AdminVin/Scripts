@@ -1,4 +1,4 @@
-## Windows Media Creator ISO
+# [>] Windows Media Creator ISO
 # Source: https://www.itechguides.com/windows-deployment-services-2019/
 
 Step 1: Download Windows 10/11 ISO from Windows Media Creator
@@ -14,8 +14,8 @@ Step 5: Extract .WIM file
  - Command: dism /export-image /SourceImageFile:install.esd /SourceIndex:4 /DestinationImageFile:install.wim /Compress:max /CheckIntegrity
 
 
-## Volume Licensing ISO
-*Note: When browsing a volume license ISO, there will be an install.WIM instead of install.ESD
+# [>] Volume Licensing ISO
+*NOTE: When browsing a volume license ISO, there will be an install.WIM instead of install.ESD
 
 Step 1: Download Windows 10/11 ISO from Windows Media Creator
 
