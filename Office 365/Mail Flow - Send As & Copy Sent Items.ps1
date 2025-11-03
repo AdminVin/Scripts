@@ -2,13 +2,13 @@
 #
 # Example: 
 # [User 1] has send as permissions to [User 2].  
-# [User 1] sends a message AS / ON BEHALF OF [User 2] mailbox.
+# [User 1] sends a message AS or ON BEHALF OF [User 2] mailbox.
 # Both users have the sent message, in the "Sent" folder.
 
-# Send As Permissions
+# Send As Permissions / Copy to USER2's Sent Folder
 Set-Mailbox "USER2@DOMAIN.com" -MessageCopyForSentAsEnabled $True
 
-# Send on Behalf Permissions
+# Send on Behalf Permissions / Copy to USER2's Sent Folder
 Set-Mailbox "USER2@DOMAIN.com" -MessageCopyForSendOnBehalfEnabled $True
 
 # Verify
