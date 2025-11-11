@@ -22,7 +22,7 @@ function Remove-ItemRecursively {
     }
 
     foreach ($UserProfile in $UserProfiles) {
-
+        <#
         # Browsers
             # IE / Edge
             Remove-Item "$($UserProfile.FullName)\AppData\Local\Microsoft\Windows\INetCache\*" -Recurse -Force -ErrorAction SilentlyContinue
@@ -38,7 +38,7 @@ function Remove-ItemRecursively {
             # Firefox
             Get-ChildItem "$($UserProfile.FullName)\AppData\Local\Mozilla\Firefox\Profiles" -Directory -ErrorAction SilentlyContinue |
                 ForEach-Object { Remove-Item "$($_.FullName)\cache2\*" -Recurse -Force -ErrorAction SilentlyContinue }
-
+        #>
         # Microsoft Store App
         Remove-ItemRecursively -Path "$($UserProfile.FullName)\AppData\Local\Packages\*\TempState\*"
 
