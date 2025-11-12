@@ -1,3 +1,42 @@
+## Functions
+function Set-Registry {
+    param (
+        [string]$Path,
+        [string]$Name,
+        [Parameter(ValueFromPipeline = $true)]
+        [Object]$Value,
+        [ValidateSet('String','ExpandString','Binary','DWord','MultiString','QWord')]
+        [string]$Type,
+        [ValidateSet('Path','Value')]
+        [string]$Remove
+    )
+    # Removal Check
+    if ($Remove -eq 'Path') {
+        if (Test-Path $Path) {
+            Remove-Item -Path $Path -Recurse -Force -ErrorAction SilentlyContinue
+        }
+        return
+    }
+    if ($Remove -eq 'Value') {
+        if (Test-Path $Path) {
+            if (Get-ItemProperty -Path $Path -Name $Name -ErrorAction SilentlyContinue) {
+                Remove-ItemProperty -Path $Path -Name $Name -Force -ErrorAction SilentlyContinue
+            }
+        }
+        return
+    }
+    # Path Check
+    if (-not (Test-Path $Path)) {
+        $null = New-Item -Path $Path -Force
+    }
+    # Item Check
+    if (-not (Get-ItemProperty -Path $Path -Name $Name -ErrorAction SilentlyContinue)) {
+        $null = New-ItemProperty -Path $Path -Name $Name -Value $Value -PropertyType $Type -Force
+    } else {
+        $null = Set-ItemProperty -Path $Path -Name $Name -Value $Value -Force
+    }
+}
+
 ## Close OneDrive (if running in background)
 taskkill /f /im OneDrive.exe
 taskkill /f /im FileCoAuth.exe
@@ -11,8 +50,8 @@ Start-Process -FilePath "$Env:WinDir\SysWOW64\OneDriveSetup.exe" -WorkingDirecto
 ## Files Cleanup
 # File Explorer - Navigation Bar
 if((Test-Path -LiteralPath "HKCU:\Software\Classes\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}") -ne $true) {  New-Item "HKCU:\Software\Classes\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" -Force -ErrorAction SilentlyContinue | Out-Null };
-New-ItemProperty -LiteralPath 'HKCU:\Software\Classes\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}' -Name '(default)' -Value 'OneDrive' -PropertyType String -Force -ErrorAction SilentlyContinue | Out-Null;
-New-ItemProperty -LiteralPath 'HKCU:\Software\Classes\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}' -Name 'System.IsPinnedToNameSpaceTree' -Value 0 -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null;
+Set-Registry -Path 'HKCU:\Software\Classes\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}' -Name '(default)' -Value 'OneDrive' -Type String
+Set-Registry -Path 'HKCU:\Software\Classes\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}' -Name 'System.IsPinnedToNameSpaceTree' -Value 0 -Type DWord
 # AppData / Local
 Remove-Item -Path "$env:localappdata\OneDrive" -Recurse -Confirm:$false -Force -ErrorAction SilentlyContinue
 # ProgramData
@@ -33,23 +72,21 @@ $ODUPdaterService.delete() | Out-Null
 
 ## Registry
 # Remove Previous Accounts/Sync Options
-Remove-Item -LiteralPath "HKCU:\Software\Microsoft\OneDrive" -Recurse -Confirm:$false -Force -ErrorAction SilentlyContinue
-# Remove previously set One Drive settings
-Remove-Item -LiteralPath "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Recurse -Confirm:$false -Force -ErrorAction SilentlyContinue
+Set-Registry -Path "HKCU:\Software\Microsoft\OneDrive" -Remove 'Path'
+# Remove previously set OneDrive settings
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Remove 'Path'
 # Remove Right Click Menu Context Options
-Remove-Item -LiteralPath "HKLM:\SYSTEM\CurrentControlSet\Services\FileSyncHelper" -Recurse -Confirm:$false -Force -ErrorAction SilentlyContinue
+Set-Registry -Path "HKLM:\SYSTEM\CurrentControlSet\Services\FileSyncHelper" -Remove 'Path'
 # Remove from 'Default' user account
 reg load "hku\Default" "C:\Users\Default\NTUSER.DAT"
-reg delete "HKEY_USERS\Default\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "OneDriveSetup" /f
+Set-Registry -Path "HKU:\Default\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "OneDriveSetup" -Remove 'Value'
 reg unload "hku\Default"
 
 ## Enable File Sync (if somehow disabled)
 if (-not (Test-Path "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive")) {
-    New-Item -Path "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Force | Out-Null
+    Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive"
 }
 # DisableFileSync
-New-ItemProperty -Path "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSync" -Value "0" -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null
-Set-ItemProperty -Path "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSync" -Value "0" | Out-Null
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSync" -Value 0 -Type DWord
 # DisableFileSyncNGSC
-New-ItemProperty -Path "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSyncNGSC" -Value "0" -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null
-Set-ItemProperty -Path "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSyncNGSC" -Value "0" | Out-Null
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSyncNGSC" -Value 0 -Type DWord
