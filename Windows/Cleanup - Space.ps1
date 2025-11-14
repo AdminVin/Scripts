@@ -22,6 +22,23 @@ function Remove-ItemRecursively {
     }
 
     foreach ($UserProfile in $UserProfiles) {
+        <#
+        # Browsers
+            # IE / Edge
+            Remove-Item "$($UserProfile.FullName)\AppData\Local\Microsoft\Windows\INetCache\*" -Recurse -Force -ErrorAction SilentlyContinue
+
+            # Chromium Edge
+            Get-ChildItem "$($UserProfile.FullName)\AppData\Local\Microsoft\Edge\User Data" -Directory -ErrorAction SilentlyContinue |
+                ForEach-Object { Remove-Item "$($_.FullName)\Cache\*" -Recurse -Force -ErrorAction SilentlyContinue }
+
+            # Chrome
+            Get-ChildItem "$($UserProfile.FullName)\AppData\Local\Google\Chrome\User Data" -Directory -ErrorAction SilentlyContinue |
+                ForEach-Object { Remove-Item "$($_.FullName)\Cache\*" -Recurse -Force -ErrorAction SilentlyContinue }
+
+            # Firefox
+            Get-ChildItem "$($UserProfile.FullName)\AppData\Local\Mozilla\Firefox\Profiles" -Directory -ErrorAction SilentlyContinue |
+                ForEach-Object { Remove-Item "$($_.FullName)\cache2\*" -Recurse -Force -ErrorAction SilentlyContinue }
+        #>
         # Microsoft Store App
         Remove-ItemRecursively -Path "$($UserProfile.FullName)\AppData\Local\Packages\*\TempState\*"
 
@@ -31,10 +48,16 @@ function Remove-ItemRecursively {
         # Crash Dumps
         Remove-ItemRecursively -Path "$($UserProfile.FullName)\AppData\Local\CrashDumps\*"
 
-        # Local Low
+        # Temp - User
+        Remove-ItemRecursively -Path "$($UserProfile.FullName)\Temp\*"
+
+        # Temp - Local
+        Remove-ItemRecursively -Path "$($UserProfile.FullName)\AppData\Local\Temp\*"
+
+        # Temp - Local Low
         Remove-ItemRecursively -Path "$($UserProfile.FullName)\AppData\LocalLow\Temp\*"
 
-        Write-Host "Finished cleaning: $($UserProfile.FullName)" -ForegroundColor Green
+        Write-Host "  - Cleaned Profile: $($UserProfile.FullName)" -ForegroundColor Green
     }
 
     # System
@@ -48,7 +71,6 @@ function Remove-ItemRecursively {
         Remove-ItemRecursively -Path "C:\ProgramData\Microsoft\Windows\Caches\*"
 
         # Temporary Files
-        Remove-ItemRecursively -Path "$env:TEMP\*" -Recurse -Force
         Remove-ItemRecursively -Path "C:\Windows\Temp\*"
         Remove-ItemRecursively -Path "C:\Windows\ServiceProfiles\LocalService\AppData\Local\Temp\*"
         Remove-ItemRecursively -Path "C:\Windows\ServiceProfiles\NetworkService\AppData\Local\Temp\*"
