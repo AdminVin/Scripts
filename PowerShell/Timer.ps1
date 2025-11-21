@@ -5,17 +5,21 @@ $Timer = [System.Diagnostics.Stopwatch]::StartNew()
 $Timer.Stop()
 
 # Display Timer
-$Timer.Elapsed
+    # Full
+    $Timer.Elapsed
 
-# Display Timer (Hour, Minutes, Seconds)
-$Timer.Elapsed | Select-Object Hours, Minutes, Seconds | Format-Table
+    # Partial (Table)
+    $Timer.Elapsed | Select-Object Hours, Minutes, Seconds | Format-Table
 
-<# Output
-Hours Minutes Seconds
------ ------- -------
-    0       1      44
-#>
+    <# Output
+    Hours Minutes Seconds
+    ----- ------- -------
+        0       1      44
+    #>
 
-# Display Timer (HMS - Varible)
-$TimerFinal = $Timer.Elapsed | Select-Object Hours, Minutes, Seconds | Format-Table
-$TimerFinal
+    # Partial (Inline)
+    Write-Host ("Elapsed Time - {0:00}:{1:00}:{2:00}" -f $Timer.Elapsed.Hours, $Timer.Elapsed.Minutes, $Timer.Elapsed.Seconds)
+
+    <# Output
+    Elapsed Time - 00:01:40
+    #>
