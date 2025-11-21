@@ -1,0 +1,7 @@
+SH - Convert to Executable
+
+1. Copy to Synology
+2. Run "sudo -i" (without quotes)
+3. Navigate to script directory
+4. Convert to Executable - "chmod +x syno_hdd_db.sh" (without quotes)
+5. Run "./syno_hdd_db.sh" (without quotes)
