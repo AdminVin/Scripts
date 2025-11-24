@@ -1,12 +1,13 @@
-# Connect to Office 365
-# -Type parameter should be "Regular" for User Mailbox, "Room" for resource mailbox, "Equipment", or "Shared" for Shared mailbox.
+# Regular (license needed and able to be logged onto)
+Set-Mailbox -Identity ActiveUser@DOMAIN.com -Type Regular
 
-# Regular (with license and login credentials)
-Get-Mailbox -Identity ActiveUser@DOMAIN.com | Set-Mailbox -Type Regular
+# Shared (license needed and able to be logged onto)
+Set-Mailbox -Identity DepartmentName@DOMAIN.com -Type Shared
 
-# Room Mailbox
-Get-Mailbox -Identity conferenceroom1@DOMAIN.com | Set-Mailbox -Type Room
-Get-Mailbox -Identity conferenceroom2@DOMAIN.com | Set-Mailbox -Type Room
-Get-Mailbox -Identity conferenceroom3@DOMAIN.com | Set-Mailbox -Type Room
-Get-Mailbox -Identity conferenceroom4@DOMAIN.com | Set-Mailbox -Type Room
-Get-Mailbox -Identity conferenceroom5@DOMAIN.com | Set-Mailbox -Type Room
+# Room Mailbox (no license needed and no login capabilities)
+Set-Mailbox -Identity ConferenceRoom@DOMAIN.com -Type Room
+
+# Equipment Mailbox (no license needed and no login capabilities)
+Set-Mailbox -Identity Equipment@DOMAIN.com -Type Room
+
+
