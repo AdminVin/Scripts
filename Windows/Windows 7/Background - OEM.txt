@@ -1,8 +1,0 @@
-OEMBackground is a registry script to change the windows lock screen.
-
-1. Run the registry script
-
-2. Place the new desired background image to C:\Windows\System32\oobe\INFO\backgrounds
- - If the folders do not exist create them, and they are case sensitive.
- - The image must be a jpeg, and "backgroundDefault.jpg" (case sensitive)
- - The image also must be under 244kb
