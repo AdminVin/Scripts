@@ -120,3 +120,4 @@ $FreeSpaceAfter = (Get-PSDrive -Name C).Free / 1GB
 Write-Host "Disk Space Free (before): $("{0:N2} GB" -f $FreeSpaceBefore)" -ForegroundColor Green
 Write-Host "Disk Space Free (after): $("{0:N2} GB" -f $FreeSpaceAfter)" -ForegroundColor Green
 Write-Host "Actual Space Freed: $("{0:N2} GB" -f ($FreeSpaceAfter - $FreeSpaceBefore))" -ForegroundColor Green
+#
