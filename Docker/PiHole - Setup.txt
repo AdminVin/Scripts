@@ -3,6 +3,8 @@
 ###########################
 
 https://github.com/hagezi/dns-blocklists/wiki/FAQ#sources
+  - https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt
+
 
 
 #####################
