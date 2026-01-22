@@ -1,3 +1,10 @@
+###########################
+###> Pihole Blocklists <###
+###########################
+
+https://github.com/hagezi/dns-blocklists/wiki/FAQ#sources
+
+
 #####################
 ###> MACOS Setup <###
 #####################
