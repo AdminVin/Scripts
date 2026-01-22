@@ -1,3 +1,16 @@
+###########################
+###> Pihole Blocklists <###
+###########################
+
+https://github.com/hagezi/dns-blocklists/wiki/FAQ#sources
+  - https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt
+
+
+
+#####################
+###> MACOS Setup <###
+#####################
+
 # Docker Image: https://hub.docker.com/r/pihole/pihole
 
 # Setup & Configure
@@ -5,7 +18,6 @@ docker run -d \
   --name Pihole \
   -e ServerIP=192.168.103.73 \
   -e TZ=America/New_York \
-  -e WEBPASSWORD=YOURPASSWORD \
   -e DNS1=1.1.1.1 \
   -e DNS2=1.0.0.1 \
   -p 8008:80 \
@@ -27,3 +39,22 @@ Run docker creation commands above.
 
 # Note:
 MacOS docker installations, need to edit the file "~/Library/Group/Containers/group.com.docker/settings.json" > Change "kernelForUDP": true" to "kernelForUDP": false"
+
+
+########################
+###> Synology Setup <###
+########################
+
+  docker run -d \
+  --name pihole \
+  --restart unless-stopped \
+  -e TZ="America/New_York" \
+  -e DNS1="1.1.1.1" \
+  -e DNS2="8.8.8.8" \
+  -p 53:53/tcp \
+  -p 53:53/udp \
+  -p 8088:80 \
+  -v /volume1/docker/Pihole/etc-pihole:/etc/pihole \
+  -v /volume1/docker/Pihole/etc-dnsmasq.d:/etc/dnsmasq.d \
+  pihole/pihole:latest
+
