@@ -1,5 +1,9 @@
-# Configure / Install
-## Update Line 11 to point to your Pictures Path ##
+# Install & Configure
+
+#> Windows: Can be run from a CMD/Terminal Prompt
+#> Synology: Run as scheduled Task (as root) / SSH > "sudo -i" (without quotes)
+
+# Note: Update Line 15 to point to your Pictures Path ##
 docker run -d \
   --name PhotoPrism \
   --security-opt seccomp=unconfined \

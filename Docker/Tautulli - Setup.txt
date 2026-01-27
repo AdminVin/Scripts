@@ -1,11 +1,17 @@
-# Configure / Install
+# Install & Configure
+
+#> Windows: Can be run from a CMD/Terminal Prompt
+#> Synology: Run as scheduled Task (as root) / SSH > "sudo -i" (without quotes)
+
 docker run -d \
-  --name=Tautulli \
-  --restart=unless-stopped \
+  --name=tautulli \
+  -e PUID=1026 \
+  -e PGID=100 \
+  -e TZ=US/Eastern \
   -v /volume1/docker/Tautulli:/config \
-  -e TZ=America/New_York \
-  --network=host \
-  ghcr.io/tautulli/tautulli
+  --network host \
+  --restart always \
+  ghcr.io/tautulli/tautulli:latest
 
 # Update Version
 docker stop Tautulli

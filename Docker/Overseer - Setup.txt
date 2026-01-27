@@ -1,13 +1,17 @@
+# Install & Configure
+
+#> Windows: Can be run from a CMD/Terminal Prompt
+#> Synology: Run as scheduled Task (as root) / SSH > "sudo -i" (without quotes)
+
 # Docker Image: https://hub.docker.com/r/sctx/overseerr
 
-# Configure / Install
 docker run -d \
-  --name Overseerr \
+  --name=overseerr \
   -e LOG_LEVEL=debug \
   -e TZ=US/Eastern \
-  -e PORT=5055 `#optional` \
+  -e PORT=5055 \
   -p 5055:5055 \
-  -v ~/Files/Overseerr:/app/config \
+  -v /volume1/docker/Overseerr:/app/config \
   --restart unless-stopped \
   sctx/overseerr
 
@@ -15,4 +19,3 @@ docker run -d \
 docker stop Overseerr
 docker rm Overseerr
 docker pull sctx/overseerr
-Run docker creation commands above.

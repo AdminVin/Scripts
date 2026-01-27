@@ -1,4 +1,8 @@
-# Configure and Install
+# Install & Configure
+
+#> Windows: Can be run from a CMD/Terminal Prompt
+#> Synology: Run as scheduled Task (as root) / SSH > "sudo -i" (without quotes)
+
 docker run -d \
   --name Sonarr \
   --restart=unless-stopped \

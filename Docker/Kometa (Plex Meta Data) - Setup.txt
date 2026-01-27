@@ -1,5 +1,9 @@
-# Run - Schedule (Daily: 4 AM)
-# Docker Image - Latest Public Release
+# Install & Configure
+
+#> Windows: Can be run from a CMD/Terminal Prompt
+#> Synology: Run as scheduled Task (as root) / SSH > "sudo -i" (without quotes)
+
+# Install with a daily schedule of 4 AM
 docker run -d \
   --name=Kometa \
   -e TZ=America/New_York \

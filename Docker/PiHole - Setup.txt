@@ -6,14 +6,16 @@ https://github.com/hagezi/dns-blocklists/wiki/FAQ#sources
   - https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt
 
 
+###############
+###> MACOS <###
+###############
 
-#####################
-###> MACOS Setup <###
-#####################
+# Note:
+MacOS docker installations, need to edit the file "~/Library/Group/Containers/group.com.docker/settings.json" > Change "kernelForUDP": true" to "kernelForUDP": false"
 
 # Docker Image: https://hub.docker.com/r/pihole/pihole
 
-# Setup & Configure
+# Install & Configure
 docker run -d \
   --name Pihole \
   -e ServerIP=192.168.103.73 \
@@ -35,15 +37,13 @@ docker run -d \
 docker stop Pihole
 docker rm Pihole
 docker pull pihole/pihole
-Run docker creation commands above.
-
-# Note:
-MacOS docker installations, need to edit the file "~/Library/Group/Containers/group.com.docker/settings.json" > Change "kernelForUDP": true" to "kernelForUDP": false"
 
 
-########################
-###> Synology Setup <###
-########################
+##################
+###> Synology <###
+##################
+
+#> Run as scheduled Task (as root) -OR- SSH > "sudo -i" (without quotes)
 
   docker run -d \
   --name pihole \
@@ -57,4 +57,3 @@ MacOS docker installations, need to edit the file "~/Library/Group/Containers/gr
   -v /volume1/docker/Pihole/etc-pihole:/etc/pihole \
   -v /volume1/docker/Pihole/etc-dnsmasq.d:/etc/dnsmasq.d \
   pihole/pihole:latest
-
