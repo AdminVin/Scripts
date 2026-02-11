@@ -1,0 +1,13 @@
+Synology Certificate Renewal
+
+1. Login Synology > Control Panel > Security > Certificate
+2. Select Certificate > Action > Renew Certificate
+3. Zip File will download > Extract > Open 'server.csr'
+3. Go to SSLS.com > Renew Certificate > Enter in the CSR 
+4. Validate the signing request, by method of choice (email verification is the fastest)
+5. New certificate will be sent to your email > Download > Extract
+6. Login Synology > Control Panel > Security > Certificate > Add > Replace an existing certificate > Select From Dropdown > Import certificate
+7. Add Private Key, Certificate, Intermediate certificate
+    - Private Key:              server.key (from the first zip file [server.csr & server.key])
+    - Certificate:              certificate.CRT (from zip received after validating the CSR)
+    - Intermediate Certificate: certificate.BUNDLE (from zip received after validating the CSR)
