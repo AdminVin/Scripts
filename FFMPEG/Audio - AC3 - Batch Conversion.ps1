@@ -21,12 +21,12 @@ foreach ($file in $videoFiles) {
 
     Write-Output "Started converting:" $origFile
 
-    # --- STEP 2: Convert using ffmpeg ---
+    # --- STEP 2: Convert using FFMPEG ---
     try {
-        # Surround (5.1)
-        #& ffmpeg "-i" "$origFile" "-c:v" "copy" "-c:a" "ac3" "-b:a" "320k" "-ac" "6" "-af" "volume=0.3dB" "$convertedFile"
-        # Stereo (2.0)
+        # Stereo (2.0 / 320K)
         & ffmpeg "-i" "$origFile" "-c:v" "copy" "-c:a" "ac3" "-b:a" "320k" "-ac" "2" "-af" "volume=0.3dB" "$convertedFile"
+        # Surround (5.1 / 640k [Max])
+        #& ffmpeg "-i" "$origFile" "-c:v" "copy" "-c:a" "ac3" "-b:a" "320k" "-ac" "6" "-af" "volume=0.3dB" "$convertedFile"
     } catch {
         Write-Output "Error converting:" $origFile
         Write-Output $_
