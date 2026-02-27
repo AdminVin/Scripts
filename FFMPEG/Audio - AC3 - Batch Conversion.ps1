@@ -1,3 +1,7 @@
+# Install FFMPEG - https://www.gyan.dev/ffmpeg/builds/
+# Add FFMPEG to the PATH (sysdm.cpl > Advanced > Enviroment Variables > Select Path > Edit > New > Add FFMPEG 'bin' Location)
+# Alternatively: Copy ffmpeg.exe, ffplay.exe, and ffprobe.exe to C:/Windows/System32
+
 # --- CONFIG ---
 $TV_DIR = "\\192.168.103.40\Media\TV\Bob's Burgers (2011)"
 
