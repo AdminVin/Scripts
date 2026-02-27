@@ -6,7 +6,7 @@ $videoFiles = Get-ChildItem -Path $TV_DIR -Recurse -Include *.mkv, *.mp4
 
 foreach ($file in $videoFiles) {
     $origFile = $file.FullName
-    $convertedFile = Join-Path $file.DirectoryName ("converted_temp" + $file.Extension)
+    $convertedFile = Join-Path $file.DirectoryName ("_Converting-" + $file.BaseName + $file.Extension)
     $backupFile = $origFile + ".old"
 
     # --- SKIP if backup already exists ---
