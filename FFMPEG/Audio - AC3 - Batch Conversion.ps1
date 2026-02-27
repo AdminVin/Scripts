@@ -15,11 +15,11 @@ foreach ($file in $videoFiles) {
 
     # --- SKIP if backup already exists ---
     if (Test-Path $backupFile) {
-        Write-Output "Skipping already converted file:" $origFile
+        Write-Host "Skipping already converted file:" $origFile -ForegroundColor Red
         continue
     }
 
-    Write-Output "Started converting:" $origFile
+    Write-Host "Started converting:" $origFile -ForegroundColor Green
 
     # --- STEP 2: Convert using FFMPEG ---
     try {
@@ -28,8 +28,8 @@ foreach ($file in $videoFiles) {
         # Surround (5.1 / 640k [Max])
         #& ffmpeg "-i" "$origFile" "-c:v" "copy" "-c:a" "ac3" "-b:a" "320k" "-ac" "6" "-af" "volume=0.3dB" "$convertedFile"
     } catch {
-        Write-Output "Error converting:" $origFile
-        Write-Output $_
+        Write-Host "Error converting:" $origFile -ForegroundColor Red
+        Write-Host $_
         continue
     }
 
@@ -37,8 +37,8 @@ foreach ($file in $videoFiles) {
     try {
         Rename-Item -Path $origFile -NewName $backupFile -Force
     } catch {
-        Write-Output "Error backing up:" $origFile
-        Write-Output $_
+        Write-Host "Error backing up:" $origFile -ForegroundColor Red
+        Write-Host $_
         continue
     }
 
@@ -46,10 +46,10 @@ foreach ($file in $videoFiles) {
     try {
         Rename-Item -Path $convertedFile -NewName $origFile -Force
     } catch {
-        Write-Output "Error replacing file:" $origFile
-        Write-Output $_
+        Write-Host "Error replacing file:" $origFile -ForegroundColor Red
+        Write-Host $_
         continue
     }
 
-    Write-Output "Finished converting:" $origFile
+    Write-Host "Finished converting:" $origFile -ForegroundColor Green
 }
