@@ -9,6 +9,12 @@ foreach ($file in $videoFiles) {
     $convertedFile = Join-Path $file.DirectoryName ("converted_temp" + $file.Extension)
     $backupFile = $origFile + ".old"
 
+    # --- SKIP if backup already exists ---
+    if (Test-Path $backupFile) {
+        Write-Output "Skipping already converted file:" $origFile
+        continue
+    }
+
     Write-Output "Started converting:" $origFile
 
     # --- STEP 2: Convert using ffmpeg ---
