@@ -5,8 +5,12 @@
 # Convert
 # Note: This will convert and add a 2 DB Boost to make up for lost audio quality.
 
+# Quality Limits:
+# Movies: 640k 6 Channels / 320k 2 Channels
+# TV Shows: 320k 6 Channels / 256k 2 Channels
+
 # Stereo (2.0 / 320K)
-ffmpeg -i "C:\Race with the Devil (1975).mkv" -c:v copy -c:a ac3 -b:a 320k -ac 2 -af "volume=2dB" "C:\Race with the Devil (1975)-Converted.mkv"
+ffmpeg -i "C:\Race with the Devil (1975).mkv" -c:v copy -c:a ac3 -b:a 320k -ac 2 -af "volume=2dB" "C:\Race with the Devil (1975)-Converted.mkv" -sn
 
 # Surround (5.1 / 640k [Max])
-ffmpeg -i "C:\Race with the Devil (1975).mkv" -c:v copy -c:a ac3 -b:a 640k -ac 6 -af "volume=2dB" "C:\Race with the Devil (1975)-Converted.mkv"
+ffmpeg -i "C:\Race with the Devil (1975).mkv" -c:v copy -c:a ac3 -b:a 640k -ac 6 -af "volume=2dB" "C:\Race with the Devil (1975)-Converted.mkv" -sn
