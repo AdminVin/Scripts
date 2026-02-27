@@ -1,8 +1,14 @@
-/--- Notes
-
-* Configuration
+[>] Configuration - Set Tdarr to CLI
 - Transcode Options - Set to FFMPEG CLI
  - Navigate to [Library > Select Library > Transcode Options > Check off "Basic Video" > Check 'FFMPEG' > Change 'CLI arguments']
+
+
+[>] Arguments
+- Resolution
+ - Downscale all content to 720P
+  - Add: -vf "scale='if(gt(ih,720),-2,iw)':720"
+ - Downscall all content to 1080P
+  - Add: -vf "scale='if(gt(ih,1080),-2,iw)':1080"
 
 * Audio
 - To transcode to the AC3 codec use '-c:a ac3 -b:a 640k -metadata:s:a language=eng'
@@ -12,6 +18,8 @@
 * Subtitles
 - Add '-sn' to remove subtitles
 
+
+[>] Options
 * Filtering
 - Resolution
  - Navigate to [Library > Select Library > Transcode Options > Filters]
@@ -25,16 +33,10 @@
 - Disable double encoding of any HEVC format files
  - Under "Transcode Options" 
  - Select "dont", and type in "hevc" and then enter > Check off the box for "hevc" so that any files in HEVC format will be skipped.
- 
-- Resolution
- - Downscale all content to 720P
-  - Add: -vf "scale='if(gt(ih,720),-2,iw)':720"
- - Downscall all content to 1080P
-  - Add: -vf "scale='if(gt(ih,1080),-2,iw)':1080"
 
-
-/--- TV Shows
-- Resolution to 720p / Convert to HEVC
+[>] Library Configurations
+  [>] TV Shows
+  * Resolution to 720p / Convert to HEVC
 
 [Mac Mini M1 (2024/04/15)]
 <io> -vcodec hevc_videotoolbox -quality high_quality -profile:v main -preset veryslow -b:v 3000k -maxrate 5000k -bufsize 10000k -vf "scale='if(gt(ih,720),-2,iw)':720" -c:a ac3 -b:a 640k -metadata:s:a language=eng -metadata:s:a language=eng -avoid_negative_ts make_zero -max_muxing_queue_size 4096 -ignore_chapters 1 -movflags +faststart -threads 4
@@ -43,9 +45,8 @@
 <io> -vcodec hevc_nvenc -profile:v main -b:v 3000k -maxrate 5000k -bufsize 10000k -vf "scale='if(gt(ih,720),-2,iw)':720" -c:a ac3 -b:a 640k -metadata:s:a language=eng -metadata:s:a language=eng -avoid_negative_ts make_zero -max_muxing_queue_size 4096 -ignore_chapters 1 -movflags +faststart -threads 4
 
 
-
-/--- Movies
-- Resolution to 1080p / Convert to HEVC
+  [>] Movies
+  * Resolution to 1080p / Convert to HEVC
 
 [Mac Mini M1 (2024/04/15)]
 <io> -vcodec hevc_videotoolbox -quality high_quality -profile:v main -preset veryslow -b:v 6000k -maxrate 8000k -bufsize 18000k -vf "scale='if(gt(ih,1080),-2,iw)':1080" -c:a ac3 -b:a 640k -metadata:s:a language=eng -sn -metadata:s:a language=eng -avoid_negative_ts make_zero -max_muxing_queue_size 4096 -ignore_chapters 1 -movflags +faststart -threads 4
