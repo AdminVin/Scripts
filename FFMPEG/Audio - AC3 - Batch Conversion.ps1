@@ -7,53 +7,72 @@
 # TV Shows: 320k 6 Channels / 256k 2 Channels
 
 # --- CONFIG ---
-$TV_DIR = "\\192.168.103.40\Media\TV\Bob's Burgers (2011)"
+$TV_DIR = "\\192.168.103.40\Media\TV\"
 
-# --- STEP 1: Get all video files (MKV, MP4, etc.) ---
+# --- STEP 1: Get all video files ---
 $videoFiles = Get-ChildItem -Path $TV_DIR -Recurse -Include *.mkv, *.mp4
 
 foreach ($file in $videoFiles) {
+
     $origFile = $file.FullName
     $convertedFile = Join-Path $file.DirectoryName ("_Converting-" + $file.BaseName + $file.Extension)
     $backupFile = $origFile + ".old"
 
-    # --- SKIP if backup already exists ---
-    if (Test-Path $backupFile) {
-        Write-Host "Skipping already converted file:" $origFile -ForegroundColor Red
+    # --- STEP 2: Check audio codec (first audio stream) ---
+    $codec = & ffprobe -v error `
+        -select_streams a:0 `
+        -show_entries stream=codec_name `
+        -of default=noprint_wrappers=1:nokey=1 `
+        "$origFile"
+
+    if (-not $codec) {
+        Write-Host "Skipping (No audio found): $origFile"
         continue
     }
 
-    Write-Host "Started converting:" $origFile -ForegroundColor Green
+    # --- SKIP if already AC3 ---
+    if ($codec -eq "ac3") {
+        Write-Host "Skipping (Already AC3): $origFile" -ForegroundColor Yellow
+        continue
+    }
 
-    # --- STEP 2: Convert using FFMPEG ---
+    Write-Host "Converting: $origFile (Current codec: $codec)" -ForegroundColor Red
+
+    # --- STEP 3: Convert using ffmpeg ---
     try {
-        # Stereo (2.0 / 256K)
-        & ffmpeg "-i" "$origFile" "-c:v" "copy" "-c:a" "ac3" "-b:a" "256k" "-ac" "2" "-af" "volume=0.3dB" "$convertedFile" "-sn"
-        # Surround (5.1 / 640k [Max])
-        #& ffmpeg "-i" "$origFile" "-c:v" "copy" "-c:a" "ac3" "-b:a" "320k" "-ac" "6" "-af" "volume=0.3dB" "$convertedFile" "-sn"
-    } catch {
-        Write-Host "Error converting:" $origFile -ForegroundColor Red
+        & ffmpeg -y `
+            -i "$origFile" `
+            -c:v copy `
+            -c:a ac3 `
+            -b:a 256k `
+            -ac 2 `
+            -af "volume=0.3dB" `
+            "$convertedFile"
+    }
+    catch {
+        Write-Host "Error converting: $origFile"
         Write-Host $_
         continue
     }
 
-    # --- STEP 3: Backup original ---
+    # --- STEP 4: Backup original ---
     try {
         Rename-Item -Path $origFile -NewName $backupFile -Force
-    } catch {
-        Write-Host "Error backing up:" $origFile -ForegroundColor Red
-        Write-Host $_
+    }
+    catch {
+        Write-Host "Error backing up: $origFile"
         continue
     }
 
-    # --- STEP 4: Replace with converted ---
+    # --- STEP 5: Replace with converted ---
     try {
         Rename-Item -Path $convertedFile -NewName $origFile -Force
-    } catch {
-        Write-Host "Error replacing file:" $origFile -ForegroundColor Red
-        Write-Host $_
+    }
+    catch {
+        Write-Host "Error replacing file: $origFile"
         continue
     }
 
-    Write-Host "Finished converting:" $origFile -ForegroundColor Green
+    Write-Host "Finished converting: $origFile"
 }
+
