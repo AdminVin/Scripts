@@ -7,7 +7,7 @@
 # TV Shows: 320k 6 Channels / 256k 2 Channels
 
 # --- CONFIG ---
-$TV_DIR = "\\192.168.103.40\Media\TV\"
+$TV_DIR = "\\192.168.103.40\Media\TV\Abbott Elementary (2021)"
 
 # --- STEP 1: Get all video files ---
 $videoFiles = Get-ChildItem -Path $TV_DIR -Recurse -Include *.mkv, *.mp4

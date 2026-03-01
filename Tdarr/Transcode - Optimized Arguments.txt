@@ -44,6 +44,9 @@
 [Windows i9/3080 TI (2025/08/28)]
 <io> -vcodec hevc_nvenc -profile:v main -b:v 3000k -maxrate 5000k -bufsize 10000k -vf "scale='if(gt(ih,720),-2,iw)':720" -c:a ac3 -b:a 640k -metadata:s:a language=eng -metadata:s:a language=eng -avoid_negative_ts make_zero -max_muxing_queue_size 4096 -ignore_chapters 1 -movflags +faststart -threads 4
 
+[Windows i9/3080 TI (2026/03/01)]
+<io> -vcodec hevc_nvenc -profile:v main -b:v 3000k -maxrate 5000k -bufsize 10000k -vf "scale='if(gt(ih,720),-2,iw)':720" -c:a ac3 -b:a 256k -ac 2 -metadata:s:a language=eng -metadata:s:a language=eng -avoid_negative_ts make_zero -max_muxing_queue_size 4096 -ignore_chapters 1 -movflags +faststart -threads 4
+
 
   [>] Movies
   * Resolution to 1080p / Convert to HEVC
@@ -53,3 +56,6 @@
 
 [Windows i9/3080 TI (2025/08/28)]
 <io> -vcodec hevc_nvenc -profile:v main -b:v 6000k -maxrate 8000k -bufsize 18000k -vf "scale='if(gt(ih,1080),-2,iw)':1080" -c:a ac3 -b:a 640k -metadata:s:a language=eng -sn -metadata:s:a language=eng -avoid_negative_ts make_zero -max_muxing_queue_size 4096 -ignore_chapters 1 -movflags +faststart -threads 4
+
+[Windows i9/3080 TI (2026/03/01)]
+<io> -vcodec hevc_nvenc -profile:v main -b:v 3000k -maxrate 5000k -bufsize 10000k -vf "scale='if(gt(ih,720),-2,iw)':720" -c:a ac3 -b:a 640k -ac 6 -metadata:s:a language=eng -metadata:s:a language=eng -avoid_negative_ts make_zero -max_muxing_queue_size 4096 -ignore_chapters 1 -movflags +faststart -threads 4
