@@ -7,7 +7,7 @@
 # TV Shows: 320k 6 Channels / 256k 2 Channels
 
 # --- CONFIG ---
-$TV_DIR = "\\192.168.103.40\Media\TV\Abbott Elementary (2021)"
+$TV_DIR = "\\192.168.103.40\Media\Movies\The Fate Of The Furious (2017)\"
 
 # --- STEP 1: Get all video files ---
 $videoFiles = Get-ChildItem -Path $TV_DIR -Recurse -Include *.mkv, *.mp4
@@ -40,14 +40,10 @@ foreach ($file in $videoFiles) {
 
     # --- STEP 3: Convert using ffmpeg ---
     try {
-        & ffmpeg -y `
-            -i "$origFile" `
-            -c:v copy `
-            -c:a ac3 `
-            -b:a 256k `
-            -ac 2 `
-            -af "volume=0.3dB" `
-            "$convertedFile"
+            # TV (2 Channel / 256k)
+            & ffmpeg -y -i "$origFile" -c:v copy -c:a ac3 -b:a 256k -ac 2 -af "volume=0.3dB" "$convertedFile"
+            # Movie (6 Channel / 640k)
+            #& ffmpeg -y -i "$origFile" -c:v copy -c:a ac3 -b:a 640k -ac 6 -af "volume=0.3dB" "$convertedFile"
     }
     catch {
         Write-Host "Error converting: $origFile"
