@@ -7,10 +7,11 @@
 # TV Shows: 320k 6 Channels / 256k 2 Channels
 
 # --- CONFIG ---
-$TV_DIR = "\\192.168.103.40\Media\Movies\The Fate Of The Furious (2017)\"
+#$DIR = "\\192.168.103.40\Media\TV\"
+$DIR = "\\192.168.103.40\Media\Movies\"
 
 # --- STEP 1: Get all video files ---
-$videoFiles = Get-ChildItem -Path $TV_DIR -Recurse -Include *.mkv, *.mp4
+$videoFiles = Get-ChildItem -Path $DIR -Recurse -Include *.mkv, *.mp4
 
 foreach ($file in $videoFiles) {
 
@@ -31,8 +32,8 @@ foreach ($file in $videoFiles) {
     }
 
     # --- SKIP if already AC3 ---
-    if ($codec -eq "ac3") {
-        Write-Host "Skipping (Already AC3): $origFile" -ForegroundColor Yellow
+    if ($codec -eq "ac3" -or $codec -eq "aac") {
+        Write-Host "Skipping (Already AC3 or AAC): $origFile" -ForegroundColor Yellow
         continue
     }
 
