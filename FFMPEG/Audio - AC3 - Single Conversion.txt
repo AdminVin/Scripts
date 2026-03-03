@@ -10,7 +10,7 @@
 # TV Shows: 320k 6 Channels / 256k 2 Channels
 
 # Stereo (2.0 / 320K)
-ffmpeg -i "C:\Race with the Devil (1975).mkv" -c:v copy -c:a ac3 -b:a 320k -ac 2 -metadata:s:a language=eng -af "volume=0.3dB" "C:\Race with the Devil (1975)-Converted.mkv" -sn
+ffmpeg -i "C:\Race with the Devil (1975).mkv" -c:v copy -c:a ac3 -b:a 320k -ac 2 -metadata:s:a language=eng -af "volume=0.1dB" "C:\Race with the Devil (1975)-Converted.mkv"
 
 # Surround (5.1 / 640k [Max])
-ffmpeg -i "C:\Race with the Devil (1975).mkv" -c:v copy -c:a ac3 -b:a 640k -ac 6 -metadata:s:a language=eng -af "volume=0.3dB" "C:\Race with the Devil (1975)-Converted.mkv" -sn
+ffmpeg -i "C:\Race with the Devil (1975).mkv" -c:v copy -c:a ac3 -b:a 640k -ac 6 -metadata:s:a language=eng -af "volume=0.1dB" "C:\Race with the Devil (1975)-Converted.mkv"

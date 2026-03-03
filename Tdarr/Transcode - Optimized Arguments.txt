@@ -16,7 +16,8 @@
 - To skip audio transcoding, and copy existing audio use '-c:a copy'
 
 * Subtitles
-- Add '-sn' to remove subtitles
+- Add '-sn' to remove subtitles.
+- This also includes English forced ones (Exampble: Avengers [2012] - Black Widow Interogation Scene: All subtitles were removed and foreign language).
 
 
 [>] Options
