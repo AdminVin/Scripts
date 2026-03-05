@@ -26,7 +26,7 @@ foreach ($file in $videoFiles) {
     $origFile = $file.FullName
     $convertedFile = Join-Path $file.DirectoryName ("_Converting-" + $file.BaseName + $file.Extension)
 
-    Write-Host "Converting: $origFile" -ForegroundColor Red
+    Write-Host "File: $origFile" -ForegroundColor Red
 
     # --- STEP 2: Check video codec and bitrate ---
     $vidCodec = (& ffprobe -v error `
@@ -50,7 +50,7 @@ foreach ($file in $videoFiles) {
         $vidBitrate = 0
     }
 
-    Write-Host "Video Codec: $vidCodec, Bitrate: $vidBitrate kbps" -ForegroundColor Green
+    Write-Host " - Video Codec: $vidCodec, Bitrate: $vidBitrate kbps" -ForegroundColor Green
 
     # --- STEP 3: Convert using ffmpeg (single command) ---
     if ($vidCodec -eq "h264" -and $vidBitrate -gt 12000) {
@@ -62,16 +62,16 @@ foreach ($file in $videoFiles) {
                 -avoid_negative_ts make_zero -max_muxing_queue_size 4096 -ignore_chapters 1 `
                 -movflags +faststart -threads 4 "$convertedFile"
 
-            Write-Host "Conversion successful: $origFile" -ForegroundColor Green
+            Write-Host " - Conversion successful: $origFile" -ForegroundColor Green
         }
         catch {
-            Write-Host "Error converting: $origFile" -ForegroundColor Red
+            Write-Host " - Error converting: $origFile" -ForegroundColor Red
             Write-Host $_ -ForegroundColor Red
             continue  # skip to the next file in the foreach loop
         }
     }
     else {
-        Write-Host "Skipping (not H.264 or bitrate <= 12000 kbps): $origFile" -ForegroundColor Yellow
+        Write-Host " - Skipping (not H.264 or bitrate <= 12000 kbps): $origFile" -ForegroundColor Yellow
         continue
     }
 
@@ -79,10 +79,10 @@ foreach ($file in $videoFiles) {
     try {
         Rename-Item -Path $origFile -NewName ($origFile + ".old") -Force
         #Remove-Item -Path $origFile -Force
-        Write-Host "Deleted original file: $origFile" -ForegroundColor Green
+        Write-Host " - Deleted original file: $origFile" -ForegroundColor Green
     }
     catch {
-        Write-Host "Error deleting original: $origFile" -ForegroundColor Red
+        Write-Host " - Error deleting original: $origFile" -ForegroundColor Red
         Write-Host $_ -ForegroundColor Red
         continue
     }
@@ -90,13 +90,13 @@ foreach ($file in $videoFiles) {
     # --- STEP 5: Replace with converted file ---
     try {
         Rename-Item -Path $convertedFile -NewName $origFile -Force
-        Write-Host "Replaced with converted file: $origFile" -ForegroundColor Green
+        Write-Host " - Replaced with converted file: $origFile" -ForegroundColor Green
     }
     catch {
-        Write-Host "Error replacing file: $origFile" -ForegroundColor Red
+        Write-Host " - Error replacing file: $origFile" -ForegroundColor Red
         Write-Host $_ -ForegroundColor Red
         continue
     }
 
-    Write-Host "Finished processing: $origFile" -ForegroundColor Green
+    Write-Host " - Finished processing: $origFile" -ForegroundColor Green
 }
