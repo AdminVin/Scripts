@@ -29,35 +29,49 @@ foreach ($file in $videoFiles) {
     Write-Host "Converting: $origFile" -ForegroundColor Red
 
     # --- STEP 2: Check video codec and bitrate ---
-    $videoInfo = & ffprobe -v error `
+    $vidCodec = (& ffprobe -v error `
         -select_streams v:0 `
-        -show_entries stream=codec_name,bit_rate `
+        -show_entries stream=codec_name `
         -of default=noprint_wrappers=1:nokey=1 `
-        "$origFile"
+        "$origFile").Trim()
 
-    $videoLines = $videoInfo -split "`n"
-    $vidCodec = $videoLines[0].Trim()
-    $vidBitrate = 0
-    if ($videoLines.Length -gt 1 -and [int]::TryParse($videoLines[1], [ref]$null)) {
-        $vidBitrate = [int]$videoLines[1] / 1000  # Convert to kbps
+    # Get video duration in seconds
+    $durationSec = (& ffprobe -v error `
+        -show_entries format=duration `
+        -of default=noprint_wrappers=1:nokey=1 `
+        "$origFile") -as [double]
+
+    # Compute approximate bitrate (kbps)
+    if ($durationSec -gt 0) {
+        $fileSizeBytes = (Get-Item $origFile).Length
+        $vidBitrate = [math]::Round(($fileSizeBytes * 8 / 1000) / $durationSec)
+    }
+    else {
+        $vidBitrate = 0
     }
 
     Write-Host "Video Codec: $vidCodec, Bitrate: $vidBitrate kbps" -ForegroundColor Green
 
     # --- STEP 3: Convert using ffmpeg (single command) ---
-    try {
-        & ffmpeg -y -i "$origFile" `
-            -vcodec h264_nvenc -profile:v high -level 4.1 -rc vbr -cq 18 -b:v 0 `
-            -maxrate 9000k -bufsize 18000k -vf "scale='if(gt(ih,1080),-2,iw)':1080" `
-            -c:a ac3 -b:a 640k -ac 6 -metadata:s:a language=eng `
-            -avoid_negative_ts make_zero -max_muxing_queue_size 4096 -ignore_chapters 1 `
-            -movflags +faststart -threads 4 "$convertedFile"
+    if ($vidCodec -eq "h264" -and $vidBitrate -gt 12000) {
+        try {
+            & ffmpeg -y -i "$origFile" `
+                -vcodec h264_nvenc -profile:v high -level 4.1 -rc vbr -cq 18 -b:v 0 `
+                -maxrate 9000k -bufsize 18000k -vf "scale='if(gt(ih,1080),-2,iw)':1080" `
+                -c:a ac3 -b:a 640k -ac 6 -metadata:s:a language=eng `
+                -avoid_negative_ts make_zero -max_muxing_queue_size 4096 -ignore_chapters 1 `
+                -movflags +faststart -threads 4 "$convertedFile"
 
-        Write-Host "Conversion successful: $origFile" -ForegroundColor Green
+            Write-Host "Conversion successful: $origFile" -ForegroundColor Green
+        }
+        catch {
+            Write-Host "Error converting: $origFile" -ForegroundColor Red
+            Write-Host $_ -ForegroundColor Red
+            continue  # skip to the next file in the foreach loop
+        }
     }
-    catch {
-        Write-Host "Error converting: $origFile" -ForegroundColor Red
-        Write-Host $_ -ForegroundColor Red
+    else {
+        Write-Host "Skipping (not H.264 or bitrate <= 12000 kbps): $origFile" -ForegroundColor Yellow
         continue
     }
 
