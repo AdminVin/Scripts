@@ -53,7 +53,7 @@ foreach ($file in $videoFiles) {
     Write-Host " - Video Codec: $vidCodec, Bitrate: $vidBitrate kbps" -ForegroundColor Green
 
     # --- STEP 3: Convert using ffmpeg (single command) ---
-    if ($vidCodec -eq "h264" -and $vidBitrate -gt 12000) {
+    if ($vidCodec -eq "h264" -and $vidBitrate -gt 11000) {
         try {
             & ffmpeg -y -i "$origFile" `
                 -vcodec h264_nvenc -profile:v high -level 4.1 -rc vbr -cq 18 -b:v 0 `
