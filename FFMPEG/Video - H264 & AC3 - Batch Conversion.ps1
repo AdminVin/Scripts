@@ -75,9 +75,10 @@ foreach ($file in $videoFiles) {
         continue
     }
 
-    # --- STEP 4: Delete original file after successful conversion ---
+    # --- STEP 4: Backup/Delete original file after successful conversion ---
     try {
-        Remove-Item -Path $origFile -Force
+        Rename-Item -Path $origFile -NewName ($origFile + ".old") -Force
+        #Remove-Item -Path $origFile -Force
         Write-Host "Deleted original file: $origFile" -ForegroundColor Green
     }
     catch {
