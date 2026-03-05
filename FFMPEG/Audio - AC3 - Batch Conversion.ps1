@@ -7,8 +7,8 @@
 # TV Shows: 320k 6 Channels / 256k 2 Channels
 
 # --- CONFIG ---
-#$DIR = "\\192.168.103.40\Media\TV\"
-$DIR = "\\192.168.103.40\Media\Movies\"
+$DIR = "\\192.168.103.40\Media\TV\"
+#DIR = "\\192.168.103.40\Media\Movies\"
 
 # --- STEP 1: Get all video files ---
 $videoFiles = Get-ChildItem -Path $DIR -Recurse -Include *.mkv, *.mp4
