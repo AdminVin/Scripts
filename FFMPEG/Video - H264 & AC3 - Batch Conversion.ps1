@@ -47,7 +47,7 @@ foreach ($file in $videoFiles) {
     # --- STEP 3: Convert using ffmpeg (single command) ---
     try {
         & ffmpeg -y -i "$origFile" `
-            -vcodec h264_nvenc -profile:v high -level 4.1 -rc vbr_hq -cq 18 -b:v 0 `
+            -vcodec h264_nvenc -profile:v high -level 4.1 -rc vbr -cq 18 -b:v 0 `
             -maxrate 9000k -bufsize 18000k -vf "scale='if(gt(ih,1080),-2,iw)':1080" `
             -c:a ac3 -b:a 640k -ac 6 -metadata:s:a language=eng `
             -avoid_negative_ts make_zero -max_muxing_queue_size 4096 -ignore_chapters 1 `
