@@ -71,7 +71,7 @@ foreach ($file in $videoFiles) {
         }
     }
     else {
-        Write-Host " - Skipping (not H.264 or bitrate <= 12000 kbps): $origFile" -ForegroundColor Yellow
+        Write-Host " - Skipping (not H.264 or bitrate <= 11000 kbps): $origFile" -ForegroundColor Yellow
         continue
     }
 

@@ -7,7 +7,7 @@
 # TV Shows: 320k 6 Channels / 256k 2 Channels
 
 # --- CONFIG ---
-$FILE = "\\192.168.103.40\Media\Movies\ExampleMovie.mkv"
+$FILE = "\\192.168.103.40\Media\Movies\How the Grinch Stole Christmas!\Move.mkv"
 
 if (-Not (Test-Path $FILE)) {
     Write-Host "File does not exist: $FILE" -ForegroundColor Red
@@ -17,7 +17,13 @@ if (-Not (Test-Path $FILE)) {
 Write-Host "Processing single file: $FILE" -ForegroundColor Green
 
 $origFile = $FILE
-$convertedFile = Join-Path (Split-Path $FILE) ("_Converting-" + (Split-Path $FILE -LeafBase) + (Split-Path $FILE -LeafExtension))
+
+# Fix for extension extraction (PowerShell has no -LeafExtension)
+$folder = Split-Path $FILE
+$baseName = [System.IO.Path]::GetFileNameWithoutExtension($FILE)
+$extension = [System.IO.Path]::GetExtension($FILE)
+
+$convertedFile = Join-Path $folder ("_Converting-" + $baseName + $extension)
 
 # --- STEP 1: Display the file being processed ---
 Write-Host "File: $origFile" -ForegroundColor Red
@@ -47,7 +53,7 @@ else {
 Write-Host " - Video Codec: $vidCodec, Bitrate: $vidBitrate kbps" -ForegroundColor Green
 
 # --- STEP 3: Convert using ffmpeg (single command) ---
-if ($vidCodec -eq "h264" -and $vidBitrate -gt 11000) {
+if ($vidCodec -eq "h264" -and $vidBitrate -gt 10000) {
     try {
         & ffmpeg -y -i "$origFile" `
             -vcodec h264_nvenc -profile:v high -level 4.1 -rc vbr -cq 18 -b:v 0 `
@@ -65,7 +71,7 @@ if ($vidCodec -eq "h264" -and $vidBitrate -gt 11000) {
     }
 }
 else {
-    Write-Host " - Skipping (not H.264 or bitrate <= 12000 kbps): $origFile" -ForegroundColor Yellow
+    Write-Host " - Skipping (not H.264 or bitrate <= 10000 kbps): $origFile" -ForegroundColor Yellow
     exit
 }
 
