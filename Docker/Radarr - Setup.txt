@@ -5,16 +5,13 @@
 
 # Synology
 docker run -d \
-  --name=tautulli \
+  --name=Radarr \
   -e PUID=1026 \
   -e PGID=100 \
   -e TZ=US/Eastern \
-  -v /volume1/docker/Tautulli:/config \
-  --network host \
-  --restart always \
-  ghcr.io/tautulli/tautulli:latest
-
-# Update Version
-docker stop Tautulli
-docker rm Tautulli
-docker pull ghcr.io/tautulli/tautulli
+  -p 7878:7878 \
+  -v /volume1/docker/Radarr:/config \
+  -v /volume1/Media/Movies:/movies \
+  -v /volume2/SABnzbd/complete:/downloads \
+  --restart unless-stopped \
+  lscr.io/linuxserver/radarr:latest

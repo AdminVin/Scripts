@@ -3,6 +3,7 @@
 #> Windows: Can be run from a CMD/Terminal Prompt
 #> Synology: Run as scheduled Task (as root) / SSH > "sudo -i" (without quotes)
 
+# MAC OS
 docker run -d \
   --name Sonarr \
   --restart=unless-stopped \
@@ -11,3 +12,17 @@ docker run -d \
   -v /Volumes/Media/TV:/tv \
   -v ~/Downloads/_Complete:/Downloads \
   linuxserver/sonarr
+
+  # Synology
+docker run -d \
+  --name=Sonarr \
+  -e PUID=1026 \
+  -e PGID=100 \
+  -e TZ=US/Eastern \
+  -p 8989:8989 \
+  -v /volume1/docker/Sonarr:/config \
+  -v /volume1/Media/TV:/tv \
+  -v /volume2/SABnzbd/complete:/downloads \
+  --add-host adminvin.com:192.168.104.40 \
+  --restart unless-stopped \
+  lscr.io/linuxserver/sonarr:latest

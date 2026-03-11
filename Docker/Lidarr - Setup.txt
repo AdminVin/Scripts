@@ -5,16 +5,13 @@
 
 # Synology
 docker run -d \
-  --name=tautulli \
+  --name=Lidarr \
   -e PUID=1026 \
   -e PGID=100 \
   -e TZ=US/Eastern \
-  -v /volume1/docker/Tautulli:/config \
-  --network host \
-  --restart always \
-  ghcr.io/tautulli/tautulli:latest
-
-# Update Version
-docker stop Tautulli
-docker rm Tautulli
-docker pull ghcr.io/tautulli/tautulli
+  -p 8686:8686 \
+  -v /volume1/docker/Lidarr:/config \
+  -v /volume1/Media/Music/FLAC:/music \
+  -v /volume2/SABnzbd/complete:/downloads \
+  --restart unless-stopped \
+  lscr.io/linuxserver/lidarr:latest

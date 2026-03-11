@@ -3,6 +3,7 @@
 #> Windows: Can be run from a CMD/Terminal Prompt
 #> Synology: Run as scheduled Task (as root) / SSH > "sudo -i" (without quotes)
 
+# Synology
 docker run -d \
   --name PlexImageCleanup \
   --restart=always \

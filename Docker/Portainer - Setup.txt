@@ -1,0 +1,14 @@
+# Install & Configure
+
+#> Windows: Can be run from a CMD/Terminal Prompt
+#> Synology: Run as scheduled Task (as root) / SSH > "sudo -i" (without quotes)
+
+# Synology
+docker run -d \
+  --name=Portainer \
+  -p 9000:9000 \
+  -p 9443:9443 \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v /volume1/docker/Portainer:/data \
+  --restart unless-stopped \
+  portainer/portainer-ce:latest

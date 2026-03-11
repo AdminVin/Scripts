@@ -5,6 +5,8 @@
 
 # Docker Image: https://hub.docker.com/r/sctx/overseerr
 
+[############## Overseerr ##############]
+# Synology
 docker run -d \
   --name=overseerr \
   -e LOG_LEVEL=debug \
@@ -19,3 +21,17 @@ docker run -d \
 docker stop Overseerr
 docker rm Overseerr
 docker pull sctx/overseerr
+
+
+[############## Seerr ##############]
+# Synology
+docker run -d \
+  --name=Seerr \
+  --init \
+  -e LOG_LEVEL=debug \
+  -e TZ=US/Eastern \
+  -e PORT=5055 \
+  -p 5055:5055 \
+  -v /volume1/docker/Seerr:/app/config \
+  --restart unless-stopped \
+  ghcr.io/seerr-team/seerr:latest
