@@ -3,3 +3,9 @@ docker ps -a
 
 # Set Container to auto start
 docker update --restart=always <container_name_or_id>
+
+# Stop Container
+docker stop <container_name_or_id>
+
+# Remove Container
+docker rm <container_name_or_id>
