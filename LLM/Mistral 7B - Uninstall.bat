@@ -1,3 +1,5 @@
+:: LLM Source: https://huggingface.co/mistralai
+
 @echo off
 :: ================= UNINSTALL MISTRAL (FIXED) =================
 :: Removes environment, scripts, and downloaded models

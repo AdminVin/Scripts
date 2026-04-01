@@ -1,3 +1,5 @@
+:: LLM Source: https://huggingface.co/mistralai
+
 @echo off
 :: ================= INSTALL MISTRAL (FIXED) =================
 
