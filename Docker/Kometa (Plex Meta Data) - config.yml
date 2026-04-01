@@ -3,7 +3,7 @@
 ####################
 settings:
   cache: true
-  cache_expiration: 7
+  cache_expiration: 30
   asset_directory: config/assets
   asset_folders: true
   asset_depth: 0
@@ -18,7 +18,7 @@ settings:
   minimum_items: 1
   delete_below_minimum: true
   delete_not_scheduled: false
-  run_again_delay: 2
+  run_again_delay: 15
   missing_only_released: false
   only_filter_missing: false
   show_unmanaged: true
@@ -37,8 +37,8 @@ settings:
   run_order:
   - operations
   - metadata
-  - collections
   - overlays
+  - collections
   overlay_artwork_filetype: jpg
   overlay_artwork_quality: 90
   show_unfiltered: false
@@ -65,9 +65,9 @@ plex:
   url: http://192.168.103.40:32400
   token: XXXXXXXXXXXXXXXXXXXXXXX
   timeout: 60
-  clean_bundles: true
-  empty_trash: true
-  optimize: true
+  clean_bundles: false
+  empty_trash: false
+  optimize: false
 
 ##############
 # TMDB Auth  #
@@ -75,91 +75,150 @@ plex:
   verify_ssl:
   db_cache:
 tmdb:
-  apikey: XXXXXXXXXXXXXXXXXXXXXXXXXX
+  apikey: XXXXXXXXXXXXXXXXXXXXXXXXXXXXX
   language: en
   cache_expiration: 7
+
+################
+# MDBList Auth #
+################
+# 2026-03-26 - Not currently pulling any data / API Limit of 1000 hits per day.
+  region:
+mdblist:
+  apikey: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 ####################
 # Library Settings #
 ####################
   region:
+  cache_expiration: 1440
 libraries:
 
 ############
 ## Movies ##
 ############
   Movies:
-    reapply_overlays: true
-    remove_overlays: false                             # Set to true to clear all overlays from this library
+    reapply_overlays: false                                  # Set to true when changing overlay; false for daily runs.
+    remove_overlays: false                                  # Set to true to clear all overlays from this library.
     overlay_files:
-    - pmm: ratings                                     # Ratings overlay using Rotten Tomatoes + custom font
-      template_variables:
-        rating1: audience
-        rating1_image: rt_popcorn
-        rating1_font: /config/overlays/Fonts/Mobsters.ttf      # <-- case-sensitive correction
-        rating1_font_size: 80
-        rating_alignment: horizontal                   # horizontal or vertical (default is vertical)
-        horizontal_position: right
-        vertical_position: bottom
-        horizontal_offset: 15
-        vertical_offset: 15
-        back_color: '#000000'
-    - pmm: streaming                                   # Streaming service badges (bottom left)
+
+    - pmm: resolution                                      # Resolution - Bottom Left
       template_variables:
         horizontal_align: left
         vertical_align: bottom
-        vertical_offset: 15
-        horizontal_offset: 15
-        use_Crunchyroll: true
-        use_youtube: true
-        use_discovery: true
+        back_align: left
+        horizontal_offset: 0
+        vertical_offset: 0
+        back_width: "1100"
+        back_height: 80
         back_color: '#000000'
+        back_padding: 0
+        back_radius: 0        
+        resolution_font: /config/overlays/Fonts/AptosNarrowBold.ttf
+        resolution_font_size: 60
+        resolution_font_color: '#FFFFFF'
+
+    - pmm: ratings                                          # Ratings - Bottom Center
+      template_variables:
+        rating1: audience
+        rating1_image: rt_popcorn
+        rating1_font: /config/overlays/Fonts/AptosNarrowBold.ttf
+        rating1_font_size: 76
+        rating1_font_color: '#FFFFFF'
+        rating_alignment: horizontal
+        back_width: "1100"
+        back_height: 80
+        back_color: '#00000000'
+        back_padding: 0
+        back_radius: 0 
+        horizontal_position: center
+        vertical_position: bottom
+        rating1_horizontal_offset: 0
+        rating1_vertical_offset: 0
+
+    - default: studio                                       # Studio - Bottom Right
+      template_variables:
+        horizontal_align: right
+        vertical_align: bottom
+        back_align: right
+        horizontal_offset: 0
+        vertical_offset: 0
+        back_color: '#000000'
+        back_height: 70
+        back_padding: 0
+        studio_font_size: 50
+
     collection_files:
-    - default: franchise                               # Automatically create collections by franchise
+    - default: franchise                                    # Collections (by franchise)
       template_variables:
         collection_order: release
         build_collection: true
 
-################
+##############
 ## TV Shows ##
-################
+##############
   TV Shows:
-    reapply_overlays: true
-    remove_overlays: false                              # Set to true to clear all overlays from this library
+    reapply_overlays: false                                  # Set to true when changing overlay; false for daily runs.
+    remove_overlays: false                                  # Set to true to clear all overlays from this library.
     overlay_files:
-    - pmm: status                                       # Show status (Airing, Ended, etc) on top center
+
+    - pmm: status                                           # Show Status (Airing, Ended, etc) - Top Center
       template_variables:
         horizontal_align: center
         vertical_align: top
         vertical_offset: 0
         horizontal_offset: 0
-        back_height: 80
-        back_width: 1100
-        font: /config/overlays/Fonts/Mobsters.ttf         # <-- case-sensitive correction
-        font_size: 100
-        back_color_airing: '#016920'                       # Green
-        back_color_returning: '#000847'                    # Blue
-        back_color_canceled: '#ed1f1f'                     # Red
-        back_color_ended: '#ed1f1f'                        # Red
-    - pmm: ratings                                       # Ratings overlay using Rotten Tomatoes + custom font
-      template_variables:
-        rating1: audience
-        rating1_image: rt_popcorn
-        rating1_font: /config/overlays/Fonts/Mobsters.ttf      # <-- case-sensitive correction
-        rating1_font_size: 80
-        rating_alignment: horizontal
-        horizontal_position: right
-        vertical_position: bottom
-        horizontal_offset: 15
-        vertical_offset: 15
-        back_color: '#000000'
-    - pmm: streaming                                     # Streaming service badges (bottom left)
+        back_height: 60
+        back_width: "1100"
+        font: /config/overlays/Fonts/AptosNarrowBold.ttf
+        font_size: 64
+        back_color_airing: '#016920'                        # Green
+        back_color_returning: '#000847'                     # Blue
+        back_color_canceled: '#ed1f1f'                      # Red
+        back_color_ended: '#ed1f1f'                         # Red
+
+    - pmm: resolution                                      # Resolution - Bottom Left
       template_variables:
         horizontal_align: left
         vertical_align: bottom
-        vertical_offset: 15
-        horizontal_offset: 15
-        use_Crunchyroll: true
-        use_youtube: true
-        use_discovery: true
+        back_align: left
+        horizontal_offset: 0
+        vertical_offset: 0
+        back_width: "1100"
+        back_height: 80
         back_color: '#000000'
+        back_padding: 0
+        back_radius: 0        
+        resolution_font: /config/overlays/Fonts/AptosNarrowBold.ttf
+        resolution_font_size: 60
+        resolution_font_color: '#FFFFFF'
+
+    - pmm: ratings                                          # Ratings - Bottom Center
+      template_variables:
+        rating1: audience
+        rating1_image: rt_popcorn
+        rating1_font: /config/overlays/Fonts/AptosNarrowBold.ttf
+        rating1_font_size: 76
+        rating1_font_color: '#FFFFFF'
+        rating_alignment: horizontal
+        horizontal_position: center
+        vertical_position: bottom
+        horizontal_offset: 0
+        vertical_offset: 0
+        rating1_horizontal_offset: 0
+        rating1_vertical_offset: 0
+        back_color: '#00000000'
+        back_padding: 0
+        back_radius: 0
+
+    - default: studio                                       # Studio - Bottom Right
+      template_variables:
+        horizontal_align: right
+        vertical_align: bottom
+        back_align: right
+        horizontal_offset: 0
+        vertical_offset: 0
+        back_color: '#00000000'
+        back_height: 80
+        back_padding: 0
+        studio_font_size: 50
