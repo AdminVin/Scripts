@@ -1,0 +1,17 @@
+# UID/GUID is used for certain Docker containers.
+
+# Navigate: Control Panel > Scheduled Task > User-defined script
+
+    # General
+    Task: Task Name (UID and GUID)
+    User: Admin Account (not root)
+
+    # Schedule
+    Select "Run on the following date" and set for the past
+
+    # Task Settings
+    Check "Send run details by email"
+    User-defined script:
+        id
+
+# Save & Run
