@@ -1,0 +1,13 @@
+# CMD (as Administrator)
+#
+# Your motherboard stores time in a small hardware clock called the RTC (Real-Time Clock).
+#
+# Windows normally assumes:
+# RTC = local time
+# 
+# Linux (Ubuntu) normally assumes:
+# RTC = UTC time
+# This mismatch is what causes your “wacky time” issue in dual boot.
+
+reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\TimeZoneInformation" ^
+/v RealTimeIsUniversal /t REG_DWORD /d 1 /f
