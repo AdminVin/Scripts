@@ -1,0 +1,172 @@
+Picture Pi Configuration
+
+* OS Install
+	- Flash SD Card with Raspberry Pi OS (64-bit)
+		- RaspPiOS v6.12 (2025-05-13)
+
+
+* Basic Configuration
+	- Credentials
+		- Username: picture
+		- Password: pi
+	- WiFi Connection
+	- Enable SSH/VNC/i2c
+		- sudo raspi-config > Interface Options
+	- Display Software Output (Wayland to X11)
+		- sudo raspi-config > Advanced Options > A7 Wayland > W1 X11
+	- Fix VNC to use X11 VNC
+		- Stop Wayland VNC
+			sudo systemctl stop wayvnc.service
+			sudo systemctl stop wayvnc-control.service
+			sudo systemctl disable wayvnc.service
+			sudo systemctl disable wayvnc-control.service
+		- Install X11 VNC
+			sudo apt install realvnc-vnc-server realvnc-vnc-viewer -y
+			sudo systemctl enable vncserver-x11-serviced
+			sudo systemctl start vncserver-x11-serviced
+			sudo systemctl restart lightdm
+	- Screen Blanking (Disable)
+		- Start > Preferences > Raspberry Pi Configuration > Display > Uncheck Screen Blanking > Apply/Reboot
+
+	
+* Install / Update Dependancies
+sudo apt update && sudo apt install -y \
+apache2 \
+php \
+libapache2-mod-php \
+php-cli \
+php-curl \
+php-json \
+php-mbstring \
+php-gd \
+php-zip \
+imagemagick \
+libheif1 \
+libheif-examples \
+ddcutil \
+iproute2 \
+chrony \
+systemd \
+ca-certificates \
+tzdata \
+samba \
+samba-common-bin \
+&& sudo systemctl restart apache2
+
+
+* Apache Modifications
+sudo nano /etc/apache2/mods-available/alias.conf
+
+Comment Out (#):
+#Alias /icons/ "/usr/share/apache2/icons/"
+
+
+* Setup SMB Share
+sudo nano /etc/samba/smb.conf
+
+Add:
+[web]
+path = /var/www/html
+browseable = yes
+read only = no
+guest ok = yes
+force user = www-data
+create mask = 0777
+directory mask = 0777
+
+[global]
+server min protocol = SMB2
+map to guest = Bad User
+guest account = nobody
+security = user
+
+sudo systemctl enable --now smbd
+sudo systemctl enable --now nmbd
+sudo systemctl restart smbd
+
+
+* Permissions
+sudo chown www-data:www-data /var/www/html 
+sudo chmod -R 777 /var/www/html
+sudo usermod -aG i2c www-data
+sudo reboot 
+
+
+* Copy Web Site
+	- Copy website from Windows to Rasberry Pi
+
+
+* Kiosk Auto Start/Launch
+mkdir -p ~/.config/autostart
+nano ~/.config/autostart/kiosk.desktop
+
+Add:
+[Desktop Entry]
+Type=Application
+Name=Chromium Kiosk
+Exec=/usr/bin/chromium --kiosk --noerrdialogs --disable-infobars http://localhost
+X-GNOME-Autostart-enabled=true
+NoDisplay=false
+
+chmod 644 ~/.config/autostart/kiosk.desktop
+
+
+* Disable Keyring Prompt (On Chrome Launch)
+systemctl --user mask gnome-keyring-daemon.service
+systemctl --user mask gnome-keyring-daemon.socket
+systemctl --user daemon-reexec
+sudo systemctl --user disable --global gnome-keyring-daemon.socket
+sudo sed -i 's/^auth.*pam_gnome_keyring.so/# auth pam_gnome_keyring.so/g' /etc/pam.d/lightdm-autologin
+sudo mv /usr/share/dbus-1/services/org.freedesktop.secrets.service /usr/share/dbus-1/services/org.freedesktop.secrets.service.disabled
+
+
+* Desktop Shortcut
+nano ~/Desktop/Chromium-Kiosk.desktop
+
+[Desktop Entry]
+Type=Application
+Name=Chromium Kiosk
+Exec=chromium --kiosk --noerrdialogs --disable-infobars http://localhost
+Terminal=false
+Icon=chromium
+
+chmod +x ~/Desktop/Chromium-Kiosk.desktop
+gio set ~/Desktop/Chromium-Kiosk.desktop metadata::trusted true
+
+
+* SUDO Permissions (Device Controls: Close, Reboot & Shutdown) 
+sudo visudo
+
+Add (at the end): 
+# Apache / Web Permissions
+www-data ALL=(root) NOPASSWD: /usr/sbin/reboot, /usr/sbin/shutdown, /usr/bin/pkill, /bin/rm
+
+
+* Mouse Pointer (Hide)
+sudo nano /etc/lightdm/lightdm.conf
+
+Add:
+[Seat:*]
+xserver-command=X -core -nocursor
+
+
+* Cleanup
+# Printing stack
+sudo systemctl disable --now cups
+sudo systemctl disable --now cups-browsed
+# Mobile / modem support
+sudo systemctl disable --now ModemManager
+# Bluetooth
+sudo systemctl disable --now bluetooth
+# Audio (disable ALSA/Pulse/PipeWire stack)
+sudo systemctl disable --now pipewire pipewire-pulse
+sudo systemctl disable --now wireplumber
+sudo systemctl disable --now pulseaudio 2>/dev/null
+
+
+* Unlock Chromium (if needed)
+pkill chromium
+rm -f ~/.config/chromium/SingletonLock
+rm -f ~/.config/chromium/SingletonSocket
+rm -f ~/.config/chromium/SingletonCookie
+sudo reboot
