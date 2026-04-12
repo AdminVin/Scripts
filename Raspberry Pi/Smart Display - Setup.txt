@@ -12,22 +12,10 @@ Picture Pi Configuration
 	- WiFi Connection
 	- Enable SSH/VNC/i2c
 		- sudo raspi-config > Interface Options
-	- Display Software Output (Wayland to X11)
-		- sudo raspi-config > Advanced Options > A7 Wayland > W1 X11
-	- Fix VNC to use X11 VNC
-		- Stop Wayland VNC
-			sudo systemctl stop wayvnc.service
-			sudo systemctl stop wayvnc-control.service
-			sudo systemctl disable wayvnc.service
-			sudo systemctl disable wayvnc-control.service
-		- Install X11 VNC
-			sudo apt install realvnc-vnc-server realvnc-vnc-viewer -y
-			sudo systemctl enable vncserver-x11-serviced
-			sudo systemctl start vncserver-x11-serviced
-			sudo systemctl restart lightdm
+	- Hostname
+		- sudo raspi-config > System Options > S4 Hostname > Ok > change from "raspberrypi" to "pi"
 	- Screen Blanking (Disable)
 		- Start > Preferences > Raspberry Pi Configuration > Display > Uncheck Screen Blanking > Apply/Reboot
-
 	
 * Install / Update Dependancies
 sudo apt update && sudo apt install -y \
@@ -139,15 +127,7 @@ sudo visudo
 
 Add (at the end): 
 # Apache / Web Permissions
-www-data ALL=(root) NOPASSWD: /usr/sbin/reboot, /usr/sbin/shutdown, /usr/bin/pkill, /bin/rm
-
-
-* Mouse Pointer (Hide)
-sudo nano /etc/lightdm/lightdm.conf
-
-Add:
-[Seat:*]
-xserver-command=X -core -nocursor
+www-data ALL=(root) NOPASSWD: /usr/sbin/reboot, /usr/sbin/shutdown, /usr/bin/pkill, /usr/bin/killall, /bin/rm
 
 
 * Cleanup
