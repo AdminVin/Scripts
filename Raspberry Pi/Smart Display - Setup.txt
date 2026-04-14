@@ -130,6 +130,14 @@ Add (at the end):
 www-data ALL=(root) NOPASSWD: /usr/sbin/reboot, /usr/sbin/shutdown, /usr/bin/pkill, /usr/bin/killall, /bin/rm
 
 
+* Mouse (Hide)
+- Hide
+sudo mv /usr/share/icons/PiXflat/cursors/left_ptr /usr/share/icons/PiXflat/cursors/left_ptr.bak
+
+- Restore (if needed)
+sudo mv /usr/share/icons/PiXflat/cursors/left_ptr.bak /usr/share/icons/PiXflat/cursors/left_ptr
+
+
 * Cleanup
 # Printing stack
 sudo systemctl disable --now cups
