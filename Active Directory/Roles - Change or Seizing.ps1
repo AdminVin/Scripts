@@ -11,7 +11,24 @@
 
 ### Powershell Method
 # Login to NEW Domain Controller
+# Verify Current Primary Domain Controller
+netdom query fsmo
+
+# Change Primary Domain Controller
 Move-ADDirectoryServerOperationMasterRole -Identity "NEW_ServerName.DOMAIN.local" -OperationMasterRole SchemaMaster, DomainNamingMaster, PDCEmulator, RIDMaster, InfrastructureMaster
+
+# Verify Current Primary Domain Controller
+netdom query fsmo
+
+# Time Authority
+#> Set the PDC to pull from the time source below (Windows Default)
+w32tm /config /manualpeerlist:"time.windows.com,0x8" /syncfromflags:manual /reliable:yes /update
+w32tm /resync /force
+w32tm /query /status
+
+#> Set any other DC's to pull from the PDC.
+w32tm /config /syncfromflags:domhier /update
+w32tm /resync /force
 
 
 ### Command Prompt Method
