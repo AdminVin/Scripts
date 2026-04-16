@@ -47,6 +47,11 @@ Uninstall-ADDSDomainController -DemoteOperationMasterRole:$true
 # Delete old DC under Servers
 # Delete NTDS Settings (if present)
 
+#> Replication - Verify No Errors
+repadmin /replsummary
+
+
+__________________________________________________________________________________________________________________________________________
 
 
 ### Command Prompt Method
