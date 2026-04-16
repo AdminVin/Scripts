@@ -35,6 +35,8 @@ repadmin /replsummary
 
 #> Decommission
 # Login to the OLD Domain Controller being decommissioned
+# Note: Make sure DNS is pointing to your new DC or the command below will fail
+
 Uninstall-ADDSDomainController -DemoteOperationMasterRole:$true
     # Set Local Admin Password
     # Server will automatically reboot.
