@@ -1,6 +1,6 @@
 Connect-AzureAD
 
-$Groups = Import-Csv -Path "CreateGroupswithCSV.csv"
+$Groups = Import-Csv -Path ".\Groups - Create with CSV.csv"
 
 foreach($Group in $Groups)
 {
