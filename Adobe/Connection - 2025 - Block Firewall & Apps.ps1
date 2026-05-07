@@ -3,7 +3,7 @@
 if (-not (Get-NetFirewallRule -DisplayName "Adobe Servers" -ErrorAction SilentlyContinue)) {
 
     New-NetFirewallRule `
-        -DisplayName "Adobe Servers 2025" `
+        -DisplayName "Adobe Servers" `
         -Direction Inbound `
         -Action Block `
         -Enabled True `
