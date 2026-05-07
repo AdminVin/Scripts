@@ -1,6 +1,6 @@
 ## Firewall - Block Connection
 # Adobe Servers
-if (-not (Get-NetFirewallRule -DisplayName "Adobe Servers" -ErrorAction SilentlyContinue)) {
+if (-not (Get-NetFirewallRule -DisplayName "Adobe Servers 2026" -ErrorAction SilentlyContinue)) {
 
     New-NetFirewallRule `
         -DisplayName "Adobe Servers" `
