@@ -130,6 +130,17 @@ Add (at the end):
 www-data ALL=(root) NOPASSWD: /usr/sbin/reboot, /usr/sbin/shutdown, /usr/bin/pkill, /usr/bin/killall, /bin/rm
 
 
+* PHP Configuration
+sudo nano /etc/php/8.2/apache2/php.ini
+
+Update (Control + W to Search):
+upload_max_filesize = 50M
+post_max_size = 50M
+
+Save (Control + O) > Exit (Control + X)
+sudo systemctl restart apache2
+
+
 * Mouse (Hide)
 - Hide
 sudo mv /usr/share/icons/PiXflat/cursors/left_ptr /usr/share/icons/PiXflat/cursors/left_ptr.bak
@@ -150,6 +161,11 @@ sudo systemctl disable --now bluetooth
 sudo systemctl disable --now pipewire pipewire-pulse
 sudo systemctl disable --now wireplumber
 sudo systemctl disable --now pulseaudio 2>/dev/null
+# Pi Connect
+sudo apt remove --purge rpi-connect -y
+# Unused Dependancies
+sudo apt autoremove --purge -y
+sudo apt clean
 
 
 * Unlock Chromium (if needed)
