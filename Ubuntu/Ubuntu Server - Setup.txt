@@ -1,0 +1,151 @@
+#####################################################
+# This was created/modeled after an IONOS VPS Setup #
+#####################################################
+
+[#] Disable remote 'root' login / Create new Admin
+    - SSH as root
+    - adduser AdminNEW
+        - Follow prompts to set password.
+    - usermod -aG sudo AdminNEW
+    - groups AdminNEW
+    - Test
+        - SSH in as AdminNEW
+        - Test Permissions: sudo whoami
+            - Expected Result: root
+    - Disable remote 'root' login
+        - Note: Everything going forward should be on AdminNEW, unless otherwise stated.
+        - sudo nano /etc/ssh/sshd_config
+        - Update
+            - From: PermitRootLogin Yes
+            - To: PermitRootLogin no
+        - sudo systemctl restart ssh
+    - Lock the root password (optional)
+        - sudo passwd -l root
+
+
+[#] Timezone
+    - Set to EST
+        - sudo timedatectl set-timezone America/New_York
+    - Verify
+        - timedatectl
+
+[#] Swap File 2GB
+    - Add
+        sudo fallocate -l 2G /swapfile
+        sudo chmod 600 /swapfile
+        sudo mkswap /swapfile
+        sudo swapon /swapfile
+        echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+    - Verify
+        free -h
+
+[#] Server Firewall
+    - Install:
+        sudo ufw allow OpenSSH
+        sudo ufw allow 80
+        sudo ufw allow 443
+        sudo ufw enable
+    
+    - Check Install/Status:
+        sudo ufw status
+
+        - Expected Result:
+        AdminNEW@ubuntu:~$ sudo ufw status
+        Status: active
+
+        To                         Action      From
+        --                         ------      ----
+        OpenSSH                    ALLOW       Anywhere
+        80                         ALLOW       Anywhere
+        443                        ALLOW       Anywhere
+        OpenSSH (v6)               ALLOW       Anywhere (v6)
+        80 (v6)                    ALLOW       Anywhere (v6)
+        443 (v6)                   ALLOW       Anywhere (v6)
+
+
+[#] Updates
+    - sudo apt update && sudo apt upgrade -y
+
+
+[#] Apache & PHP Install
+- Install:
+    sudo apt install apache2 php libapache2-mod-php php-sqlite3 -y
+
+    - Verify:
+        - Apache:
+            - sudo systemctl status apache2
+        - PHP:
+            - php -v
+
+
+[#] Apache Setup
+- Server Server
+    - sudo nano /etc/apache2/apache2.conf
+    - Add:
+        - ServerName WEBSITE1.COM
+    - Restart Apache
+        - sudo systemctl restart apache2
+    - Check Status
+        - sudo systemctl status apache2
+- Make Website Dir:
+    - sudo mkdir -p /var/www/WEBSITE1
+- Set Ownership
+    - sudo chown -R AdminNEW:AdminNEW /var/www/WEBSITE1
+- Virtual Host Config
+    - Edit: sudo nano /etc/apache2/sites-available/WEBSITE1.conf
+        - Add:
+            <VirtualHost *:80>
+                ServerName WEBSITE.COM
+                ServerAlias www.WEBSITE.COM
+                DocumentRoot /var/www/WEBSITE1
+                
+                <Directory /var/www/WEBSITE1>
+                    AllowOverride All
+                    Require all granted
+                </Directory>
+
+                ErrorLog ${APACHE_LOG_DIR}/WEBSITE1-error.log
+                CustomLog ${APACHE_LOG_DIR}/WEBSITE1-access.log combined
+            </VirtualHost>
+        - Apply:
+            sudo a2ensite WEBSITE1.conf
+            sudo a2enmod rewrite
+            sudo a2dissite 000-default.conf
+            sudo systemctl reload apache2
+            sudo systemctl restart apache2
+
+
+[#] FTP/SFTP Connection to add files
+- Use FileZilla with SFTP
+    - Public IP
+    - Username: AdminNEW
+    - Password: YourPassword
+- Paste "/var/www/" in the 'Remote Path' on FileZilla
+
+
+[#] Certbot/Let's Encrypt
+- Install
+    - sudo apt install certbot python3-certbot-apache -y
+- Apply Certificate
+    - sudo certbot --apache -d WEBSITE1.com -d www.WEBSITE1.com
+
+
+[#] Automated Security Patches
+- Install 'unattended-upgrades'
+    - sudo apt install unattended-upgrades -y
+- Configure
+    - sudo dpkg-reconfigure --priority=low unattended-upgrades
+
+
+[#] Fail2Ban
+- Install
+    - sudo apt install fail2ban -y
+- Verify
+    - sudo systemctl status fail2ban
+- Config Update (5 failed logins in 10 minutes, ban IP for an hour.)
+    - sudo nano /etc/fail2ban/jail.local
+    - Add:
+        [DEFAULT]
+        bantime = 1h
+- Restart
+    - sudo systemctl restart fail2ban
