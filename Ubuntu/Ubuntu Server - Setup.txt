@@ -69,8 +69,8 @@
 
 
 [#] Apache & PHP Install
-- Install:
-    sudo apt install apache2 php libapache2-mod-php php-sqlite3 -y
+    - Install:
+        sudo apt install apache2 php libapache2-mod-php php-sqlite3 -y
 
     - Verify:
         - Apache:
@@ -80,43 +80,55 @@
 
 
 [#] Apache - Setup
-- Server Server
-    - sudo nano /etc/apache2/apache2.conf
-    - Add:
-        - ServerName WEBSITE1.COM
-    - Restart Apache
-        - sudo systemctl restart apache2
-    - Check Status
-        - sudo systemctl status apache2
-- Make Website Dir:
-    - sudo mkdir -p /var/www/WEBSITE1
-- Set Ownership
-    - sudo chown -R AdminNEW:AdminNEW /var/www/WEBSITE1
-- Virtual Host Config
-    - Edit: sudo nano /etc/apache2/sites-available/WEBSITE1.conf
+    - Set ServerName
+        - sudo nano /etc/apache2/apache2.conf
         - Add:
-            <VirtualHost *:80>
-                ServerName WEBSITE.COM
-                ServerAlias www.WEBSITE.COM
-                DocumentRoot /var/www/WEBSITE1
-                
-                <Directory /var/www/WEBSITE1>
-                    AllowOverride All
-                    Require all granted
-                </Directory>
+            - ServerName WEBSITE1.COM
+        - Restart Apache
+            - sudo systemctl restart apache2
+        - Check Status
+            - sudo systemctl status apache2
+    - Make Website Dir:
+        - sudo mkdir -p /var/www/WEBSITE1
+    - Set Ownership
+        - sudo chown -R AdminNEW:AdminNEW /var/www/WEBSITE1
+    - Virtual Host Config
+        - Edit: sudo nano /etc/apache2/sites-available/WEBSITE1.conf
+            - Add:
+                <VirtualHost *:80>
+                    ServerName WEBSITE.COM
+                    ServerAlias www.WEBSITE.COM
+                    DocumentRoot /var/www/WEBSITE1
 
-                ErrorLog ${APACHE_LOG_DIR}/WEBSITE1-error.log
-                CustomLog ${APACHE_LOG_DIR}/WEBSITE1-access.log combined
-            </VirtualHost>
-        - Apply:
-            sudo a2ensite WEBSITE1.conf
-            sudo a2enmod rewrite
-            sudo a2dissite 000-default.conf
-            sudo systemctl reload apache2
-            sudo systemctl restart apache2
+                    <Directory /var/www/WEBSITE1>
+                        AllowOverride All
+                        Require all granted
+                    </Directory>
+
+                    ErrorLog ${APACHE_LOG_DIR}/WEBSITE1-error.log
+                    CustomLog ${APACHE_LOG_DIR}/WEBSITE1-access.log combined
+
+                    RewriteEngine on
+                    RewriteCond %{SERVER_NAME} =www.WEBSITE.COM [OR]
+                    RewriteCond %{SERVER_NAME} =WEBSITE.COM
+                    RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
+
+                    <Location /server-status>
+                        SetHandler server-status
+                        Require local
+                    </Location>
+                </VirtualHost>
+            - Apply:
+                sudo a2ensite WEBSITE1.conf
+                sudo a2enmod rewrite
+                sudo a2dissite 000-default.conf
+                sudo systemctl reload apache2
+                sudo systemctl restart apache2
+            - Test Status
+                - curl http://localhost/server-status?auto
 
 
-[#] Apache MPM Prefork Tuning
+[#] Apache - MPM Prefork Tuning
     - What it is:
         Prefork MPM controls how Apache manages worker processes.
         Each process handles one connection at a time and consumes
@@ -124,7 +136,9 @@
         implies 150 simultaneous connections which would require
         3.75GB RAM — exceeding the 1.8GB available on this VPS.
         Tuning this prevents Apache from spawning processes it
-        cannot support and crashing under load.
+        cannot support and crashing under load. With 2GB swap
+        available the practical ceiling is higher but performance
+        degrades as Apache spills into swap.
 
     - View current config:
         cat /etc/apache2/mods-available/mpm_prefork.conf
@@ -132,34 +146,43 @@
     - Edit:
         sudo nano /etc/apache2/mods-available/mpm_prefork.conf
 
-    - Recommended values for 1.8GB VPS:
+    - Recommended values for 1.8GB RAM + 2GB Swap VPS:
         StartServers            5
         MinSpareServers         5
         MaxSpareServers         10
-        MaxRequestWorkers       50
+        MaxRequestWorkers       150
         MaxConnectionsPerChild  0
 
     - Apply:
         sudo systemctl restart apache2
 
-    - Note: MaxRequestWorkers 50 reflects the practical RAM limit
-      of this VPS. 50 simultaneous connections is well above
-      expected game day traffic for early stage launch. Revisit
-      when upgrading to a larger VPS tier.
+    - Note: MaxRequestWorkers 150 is within reach with swap included
+      but performance degrades above ~60 simultaneous connections
+      as Apache spills into swap. Monitor free -h on game day.
+      Revisit when upgrading to a larger VPS tier.
 
 
 [#] Apache - Security
     - Disable unnecessary modules
         sudo a2dismod autoindex
         sudo a2dismod negotiation
-        sudo a2dismod status
         sudo systemctl restart apache2
     - Verify remaining modules
         apache2ctl -M
     - Notes:
         - autoindex  — disabled, prevents directory listing exposure
         - negotiation — disabled, not needed for PHP apps
-        - status — disabled, hides server-status page from public
+        - status — kept enabled but restricted to localhost only
+          via <Location /server-status> block in virtual host config.
+          Required for admin server health monitoring page.
+          Never publicly accessible — Require local enforces this.
+
+    - Re-enable status module restricted to localhost:
+        sudo a2enmod status
+        sudo systemctl restart apache2
+
+    - Verify status endpoint works from server only:
+        curl http://localhost/server-status?auto
 
 
 [#] PHP - Security
