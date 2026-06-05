@@ -1,8 +1,9 @@
-#####################################################
-# This was created/modeled after an IONOS VPS Setup #
-#####################################################
+####################################################################
+# This was created/modeled after an IONOS VPS (Ubuntu 24.04) Setup #
+####################################################################
 
-[#] Disable remote 'root' login / Create new Admin
+[#] Credentials
+    - Notes: Disable remote 'root' login / Create new Admin
     - SSH as root
     - adduser AdminNEW
         - Follow prompts to set password.
@@ -39,7 +40,7 @@
     - Verify
         free -h
 
-[#] Server Firewall
+[#] Firewall
     - Install:
         sudo ufw allow OpenSSH
         sudo ufw allow 80
@@ -78,7 +79,7 @@
             - php -v
 
 
-[#] Apache Setup
+[#] Apache - Setup
 - Server Server
     - sudo nano /etc/apache2/apache2.conf
     - Add:
@@ -115,6 +116,64 @@
             sudo systemctl restart apache2
 
 
+[#] Apache MPM Prefork Tuning
+    - What it is:
+        Prefork MPM controls how Apache manages worker processes.
+        Each process handles one connection at a time and consumes
+        roughly 20-30MB RAM. The default MaxRequestWorkers of 150
+        implies 150 simultaneous connections which would require
+        3.75GB RAM — exceeding the 1.8GB available on this VPS.
+        Tuning this prevents Apache from spawning processes it
+        cannot support and crashing under load.
+
+    - View current config:
+        cat /etc/apache2/mods-available/mpm_prefork.conf
+
+    - Edit:
+        sudo nano /etc/apache2/mods-available/mpm_prefork.conf
+
+    - Recommended values for 1.8GB VPS:
+        StartServers            5
+        MinSpareServers         5
+        MaxSpareServers         10
+        MaxRequestWorkers       50
+        MaxConnectionsPerChild  0
+
+    - Apply:
+        sudo systemctl restart apache2
+
+    - Note: MaxRequestWorkers 50 reflects the practical RAM limit
+      of this VPS. 50 simultaneous connections is well above
+      expected game day traffic for early stage launch. Revisit
+      when upgrading to a larger VPS tier.
+
+
+[#] Apache - Security
+    - Disable unnecessary modules
+        sudo a2dismod autoindex
+        sudo a2dismod negotiation
+        sudo a2dismod status
+        sudo systemctl restart apache2
+    - Verify remaining modules
+        apache2ctl -M
+    - Notes:
+        - autoindex  — disabled, prevents directory listing exposure
+        - negotiation — disabled, not needed for PHP apps
+        - status — disabled, hides server-status page from public
+
+
+[#] PHP - Security
+    - Hide PHP version from HTTP response headers
+        - sudo nano /etc/php/8.3/apache2/php.ini
+        - Find:
+            expose_php = On
+        - Change to:
+            expose_php = Off
+        - Restart Apache
+            sudo systemctl restart apache2
+    - Note: Prevents PHP version disclosure to potential attackers
+
+
 [#] FTP/SFTP Connection to add files
 - Use FileZilla with SFTP
     - Public IP
@@ -130,7 +189,7 @@
     - sudo certbot --apache -d WEBSITE1.com -d www.WEBSITE1.com
 
 
-[#] Automated Security Patches
+[#] Security Patches - Automated
 - Install 'unattended-upgrades'
     - sudo apt install unattended-upgrades -y
 - Configure
@@ -149,3 +208,47 @@
         bantime = 1h
 - Restart
     - sudo systemctl restart fail2ban
+
+[#] Optimization
+    - Snap
+        - What it is:
+            Snap is a package manager built by Canonical (Ubuntu's parent
+            company) that runs a background daemon (snapd) constantly
+            consuming RAM. On a headless VPS running a web server it
+            serves no purpose — all packages are installed via apt instead.
+        - Check if anything is installed via snap
+            snap list
+        - If nothing critical is installed, disable and remove
+            sudo systemctl disable --now snapd
+            sudo apt purge snapd -y
+            sudo apt autoremove -y
+            sudo apt autoclean
+        - Note: Frees RAM, removes unnecessary background daemon
+
+    - Multipath Daemon
+        - What it is:
+            multipathd is an enterprise storage daemon designed for servers
+            with multiple physical connections to the same storage device
+            (e.g. redundant fiber connections to a SAN). Ubuntu 24.04
+            installs it by default even on VPS environments where it serves
+            no purpose. On a single-disk IONOS VPS it runs 6 idle processes
+            consuming RAM for no benefit.
+        - Verify it is running (will show active):
+            sudo systemctl status multipathd
+        - Disable and stop:
+            sudo systemctl disable --now multipathd
+        - Verify processes are gone:
+            htop
+        - Note: Safe to disable on any standard single-disk VPS.
+          Only needed on enterprise servers with redundant storage paths.
+          Disk continues to function exactly as normal after disabling.
+
+[#] Verify Server Health
+    - RAM
+        free -h
+    - Disk
+        df -h
+    - Open ports
+        sudo ss -tlnp
+    - Apache modules
+        apache2ctl -M
