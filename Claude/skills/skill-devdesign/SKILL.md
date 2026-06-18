@@ -1,27 +1,24 @@
 ---
 name: skill-devdesign
 description: >
-  Apply this skill whenever the user is building, creating, or developing anything iteratively — software, tools, workflows, content, or ideas. Trigger when the user describes a concept they want to build, hits a decision point mid-build, asks "how should I approach this", or wants to iterate toward a finished product. This skill encodes a specific decision-making philosophy: default to action, patch what you can, and iterate to perfection rather than stalling on unknowns. Use it proactively any time a project or idea is being developed step-by-step, especially when a decision could block progress.
+  Use when building, creating, or iterating on anything — software, tools, workflows, content, ideas.
+  Triggers: a concept to build, a decision point mid-build, "how should I approach this", or iterating
+  toward a finished product. Ships a working V1 fast: scope the ask, halt only on foundational risk,
+  patch everything else, verify, then stop.
 ---
 
 # Dev Design — Operating Rules
 
-Goal: ship a working V1, then iterate only on request. Apply these rules in order.
+Default to building. Apply in order whenever a request involves building or iterating.
 
-1. **Scope the ask before building.** If it's multi-part or ambiguous, break it into discrete steps. Classify each step:
-   - **Clear/scoped** → implement it.
-   - **Decision point** (implementation isn't obvious) → classify further:
-     - **Halt** — could break the site/script (shared structure, script/data dependencies, anything other code relies on). Stop. Name the options and the consequence of each. Do not guess; the requester decides.
-     - **Preference** — cosmetic or fully scoped to this change, safe either way. Pick the reasonable option, implement it, flag the choice for review.
+1. **Scope it.** Break multi-part or ambiguous asks into discrete steps. Clear step → build it. Unclear step → go to 2.
 
-2. **Build toward V1, not perfection.** Proceed through anything that isn't a halt. Flag what's unclear instead of stalling on it.
+2. **Classify the unclear step.**
+   - **Halt** — touches shared/core structure, schema, auth/security, or anything requiring a rewrite elsewhere if wrong. Stop. State the options and the consequence of each. Ask — don't guess.
+   - **Preference** — cosmetic or scoped to this change only. Pick the sensible option, build it, state the choice when reporting back.
 
-3. **Patch Test** — for anything non-halt that threatens to block progress: *"Can this be patched and adjusted later?"*
-   - Yes → apply the simplest patch, note it, keep going.
-   - No (foundational: core schema, auth/security, anything needing a full rewrite if wrong) → treat as a halt.
+3. **Patch, don't stall.** If a non-halt item threatens to block progress, apply the smallest patch that unblocks it, mark it (e.g. `TODO`), keep going. Patch limits scope, not quality — what's in scope still gets built correctly.
 
-4. **Patch = scoped, not sloppy.** A patch limits scope, not quality. Implement whatever is in scope cleanly, even while the surrounding feature is still rough.
+4. **Verify what you can; leave runtime testing to the user.** Run static checks you have available (lint, type-check, build, syntax check) and confirm the diff matches intent. Do not launch/run the app, open a browser, or otherwise execute runtime/behavioral verification unless the user explicitly asks for it — they test it themselves by default. State plainly what you checked and what's left for them to test.
 
-5. **V1 = working, not broken.** Rough is acceptable; broken is not. The result gets reviewed front-to-back, back-to-front, and side-to-side for functionality and stress testing — it must hold up to that.
-
-6. **Stop at V1.** Do not auto-continue into further fixes or iterations. Wait for the next prompt.
+5. **Stop at V1.** Report what shipped and what was patched or flagged. Wait for the next instruction before iterating further.
