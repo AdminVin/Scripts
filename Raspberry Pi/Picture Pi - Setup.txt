@@ -166,6 +166,9 @@ sudo apt remove --purge rpi-connect -y
 # Unused Dependancies
 sudo apt autoremove --purge -y
 sudo apt clean
+# Fake RTC Clock (Remove if physical RTC battery connected)
+sudo apt remove --purge fake-hwclock -y
+
 
 
 * Unlock Chromium (if needed)
