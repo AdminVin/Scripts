@@ -47,7 +47,7 @@ ForEach-Object {
     }
 } | Format-Table -AutoSize
 
-# Partial Wildcard
+# Wildcard
 Get-Printer |
 Where-Object { $_.DriverName -like "*Ricoh*" } |
 ForEach-Object {
