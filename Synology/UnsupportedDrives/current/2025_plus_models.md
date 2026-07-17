@@ -1,0 +1,166 @@
+## 2025 series or later Plus models
+
+### UPDATE 7 Oct 2025
+
+**DSM 7.3** has removed the many of the restrictions that were in DSM 7.2.2 for 2025 Plus models. 
+
+See https://kb.synology.com/en-global/DSM/tutorial/Drive_compatibility_policies
+
+The restrictions that remain in DSM 7.3 for 2025 Plus models are: 
+1. You cannot create a cache or volume on 3rd party NVMe drives.
+2. You still see lots of warnings in storage manager when using unverified 3rd party drives.
+
+Both 1 and 2 can be solved with [Synology HDD db](https://github.com/007revad/Synology_HDD_db)
+
+<br>
+
+### Unverified 3rd party drive limitations and unofficial solutions for DSM 7.2.2
+
+| Action | Works | Result | Solution |
+|--------|--------------|--------|----------|
+| Setup the NAS with Synology drives | yes |  |  |
+| Setup the NAS with 3rd party SSDs | yes | Lots of warnings |  Remove warnings with [Synology HDD db](https://github.com/007revad/Synology_HDD_db) |
+| Setup the NAS with unverified 3rd party HDDs | **No!** |  | See <a href="#setting-up-a-new-2025-or-later-plus-model-with-only-unverified-hdds">Setup with unverifed HDDs</a> |
+| Migrate unverified 3rd party drives from other Synology | yes | Lots of warnings | Remove warnings with [Synology HDD db](https://github.com/007revad/Synology_HDD_db) |
+| Migrate unverified 3rd party drives and NVMe cache from other Synology | yes | Lots of warnings | Remove warnings with [Synology HDD db](https://github.com/007revad/Synology_HDD_db) |
+| Replace migrated 3rd party drives with 3rd party drives | **No!** |  | Use [Synology HDD db](https://github.com/007revad/Synology_HDD_db) |
+| Gradually replace migrated 3rd party drives with Synology drives | yes | Lots of warnings until all 3rd party drives replaced | Use [Synology HDD db](https://github.com/007revad/Synology_HDD_db) See [Migration and Drive Replacement](https://github.com/007revad/Synology_HDD_db/discussions/468#discussioncomment-13086639) |
+| Expand migrated 3rd party storage pool with 3rd party drives | **No!** |  | Use [Synology HDD db](https://github.com/007revad/Synology_HDD_db) |
+| Use 3rd party drive as hot spare | **No!** |  | Use [Synology HDD db](https://github.com/007revad/Synology_HDD_db) |
+| Create a cache with 3rd party SSDs | **No!** |  | Use [Synology HDD db](https://github.com/007revad/Synology_HDD_db) |
+| Delete and create storage pool on migrated 3rd party drives | **No!** |  | See <a href="#deleting-and-recreating-your-storage-pool-on-unverified-hdds">Recreating storage pool</a> |
+
+<br>
+
+### Setting up a new 2025 or later plus model with only unverified HDDs in DSM 7.2.2
+
+Credit to Alex_of_Chaos on reddit
+
+DSM 7.2.2 won't install on a 2025 or later series plus model if you only have unverified HDDs. But we can get around that.
+
+1. Get the Synology's IP address from Synology Assistant.
+2. Start DSM's telnet server by entering `http://<NAS-IP>:5000/webman/start_telnet.cgi` into your browser's address bar.
+    - Replace `<NAS-IP>` with the IP address of the Synology NAS. 
+3. Open a telnet client (PowerShell, PuTTY, Terminal etc) on your computer and connect to the Synology by typing the following in the telnet window then press enter:
+    ```
+    telnet <NAS-IP>
+    ```
+    - Replace `<NAS-IP>` with the IP address of the Synology NAS.
+    - **Note:** If using a Mac you may need to install Terminal.
+
+      <details>
+        <summary>Click here to see how to install telnet on a Mac</summary>
+
+        **Installing telnet on a Mac**
+
+        a. Open your Terminal app.
+
+        b. If you don't have Homebrew installed, copy and paste the following command into Terminal and press Enter:
+        ```
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        ```
+
+        c. Once Homebrew is installed, simply run the installation command:
+        ```
+        brew install telnet
+        ```
+
+    </details>
+
+4. When it asks you to log in use:
+    - `root` for the login
+    - `101-0101` for the password
+    - **Note:** When you type the password you may not see what you are typing.
+5. Execute the following command:
+    ```
+    touch /tmp/installable_check_pass
+    ```
+    - If DSM is running in a virtual machine use this command instead: 
+    ```
+    while true; do touch /tmp/installable_check_pass; sleep 1; done
+    ```
+6. Refresh the web browser installation page and install DSM.
+7. Then back in the telnet window, or via SSH, paste the following command and press enter:
+   ```
+   /usr/syno/bin/synosetkeyvalue /etc.defaults/synoinfo.conf support_disk_compatibility no
+   ```
+8.  If Storage Manager is already open close then open it, or refresh the web page. If refreshing the page or restarting Storage Manager is not working, try restarting your Synology NAS.
+9. You can now create your storage pool from Storage Manager.
+
+<br>
+
+### Deleting and recreating your storage pool on unverified HDDs in DSM 7.2.2
+
+You can't download Synology HDD db to a volume because you've just deleted your storage pool. So you'd first need to download Synology HDD db to a system folder and run it from there.
+
+You can do this via SSH or via a scheduled task.
+
+#### Via SSH
+
+1. Create and cd to /opt
+    ```
+    sudo mkdir /opt && sudo chmod 775 /opt
+    ```
+
+2. Create /opt
+    ```
+    sudo mkdir -m775 /opt
+    ```
+
+2. cd to /opt
+    ```
+    cd /opt || (echo "Failed to CD to /opt"; exit 1)
+    ```
+
+3. Download syno_hdd_db.sh to /opt
+    ```
+    sudo curl -O "https://raw.githubusercontent.com/007revad/Synology_HDD_db/refs/heads/main/syno_hdd_db.sh"
+    ```
+
+4. Download syno_hdd_vendor_ids.txt to /opt
+    ```
+    sudo curl -O "https://raw.githubusercontent.com/007revad/Synology_HDD_db/refs/heads/main/syno_hdd_vendor_ids.txt"
+    ```
+
+5. Then set permissions on /opt/syno_hdd_db.sh
+    ```
+    sudo chmod 750 /opt/syno_hdd_db.sh
+    ```
+
+6. Finally run syno_hdd_db. You don't need any options at this point.
+    ```
+    sudo -s /opt/syno_hdd_db.sh
+    ```
+
+8. If Storage Manager is already open close then open it, or refresh the web page.
+9. You can now create your storage pool from Storage Manager.
+
+#### Via a scheduled task
+
+First setup email notifications (if you haven't already):
+
+1. Go to **Control Panel** > **Notification** > **Email** > click **Setup**.
+
+Then create the scheduled task:
+
+1. Go to **Control Panel** > **Task Scheduler** > click **Create** > **Scheduled Task** > **User-defined script**.
+2. Enter a task name.
+3. Select **root** as the user (The script needs to run as root).
+4. Untick **Enable**.
+5. Click **Task Settings**.
+6. Tick **Send run details by email** and enter your email address.
+7. In the box under **User-defined script** paste the following: 
+    ```
+    mkdir -m775 /opt
+    cd /opt || (echo "Failed to CD to /opt"; exit 1)
+    curl -O "https://raw.githubusercontent.com/007revad/Synology_HDD_db/refs/heads/main/syno_hdd_db.sh"
+    curl -O "https://raw.githubusercontent.com/007revad/Synology_HDD_db/refs/heads/main/syno_hdd_vendor_ids.txt"
+    chmod 750 /opt/syno_hdd_db.sh
+    /opt/syno_hdd_db.sh -e
+    ```
+8. Click **OK** > **OK** > type your password > **Submit** to save the scheduled task.
+9. Now select the scheduld task and click **Run** > **OK**.
+10. Check your emails to make sure the scheduled task ran without any error.
+11. If Storage Manager is already open close then open it, or refresh the web page.
+12. You can now create your storage pool from Storage Manager.
+
