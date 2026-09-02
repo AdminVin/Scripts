@@ -70,13 +70,22 @@
 
 [#] Apache & PHP Install
     - Install:
-        sudo apt install apache2 php libapache2-mod-php php-sqlite3 -y
+        sudo apt install apache2 php libapache2-mod-php php-sqlite3 php-mbstring -y
 
     - Verify:
         - Apache:
             - sudo systemctl status apache2
         - PHP:
             - php -v
+        - mbstring loaded:
+            - php -m | grep mbstring
+
+    - Note: php-mbstring is required by includes/BadWordCheck.php (mb_strtolower).
+      Missing it doesn't error at install or on php -v — it only surfaces as a
+      Fatal error on the first request that actually calls the function (e.g.
+      claiming a box), which took down box claiming site-wide on 2026-09-01
+      until diagnosed and installed after the fact. Confirmed to always be
+      included going forward.
 
 
 [#] Apache - Setup
