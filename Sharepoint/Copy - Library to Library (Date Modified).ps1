@@ -60,8 +60,19 @@ IMPORTANT: $SourceLibraryPath / $DestLibraryPath must start with the actual
 LIBRARY NAME (e.g. "Administration", "Shared Documents") as its first segment -
 everything after that is treated as the folder path within that library.
 #>
+##########################################################################
+# Module
+if (-not (Get-Module -ListAvailable -Name PnP.PowerShell)) {
+    Write-Host "PnP.PowerShell module not found. Installing."
 
-
+    Install-Module -Name PnP.PowerShell `
+        -Scope AllUsers `
+        -Force `
+        -AllowClobber
+} else {
+    Write-Host "PnP.PowerShell module is already installed."
+}
+Import-Module PnP.PowerShell
 ##########################################################################
 # Client ID (see above)
 $ClientID           = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
@@ -74,24 +85,10 @@ $SourceLibraryPath  = "Administration/Management Team"
 $DestSiteUrl        = "https://YOURTENANT.sharepoint.com/sites/Administration"
 $DestLibraryPath    = "Shared Documents/Management Team"
 ##########################################################################
-# Module
-if (-not (Get-Module -ListAvailable -Name PnP.PowerShell)) {
-    Write-Host "PnP.PowerShell module not found. Installing for all users..."
-
-    Install-Module -Name PnP.PowerShell `
-        -Scope AllUsers `
-        -Force `
-        -AllowClobber
-} else {
-    Write-Host "PnP.PowerShell module is already installed."
-}
-Import-Module PnP.PowerShell
-##########################################################################
 
 $SourceSitePath = ([Uri]$SourceSiteUrl).AbsolutePath.TrimEnd('/')
 $DestSitePath   = ([Uri]$DestSiteUrl).AbsolutePath.TrimEnd('/')
 
-# Split "LibraryName/Sub/Folder/Path" into List Title (first segment) and folder subpath (rest)
 $sourceSegments   = $SourceLibraryPath -split '/', 2
 $SourceListTitle  = $sourceSegments[0]
 $SourceSubPath    = if ($sourceSegments.Count -gt 1) { $sourceSegments[1] } else { "" }
@@ -108,11 +105,10 @@ if (-not (Test-Path $LogFolder)) {
     Write-Host "Log folder already exists: $LogFolder" -ForegroundColor DarkGray
 }
 $OldLocationName    = ($SourceLibraryPath -replace '/','_')
+$LogPath            = "$LogFolder\$OldLocationName.txt"
 $CsvLogPath         = "$LogFolder\$OldLocationName`_Detail.csv"
 
-# Disabled Transcript Debug
-#$LogPath            = "$LogFolder\$OldLocationName.txt"
-#Start-Transcript -Path $LogPath -Append
+Start-Transcript -Path $LogPath -Append
 
 Write-Host "============================================================" -ForegroundColor Cyan
 Write-Host "Migration started: $(Get-Date)" -ForegroundColor Cyan
@@ -127,22 +123,17 @@ $detailLog = @()
 function Get-PnPLibraryFiles {
     param(
         [string]$ListTitle,
-        [string]$SubPathFilter   # e.g. "Accounting Unit" - only files whose FileRef contains this, empty = whole library
+        [string]$SubPathFilter
     )
-
     $items = Get-PnPListItem -List $ListTitle -PageSize 500 -Fields "FileLeafRef","FileRef","FSObjType","File_x0020_Size","Modified"
-
     $files = $items | Where-Object { $_["FSObjType"] -ne 1 -and $_["FileRef"] -notmatch "/Forms/" }
-
     if ($SubPathFilter) {
         $files = $files | Where-Object { $_["FileRef"] -like "*/$SubPathFilter/*" -or $_["FileRef"] -like "*/$SubPathFilter" }
     }
-
     return $files
 }
 
 try {
-    # --- CONNECT TO SOURCE SITE, ENUMERATE VIA Get-PnPListItem ---
     Write-Host "`nConnecting to source site..." -ForegroundColor Yellow
     Connect-PnPOnline -Url $SourceSiteUrl -ClientID $ClientID
     $currentContext = "source"
@@ -152,7 +143,6 @@ try {
     $totalCount = $sourceFiles.Count
     Write-Host "Found $totalCount source file(s) (system Forms folder excluded).`n" -ForegroundColor Green
 
-    # --- CONNECT TO DEST SITE, ENUMERATE EXISTING FILES THE SAME WAY ---
     Write-Host "Checking destination for already-copied files..." -ForegroundColor Yellow
     Connect-PnPOnline -Url $DestSiteUrl -ClientID $ClientID
     $currentContext = "dest"
@@ -169,7 +159,6 @@ try {
     $sourceRootPrefix = "$SourceSitePath/$SourceLibraryPath/"
     $destRootPrefix    = "$DestSitePath/$DestLibraryPath/"
 
-    # --- Copy loop ---
     $counter = 0
     $successCount = 0
     $skipCount = 0
@@ -188,7 +177,6 @@ try {
         $relativeFolder = Split-Path $relativePath -Parent
         $relativeFolder = if ($relativeFolder) { $relativeFolder -replace '\\','/' } else { "" }
         $targetFolderUrl = if ($relativeFolder) { "$DestSiteUrl/$DestLibraryPath/$relativeFolder" } else { "$DestSiteUrl/$DestLibraryPath" }
-
         $destCheckUrl = if ($relativeFolder) { "$destRootPrefix$relativeFolder/$fileName" } else { "$destRootPrefix$fileName" }
 
         Write-Host "[$counter / $totalCount] $relativePath" -ForegroundColor White
@@ -202,16 +190,10 @@ try {
                 Write-Host "   -> Already copied, destination up to date (Dest: $destModified >= Source: $sourceModified) - SKIPPED" -ForegroundColor DarkGray
                 $skipCount++
                 $detailLog += [PSCustomObject]@{
-                    Timestamp       = Get-Date
-                    FileName        = $fileName
-                    RelativePath    = $relativePath
-                    SourceSize      = $sourceSize
-                    SourceModified  = $sourceModified
-                    DestModified    = $destModified
-                    NewerVersion    = "No"
-                    DestFolder      = $targetFolderUrl
-                    Status          = "Skipped (destination up to date)"
-                    Error           = ""
+                    Timestamp = Get-Date; FileName = $fileName; RelativePath = $relativePath
+                    SourceSize = $sourceSize; SourceModified = $sourceModified; DestModified = $destModified
+                    NewerVersion = "No"; DestFolder = $targetFolderUrl
+                    Status = "Skipped (destination up to date)"; Error = ""
                 }
                 continue
             }
@@ -252,16 +234,12 @@ try {
             $successCount++
 
             $detailLog += [PSCustomObject]@{
-                Timestamp       = Get-Date
-                FileName        = $fileName
-                RelativePath    = $relativePath
-                SourceSize      = $sourceSize
-                SourceModified  = $sourceModified
-                DestModified    = $destModified
-                NewerVersion    = if ($isNewerVersion) { "Yes" } else { "No" }
-                DestFolder      = $targetFolderUrl
-                Status          = if ($isNewerVersion) { "Copied (newer version replaced destination)" } else { "Copied" }
-                Error           = ""
+                Timestamp = Get-Date; FileName = $fileName; RelativePath = $relativePath
+                SourceSize = $sourceSize; SourceModified = $sourceModified; DestModified = $destModified
+                NewerVersion = if ($isNewerVersion) { "Yes" } else { "No" }
+                DestFolder = $targetFolderUrl
+                Status = if ($isNewerVersion) { "Copied (newer version replaced destination)" } else { "Copied" }
+                Error = ""
             }
         }
         catch {
@@ -269,21 +247,15 @@ try {
             $failCount++
 
             $detailLog += [PSCustomObject]@{
-                Timestamp       = Get-Date
-                FileName        = $fileName
-                RelativePath    = $relativePath
-                SourceSize      = $sourceSize
-                SourceModified  = $sourceModified
-                DestModified    = $destModified
-                NewerVersion    = if ($isNewerVersion) { "Yes" } else { "No" }
-                DestFolder      = $targetFolderUrl
-                Status          = "FAILED"
-                Error           = $_.Exception.Message
+                Timestamp = Get-Date; FileName = $fileName; RelativePath = $relativePath
+                SourceSize = $sourceSize; SourceModified = $sourceModified; DestModified = $destModified
+                NewerVersion = if ($isNewerVersion) { "Yes" } else { "No" }
+                DestFolder = $targetFolderUrl
+                Status = "FAILED"; Error = $_.Exception.Message
             }
         }
     }
 
-    # --- Summary ---
     Write-Host "`n============================================================" -ForegroundColor Cyan
     Write-Host "COPY COMPLETE" -ForegroundColor Cyan
     Write-Host "Total source files:      $totalCount"
@@ -292,7 +264,6 @@ try {
     Write-Host "Skipped (up to date):    $skipCount" -ForegroundColor DarkGray
     Write-Host "Failed:                  $failCount" -ForegroundColor $(if ($failCount -gt 0) { "Red" } else { "Green" })
 
-    # --- Reconciliation (re-enumerate destination via the same reliable method) ---
     Write-Host "`nConnecting to destination site to verify..." -ForegroundColor Yellow
     Connect-PnPOnline -Url $DestSiteUrl -ClientID $ClientID
     $destFiles = Get-PnPLibraryFiles -ListTitle $DestListTitle -SubPathFilter $DestSubPath
@@ -311,7 +282,5 @@ try {
 finally {
     $detailLog | Export-Csv -Path $CsvLogPath -NoTypeInformation -Encoding UTF8
     Write-Host "`nDetailed per-file log written to $CsvLogPath" -ForegroundColor Green
-    #Write-Host "Full console transcript written to $LogPath" -ForegroundColor Green
-
-    Stop-Transcript
+    Write-Host "Full console transcript written to $LogPath" -ForegroundColor Green
 }
