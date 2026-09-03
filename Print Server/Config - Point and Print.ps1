@@ -19,55 +19,69 @@ foreach ($path in $RegistryPaths) {
 }
 $PointAndPrintPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Printers\PointAndPrint"
 
-
 ## Functions
-function Set-OrCreateProperty {
+function Set-Registry {
     param (
         [string]$Path,
         [string]$Name,
         [Object]$Value,
         [string]$PropertyType
     )
-
-    if ((Get-ItemProperty -Path $Path -Name $Name -ErrorAction SilentlyContinue) -ne $null) {
-        Set-ItemProperty -Path $Path -Name $Name -Value $Value
-    } else {
-        New-ItemProperty -Path $Path -Name $Name -Value $Value -PropertyType $PropertyType -Force
+    $key = Get-Item -LiteralPath $Path -ErrorAction SilentlyContinue
+    if ($key -and ($key.GetValueNames() -contains $Name)) {
+        if ($key.GetValueKind($Name).ToString() -ne $PropertyType) {
+            Remove-ItemProperty -Path $Path -Name $Name -Force -ErrorAction SilentlyContinue
+        }
     }
+    New-ItemProperty -Path $Path -Name $Name -Value $Value -PropertyType $PropertyType -Force | Out-Null
 }
 
+## Cleanup - Remove leftovers from previous (broken) deployments
+# Bogus value that did nothing under PointAndPrint
+Remove-ItemProperty -Path $PointAndPrintPath -Name "PointAndPrintServerList" -Force -ErrorAction SilentlyContinue
 
 ## Process
 # Point and Print - Enable
-Set-OrCreateProperty -Path $PointAndPrintPath -Name "Restricted" -Value 1 -PropertyType DWord
-Set-OrCreateProperty -Path $PointAndPrintPath -Name "TrustedServers" -Value 1 -PropertyType DWord
+Set-Registry -Path $PointAndPrintPath -Name "Restricted" -Value 1 -PropertyType DWord
+Set-Registry -Path $PointAndPrintPath -Name "TrustedServers" -Value 1 -PropertyType DWord
 # Point and Print - Trusted Servers
-Set-OrCreateProperty -Path $PointAndPrintPath -Name "ServerList" -Value $PrintServers -PropertyType MultiString
-Set-OrCreateProperty -Path $PointAndPrintPath -Name "PointAndPrintServerList" -Value $PrintServers -PropertyType MultiString
-Set-OrCreateProperty -Path $PointAndPrintPath -Name "InForest" -Value 1 -PropertyType DWord
+# ServerList must be REG_SZ, semicolon-delimited — not REG_MULTI_SZ
+Set-Registry -Path $PointAndPrintPath -Name "ServerList" -Value ($PrintServers -join ';') -PropertyType String
+Set-Registry -Path $PointAndPrintPath -Name "InForest" -Value 1 -PropertyType DWord
 # Printer Drivers - Suppresses security warnings/elevation prompts during the installation of printer drivers from a trusted print server.
-Set-OrCreateProperty -Path $PointAndPrintPath -Name "NoWarningNoElevationOnInstall" -Value 1 -PropertyType DWord
+Set-Registry -Path $PointAndPrintPath -Name "NoWarningNoElevationOnInstall" -Value 1 -PropertyType DWord
 # Printer Drivers - No prompt to users, if the driver is changed on the trusted print server and needs to be updated.
-Set-OrCreateProperty -Path $PointAndPrintPath -Name "UpdatePromptSettings" -Value 2 -PropertyType DWord
+Set-Registry -Path $PointAndPrintPath -Name "UpdatePromptSettings" -Value 2 -PropertyType DWord
 # Permit User (Non-Admin) Installation of Drivers from trusted print server.
-Set-OrCreateProperty -Path $PointAndPrintPath -Name "RestrictDriverInstallationToAdministrators" -Value 0 -PropertyType DWord
+Set-Registry -Path $PointAndPrintPath -Name "RestrictDriverInstallationToAdministrators" -Value 0 -PropertyType DWord
 # Device Drivers - Users (Non-Admin/Administrators) are permited to install device drivers. [1 - Non Admins | 2 - Administrators Only]
-Set-OrCreateProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DriverInstall\Restrictions" -Name "AllowUserDeviceInstall" -Value 1 -PropertyType DWORD
+Set-Registry -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DriverInstall\Restrictions" -Name "AllowUserDeviceInstall" -Value 1 -PropertyType DWord
+
+# Package Point and Print - Approved Servers (governs v4/package-aware/class drivers)
+$PackagePointAndPrintPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Printers\PackagePointAndPrint"
+$PackageListPath = "$PackagePointAndPrintPath\ListofServers"
+foreach ($path in @($PackagePointAndPrintPath, $PackageListPath)) {
+    if (-not (Test-Path -LiteralPath $path)) {
+        New-Item -Path $path -Force | Out-Null
+    }
+}
+Set-Registry -Path $PackagePointAndPrintPath -Name "PackagePointAndPrintServerList" -Value 1 -PropertyType DWord
+foreach ($server in $PrintServers) {
+    Set-Registry -Path $PackageListPath -Name $server -Value $server -PropertyType String
+}
+
 # Printer Driver Classes - Allow
 $AllowedClassesPath = "$PointAndPrintPath\AllowedDriverClassGUIDs"
 if (-not (Test-Path -LiteralPath $AllowedClassesPath)) {
-    New-Item -Path $AllowedClassesPath | Out-Null
+    New-Item -Path $AllowedClassesPath -Force | Out-Null
 }
 foreach ($classGUID in $AllowedClasses) {
-    Set-OrCreateProperty -Path $AllowedClassesPath -Name $classGUID -Value 1 -PropertyType DWord
+    Set-Registry -Path $AllowedClassesPath -Name $classGUID -Value 1 -PropertyType DWord
 }
-# Shortcut - Add "Devices & Printers" back to Windows 10/11 Start Menu
-$ShortcutPath = [System.IO.Path]::Combine([System.Environment]::GetFolderPath("CommonPrograms"), "Devices & Printers.lnk")
-$WshShell = New-Object -ComObject WScript.Shell
-$Shortcut = $WshShell.CreateShortcut($ShortcutPath)
-$Shortcut.TargetPath = "shell:::{A8A91A66-3A7D-4424-8D24-04E180695C7A}"
-$Shortcut.Save()
-[System.Runtime.Interopservices.Marshal]::ReleaseComObject($WshShell) | Out-Null
+
+# Restart Spooler - Ensure corrected policy values are picked up immediately
+Restart-Service -Name Spooler -Force -ErrorAction SilentlyContinue
+
 # Log - Complete
 New-Item -Path "C:\ProgramData\EBPS\Printers" -ItemType Directory -Force | Out-Null
 $timestamp = (Get-Date).ToString("MM/dd/yy hh:mm tt")
