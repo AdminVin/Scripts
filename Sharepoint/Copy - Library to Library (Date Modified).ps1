@@ -1,5 +1,4 @@
-<# 
-============================================================
+<# ============================================================
 # SharePoint Folder Migration
  - Uses Get-PnPListItem with paging (NOT Get-PnPFolderItem -Recursive,
    which silently under-counts on deep folder structures)
@@ -12,7 +11,7 @@
  - Copy ONLY - nothing is deleted at source
 
 
-============================================================
+# ============================================================
 # Client ID - Setup
 ONE-TIME SETUP - Register Entra ID App for PnP PowerShell
 Only needs to be run once per tenant. Reuse the resulting ClientID
@@ -25,13 +24,13 @@ Steps:
 4. Copy the returned ClientID and use it as $ClientID in migration scripts
 
 Command:
-Register-PnPEntraIDAppForInteractiveLogin -ApplicationName "PnP Management Shell" -Tenant "YOURTENANT.onmicrosoft.com"
+Register-PnPEntraIDAppForInteractiveLogin -ApplicationName "PnP Management Shell" -Tenant "eastbrunswickschools.onmicrosoft.com"
 
 Result (already registered for this tenant):
-App PnP Management Shell with id xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxxx created.
+App PnP Management Shell with id xxxxxxx-xxxx-xxx-xxxxxxxx created.
 
 
-============================================================
+# ============================================================
 # Notes
 HOW TO READ A SHAREPOINT URL AND SET $SourceSiteUrl / $SourceLibraryPath
 
@@ -60,19 +59,8 @@ IMPORTANT: $SourceLibraryPath / $DestLibraryPath must start with the actual
 LIBRARY NAME (e.g. "Administration", "Shared Documents") as its first segment -
 everything after that is treated as the folder path within that library.
 #>
-##########################################################################
-# Module
-if (-not (Get-Module -ListAvailable -Name PnP.PowerShell)) {
-    Write-Host "PnP.PowerShell module not found. Installing."
 
-    Install-Module -Name PnP.PowerShell `
-        -Scope AllUsers `
-        -Force `
-        -AllowClobber
-} else {
-    Write-Host "PnP.PowerShell module is already installed."
-}
-Import-Module PnP.PowerShell
+
 ##########################################################################
 # Client ID (see above)
 $ClientID           = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
@@ -104,11 +92,10 @@ if (-not (Test-Path $LogFolder)) {
 } else {
     Write-Host "Log folder already exists: $LogFolder" -ForegroundColor DarkGray
 }
-$OldLocationName    = ($SourceLibraryPath -replace '/','_')
-$LogPath            = "$LogFolder\$OldLocationName.txt"
-$CsvLogPath         = "$LogFolder\$OldLocationName`_Detail.csv"
+$DestSiteName       = ($DestSitePath -split '/')[-1]
+$DestFolderName     = ($DestLibraryPath.TrimEnd('/') -split '/')[-1]
+$CsvLogPath         = Join-Path $LogFolder "$DestSiteName - $DestFolderName.csv"
 
-Start-Transcript -Path $LogPath -Append
 
 Write-Host "============================================================" -ForegroundColor Cyan
 Write-Host "Migration started: $(Get-Date)" -ForegroundColor Cyan
@@ -282,5 +269,4 @@ try {
 finally {
     $detailLog | Export-Csv -Path $CsvLogPath -NoTypeInformation -Encoding UTF8
     Write-Host "`nDetailed per-file log written to $CsvLogPath" -ForegroundColor Green
-    Write-Host "Full console transcript written to $LogPath" -ForegroundColor Green
 }
