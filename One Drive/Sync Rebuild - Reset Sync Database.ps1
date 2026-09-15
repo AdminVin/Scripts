@@ -70,6 +70,9 @@ if (-not (Test-Path $oneDriveExe)) {
     $oneDriveExe = "$env:ProgramFiles\Microsoft OneDrive\OneDrive.exe"
 }
 if (-not (Test-Path $oneDriveExe)) {
+    $oneDriveExe = "${env:ProgramFiles(x86)}\Microsoft OneDrive\OneDrive.exe"
+}
+if (-not (Test-Path $oneDriveExe)) {
     throw "Could not find OneDrive.exe to relaunch. Start it manually."
 }
 Start-Process -FilePath $oneDriveExe
