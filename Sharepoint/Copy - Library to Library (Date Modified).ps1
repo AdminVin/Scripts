@@ -24,7 +24,7 @@ Steps:
 4. Copy the returned ClientID and use it as $ClientID in migration scripts
 
 Command:
-Register-PnPEntraIDAppForInteractiveLogin -ApplicationName "PnP Management Shell" -Tenant "eastbrunswickschools.onmicrosoft.com"
+Register-PnPEntraIDAppForInteractiveLogin -ApplicationName "PnP Management Shell" -Tenant "YOURTENANT.onmicrosoft.com"
 
 Result (already registered for this tenant):
 App PnP Management Shell with id xxxxxxx-xxxx-xxx-xxxxxxxx created.
