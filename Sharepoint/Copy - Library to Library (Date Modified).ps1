@@ -1,34 +1,22 @@
 <# ============================================================
 # SharePoint Folder Migration
- - Uses Get-PnPListItem with paging (NOT Get-PnPFolderItem -Recursive,
-   which silently under-counts on deep folder structures)
- - Recreates full subfolder structure at destination
+ - Recreates full subfolder structure at destination.
  - Resume logic based on DATE MODIFIED (not size) - if destination
    file exists and its modified date is >= source's modified date,
    it is skipped. If source is newer, it is re-copied and flagged.
- - Logs source size + modified date per file (for later drift check)
- - Excludes SharePoint system "Forms" folder contents
- - Copy ONLY - nothing is deleted at source
-
+ - Excludes SharePoint system "Forms" folder contents.
+ - Copy ONLY - nothing is deleted at source.
 
 # ============================================================
-# Client ID - Setup
-ONE-TIME SETUP - Register Entra ID App for PnP PowerShell
-Only needs to be run once per tenant. Reuse the resulting ClientID
-in every Connect-PnPOnline call across all migration scripts.
+# Client ID - Setup (One Time Setup)
 
-Steps:
-1. Run the command below in an elevated PowerShell session
-2. A browser window will open asking you to sign in as an admin
-3. Check "Consent on behalf of your organization" and Approve
-4. Copy the returned ClientID and use it as $ClientID in migration scripts
+* Register Entra ID App for PnP PowerShell
 
-Command:
-Register-PnPEntraIDAppForInteractiveLogin -ApplicationName "PnP Management Shell" -Tenant "YOURTENANT.onmicrosoft.com"
+Command: 
+Register-PnPEntraIDAppForInteractiveLogin -ApplicationName "PnP Management Shell" -Tenant "TENANT.onmicrosoft.com"
 
-Result (already registered for this tenant):
-App PnP Management Shell with id xxxxxxx-xxxx-xxx-xxxxxxxx created.
-
+Result:
+App PnP Management Shell with id 3fed2ff0-66c5-46f8-afea-d376efc419da created.
 
 # ============================================================
 # Notes
@@ -38,27 +26,28 @@ Every SharePoint URL breaks down into: [Site] + [Library] + [Folder path]
 The tricky part is telling the site portion apart from the library portion.
 
 CASE 1 - Site is a subsite (URL contains "/sites/<name>/"):
-  Example: https://YOURTENANT.sharepoint.com/sites/Admin/Finance/Forms/AllItems.aspx
+  Example: https://TENANT.sharepoint.com/sites/Admin/CommProgFinance/Forms/AllItems.aspx
   - Site      = everything through "/sites/<name>"   -> /sites/Admin
-  - Library   = the segment right after the site      -> Finance
+  - Library   = the segment right after the site      -> CommProgFinance
   Set:
-    $SourceSiteUrl     = "https://YOURTENANT.sharepoint.com/sites/Admin"
-    $SourceLibraryPath = "Finance"
+    $SourceSiteUrl     = "https://TENANT.sharepoint.com/sites/Admin"
+    $SourceLibraryPath = "CommProgFinance"
 
 CASE 2 - Site is the ROOT site collection (URL has NO "/sites/" segment):
-  Example: https://YOURTENANT.sharepoint.com/Administration/Forms/AllItems.aspx?id=%2FAdministration%2FManagement%20Team
+  Example: https://TENANT.sharepoint.com/Administration/Forms/AllItems.aspx?id=%2FAdministration%2FAccounting%20Unit
   - No "/sites/" present = this library lives directly on the root site
   - Library   = first path segment after the domain    -> Administration
-  - Folder    = decode the "id=" parameter to confirm  -> /Administration/Management Team
+  - Folder    = decode the "id=" parameter to confirm  -> /Administration/Accounting Unit
                 (%2F = "/", %20 = space)
   Set:
-    $SourceSiteUrl     = "https://YOURTENANT.sharepoint.com"
-    $SourceLibraryPath = "Administration/Management Team"
+    $SourceSiteUrl     = "https://TENANT.sharepoint.com"
+    $SourceLibraryPath = "Administration/Accounting Unit"
 
 IMPORTANT: $SourceLibraryPath / $DestLibraryPath must start with the actual
 LIBRARY NAME (e.g. "Administration", "Shared Documents") as its first segment -
 everything after that is treated as the folder path within that library.
 #>
+
 
 
 ##########################################################################
