@@ -6,11 +6,10 @@
    it is skipped. If source is newer, it is re-copied and flagged.
  - Excludes SharePoint system "Forms" folder contents.
  - Copy ONLY - nothing is deleted at source.
-
 # ============================================================
-# Client ID - Setup (One Time Setup)
 
-* Register Entra ID App for PnP PowerShell
+## Client ID - Setup (One Time Setup)
+# Register Entra ID App for PnP PowerShell
 
 Command: 
 Register-PnPEntraIDAppForInteractiveLogin -ApplicationName "PnP Management Shell" -Tenant "TENANT.onmicrosoft.com"
@@ -18,12 +17,9 @@ Register-PnPEntraIDAppForInteractiveLogin -ApplicationName "PnP Management Shell
 Result:
 App PnP Management Shell with id 3fed2ff0-66c5-46f8-afea-d376efc419da created.
 
-# ============================================================
-# Notes
-HOW TO READ A SHAREPOINT URL AND SET $SourceSiteUrl / $SourceLibraryPath
-
-Every SharePoint URL breaks down into: [Site] + [Library] + [Folder path]
-The tricky part is telling the site portion apart from the library portion.
+## Notes
+# HOW TO READ A SHAREPOINT URL AND SET $SourceSiteUrl / $SourceLibraryPath
+    - Every SharePoint URL breaks down into: [Site] + [Library] + [Folder path]
 
 CASE 1 - Site is a subsite (URL contains "/sites/<name>/"):
   Example: https://TENANT.sharepoint.com/sites/Admin/CommProgFinance/Forms/AllItems.aspx
@@ -48,8 +44,12 @@ LIBRARY NAME (e.g. "Administration", "Shared Documents") as its first segment -
 everything after that is treated as the folder path within that library.
 #>
 
-
-
+##########################################################################
+# PnP PowerShell (SharePoint Online)
+if (!(Get-Module -Name PnP.PowerShell -ListAvailable)) {
+    Install-Module -Name PnP.PowerShell -Scope AllUsers -AllowClobber -Force
+}
+Import-Module PnP.PowerShell; Write-Host "PnP.PowerShell"
 ##########################################################################
 # Client ID (see above)
 $ClientID           = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
